@@ -20,3 +20,4 @@ A module including a lot of methods for:
   create and manipulate nice looking smith charts 
   
   ![examples/smithchaart.svg]
+  ![Smith Chart](https://github.com/sfpeik/py-microwave/examples/smithchart.svg "Smith")
