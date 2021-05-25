@@ -976,7 +976,7 @@ if __name__ == "__main__":
 
         Z1 = mysmith.addstart(20 - 10j)
         Z2 = mysmith.addpara(Z1, 30j)
-        Z3 = mysmith.addline(Z2, 0.1)
+        Z3 = mysmith.addline(Z2, 0.3)
         mysmith.addangle(Z2)
         mysmith.addangle(Z3)
         Z4 = mysmith.addseries(Z3, -60j)
@@ -994,11 +994,14 @@ if __name__ == "__main__":
         Zin = Z4
         gam = (Zin - Z0) / (Zin + Z0)
         mysmith.addarrow(gam, color='b', lw=2)
+        mysmith.addruler()
         mysmith.addrulerdistance(gam)
         mysmith.addrulermarker(gam, color="green")
+        plt.show()
 
         ### Create a circuit schematic of the analysed circuit  ##
         fig2, ax2 = plt.subplots(figsize=(7, 2))
+        ax2.set_axis_off()
         plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
         d = mysmith.plotschematic()
         d.draw(ax2, show=False)  # must be set to false, otherwise plot will draw already in schemdraw module

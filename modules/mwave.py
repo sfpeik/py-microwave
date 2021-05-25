@@ -30,8 +30,6 @@ try:
 except:
     print("Smith Module not found, doing without")
 
-
-import types
 from scipy.optimize import fsolve, brentq
 
 #### some constants
