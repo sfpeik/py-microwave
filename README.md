@@ -1,4 +1,4 @@
-# py-icrowave
+# py-microwave
 A microwave toolbox written in Python3
 
 The repository includes three moules:
