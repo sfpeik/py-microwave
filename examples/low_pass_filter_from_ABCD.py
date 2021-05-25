@@ -40,6 +40,7 @@ S = mw.ABCDtoS(ABCD,Z0)
 fig, ax = mw.plotspar(f,S)
 ax.set_ylim(-30,2)
 fig.show()
+mw.save_touchstone("myfilter.s2p",f,S)
 
 
 
