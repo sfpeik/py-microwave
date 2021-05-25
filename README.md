@@ -3,6 +3,10 @@ A microwave toolbox written in Python3
 
 The repository includes three moules:
 
+* Microwave Engineering tools mwave.py
+* Smitch Chart Creation in Python smith.py
+* Filter Synthesis in Python filter.py
+
 ### mwave.py
 
 A module including a lot of methods for:
