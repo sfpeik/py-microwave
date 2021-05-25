@@ -14,16 +14,23 @@
 
 
 __license__ = "Soeren Peik"
-__revision__ = " 2017-April "
+__revision__ = " 2021-April "
 __docformat__ = 'reStructuredText'
+__version__ = "1.0.1"
+
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
     broadcast_to, identity, matrix, real, imag, tanh, interp
 import matplotlib.pyplot as plt
 import sys
-sys.path.append('/home/speik/soridat/pythonlib/mwlab') 
-import smith as smi
+
+try:
+    import smith as smi
+except:
+    print("Smith Module not found, doing without")
+
+
 import types
 from scipy.optimize import fsolve, brentq
 
@@ -40,6 +47,8 @@ k    = 1.3806488e-23
 #: Free Space impedance
 eta0 = sqrt(mu0/eps0) 
 
+def hello():
+    print("Here is py-microwave Version:", __version__)
 ########################################################################
 def coth(x):
     return 1/tanh(x)
@@ -795,6 +804,11 @@ rad = pi/180.0
 
 ######################################################################
 def mdifbiaslist(filename):
+    '''
+    Shows the possible bias points of a mdif file
+    :param filename: mdif file
+    :return: a list of biases
+    '''
     f=open(filename,'r')
     line = f.readlines()
     i=0
