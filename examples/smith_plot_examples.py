@@ -50,8 +50,8 @@ if demo == 1:
     fig, ax = plt.subplots(figsize=(10, 10))
     Z0 = 50
     mysmith = Smith(ax, 'both', Z0, fineness=1)
-    # mysmith.addpolargrid()
-
+    #mysmith.addpolargrid()
+    mysmith.addanglering()
     Z1 = mysmith.addstart(20 - 10j)
     Z2 = mysmith.addpara(Z1, 30j)
     Z3 = mysmith.addline(Z2, 0.3)
@@ -75,16 +75,16 @@ if demo == 1:
     mysmith.addruler()
     mysmith.addrulerdistance(gam)
     mysmith.addrulermarker(gam, color="green")
-
-    ### Create a circuit schematic of the analysed circuit  ##
-    fig2, ax2 = plt.subplots(figsize=(7, 2))
-    plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-    d = mysmith.plotschematic()
-    d.draw(ax2, show=False)  # must be set to false, otherwise plot will draw already in schemdraw module
-    plt.tight_layout()
+    fig.savefig("smithchart.svg")
     plt.show()
     plt.close(fig)
-    plt.close(fig2)
+
+    ### Create a circuit schematic of the analysed circuit  ##
+    d = mysmith.plotschematic()
+    d.draw()  # must be set to false, otherwise plot will draw already in schemdraw module
+    plt.tight_layout()
+    d.save("schematic.svg")
+    plt.show()
 
 if demo == 2:
     ### Example of circles #####################################
