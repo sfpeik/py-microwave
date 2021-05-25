@@ -312,8 +312,6 @@ def ABCDinverse(ABCD):
     x = []
     for AA in ABCD:
         x.append( matrix(AA)**-1 )
-        
-    #x = transpose(x,(2,0,1))
     return squeeze(x)
 
 ### ABCD Matrix for Line Element #########################
