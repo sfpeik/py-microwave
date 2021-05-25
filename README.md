@@ -23,4 +23,18 @@ A module including a lot of methods for:
   
   ![Smith Chart](https://github.com/sfpeik/py-microwave/blob/main/examples/smithchart.svg "Smith")
   
+  ## filter.py
+  
+  Tools for filter synthesis
+  
+   * g-parameters
+   * elliptic filter prototypes
+   * Coupling matrix creation
+   * Coupling matrix analysis, response plots
+   * Coupling value visualisaton
+   * Coupling Matrix extraction
+
+
+   
+  
   
