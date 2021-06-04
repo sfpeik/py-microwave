@@ -116,10 +116,8 @@ def superimposeChart(fig, svgfile='smith_paper.svg'):
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
-
-
 class Smith:
-    def __init__(self, ax, typ='smith', Z0=1, fontscale=None, trans=0.4, fineness=1):
+    def __init__(self, ax, typ='smith', Z0=1, fontscale=None, trans= None, fineness=1, **kwargs):
         
         self.scaleadjust = ax.get_window_extent().height / 1000.
         if fontscale is None:
@@ -128,6 +126,20 @@ class Smith:
             if fontscale >10:
                 raise ValueError("Deprecated fontscale in use, must be smaller than 10.0, here: "+str(fontscale))
             self.fontscale = fontscale* sqrt(self.scaleadjust)
+        self.linefactor = 1.0
+        if 'lw' in kwargs:
+            self.linefactor = kwargs['lw']
+            del kwargs['lw']
+        if 'linewidth' in kwargs:
+            self.linefactor = kwargs['linewidth']
+            del kwargs['linewidth']
+        ### Set Transparency legacy style (deprecated)
+        if not 'alpha' in kwargs:
+            kwargs['alpha'] = 0.5
+        elif trans is not None:
+            kwargs['alpha'] = trans
+        self.linewidth = 2
+
         # print("Scale Factor:", self.scaleadjust)
         Element._ids = count(1)
         self.clist = [[], [], [], []]
@@ -162,8 +174,7 @@ class Smith:
         self.f = 0
         self.ax = ax
         self.Z0 = Z0
-        
-        self.transparency = trans
+        self.kwargs = kwargs
         self.elements = []
         self.impedances = []
         self.elementvalues = []
@@ -176,11 +187,19 @@ class Smith:
         if Z0 == 1:
             self.isnorm = True
         if typ == 'smith' or type == 'impedance':
+            if not ('c' in self.kwargs or 'color' in self.kwargs):
+                self.kwargs['color'] = 'r'
             self.addimpedancegrid()
         elif typ == 'inverted' or typ == 'admittance':
+            if not ('c' in self.kwargs or 'color' in self.kwargs):
+                self.kwargs['color'] = 'b'
             self.addadmittancegrid()
         elif typ == 'both':
+            if not ('c' in self.kwargs or 'color' in self.kwargs):
+                self.kwargs['color'] = 'r'
             self.addimpedancegrid()
+            if self.kwargs['color']=='r':
+                self.kwargs['color'] = 'b'
             self.addadmittancegrid()
         elif typ == 'paper':
             self.addemptygrid()
@@ -189,8 +208,6 @@ class Smith:
             raise ValueError('Smith Style not defined')
 
     def addemptygrid(self,visible = False):
-        #self.ax.set_xlim(-1.5, 1.5)
-        #self.ax.set_ylim(-1.5, 1.5)
         self.ax.set_aspect('equal', anchor='C')
         self.fontscale = self.fontscale *2
         self.ax.plot(sin(linspace(0, 2. * pi)), cos(linspace(0, 2. * pi)), 'k--', lw=1.) # plot outline
@@ -198,34 +215,52 @@ class Smith:
         if not visible:
             self.ax.axis('off')
 
-
-    def addimpedancegrid(self):
+    def addimpedancegrid(self, inverted = False, **kwargs):
+        '''
+        :param inverted: plots an inverted chart, aka Admittance Chart
+        :param kwargs: plot arguments, e.g. color, lw, ...
+        :return:
+        '''
+        if not kwargs:
+            kwargs = self.kwargs
         con = -1
+        color = "r"
+        if 'color' in self.kwargs:  color = self.kwargs['color']
+        else: self.kwargs['color'] = color
+        if 'alpha' in self.kwargs: alpha = self.kwargs['alpha']
+
         ## Cirlces ###########
         for zreal in self.clist:
             con = con + 1
             zimag = logspace(-4, log10(500), 200)
             z = zreal + 1j * zimag
             gamma = (z - 1) / (z + 1)
-            lab = '{:1.1f}'.format(zreal).replace('.0', '')
-            if self.cshow[con]:
-                self.ax.text(real((zreal - 1.0) / (zreal + 1.0)) - 0.02, 0.01, lab, color='r', ha='center', va='bottom',
-                             rotation=90, fontsize=10 * self.fontscale)
+            if inverted:
+                gamma = - gamma
+            lab = ' {:1.1f}'.format(zreal).replace('.0', '')
+            ### plots ################
             if zreal in self.cfat:
-                gamlabel = (zreal * 0.9 + 1.1j - 1) / (zreal * 0.9 + 1.1j + 1)
-                anglabel = 180 + angle(gamlabel - 1 - 1j) * 180 / pi
-                if zreal != 0:
-                    self.ax.text(real(gamlabel), imag(gamlabel), lab, color='r', ha='center', va='center',
-                                 rotation=anglabel, fontsize=10 * self.fontscale)
-                    gamlabel = (zreal * 1.1 - 1.1j - 1) / (zreal * 1.1 - 1.1j + 1)
-                    self.ax.text(real(gamlabel), imag(gamlabel), lab, color='r', ha='center', va='center',
-                                 rotation=-anglabel, fontsize=10 * self.fontscale)
-            if zreal in self.cfat:
-                llw = 0.8
+                llw = 1.0 * self.linefactor
             else:
-                llw = 0.4
-            self.ax.plot(real(gamma), imag(gamma), "r", linewidth=llw, alpha=self.transparency)
-            self.ax.plot(real(gamma), -imag(gamma), "r", linewidth=llw, alpha=self.transparency)
+                llw = 0.4 * self.linefactor
+            self.ax.plot(real(gamma), imag(gamma), linewidth=llw, **kwargs)
+            self.ax.plot(real(gamma), -imag(gamma), linewidth=llw, **kwargs)
+
+            ### Labels ##################
+            if self.cshow[con]:
+                gamlabel = (zreal - 1.0) / (zreal + 1.0)
+                if inverted: gamlabel = -gamlabel
+                self.ax.text(real(gamlabel) , 0.0, lab,rotation_mode='anchor', ha='left', va='bottom',
+                             rotation=90, fontsize=10 * self.fontscale, color=color, alpha = alpha)
+            if zreal in self.cfat:
+                gamlabel = (zreal + 1j - 1) / (zreal + 1j + 1)
+                anglabel = 180 + angle(gamlabel - 1 - 1j) * 180 / pi
+                if inverted: gamlabel = -gamlabel
+                if zreal != 0:
+                    self.ax.text(real(gamlabel), imag(gamlabel), lab,rotation_mode='anchor',  ha='left', va='bottom',
+                                 rotation=anglabel, fontsize=10 * self.fontscale,  color = color, alpha = alpha)
+                    self.ax.text(real(gamlabel), imag(-gamlabel), lab,rotation_mode='anchor', ha='left', va='bottom',
+                                 rotation=180-anglabel, fontsize=10 * self.fontscale, color = color, alpha = alpha)
         con = -1
         ## Bends #############  
         for zimag in self.clist:
@@ -233,24 +268,28 @@ class Smith:
             zreal = logspace(-4, log10(self.cendlist[con]), 100)
             z = zreal + 1j * zimag
             gamma = (z - 1) / (z + 1)
+            if inverted: gamma = -gamma
             if zimag in self.cfat:
-                llw = 0.8
+                llw = 0.8 * self.linefactor
             else:
-                llw = 0.4
-            self.ax.plot(real(gamma), imag(gamma), "r", linewidth=llw, alpha=self.transparency)
-            self.ax.plot(real(gamma), -imag(gamma), "r", linewidth=llw, alpha=self.transparency)
-            lab = '%3.1fj' % zimag
+                llw = 0.4 * self.linefactor
+            self.ax.plot(real(gamma), imag(gamma),  linewidth=llw, **kwargs)
+            self.ax.plot(real(gamma), -imag(gamma),  linewidth=llw, **kwargs)
+            ### add labels ###############
+            if zimag == 0: continue
+            lab = ' %3.1fj ' % zimag
             gg = (1j * zimag - 1) / (1j * zimag + 1)
-            gg = gg * exp(1j * 1.5 / 180.0 * pi) * 0.95
+            if inverted: gg = -gg
             x = real(gg)
             y = imag(gg)
             ang = angle(gg) * 180.0 / pi
             if self.cshow[con]:
-                self.ax.text(x, y, lab, color='r', ha='center', va='center', rotation=ang, fontsize=10 * self.fontscale)
-            lab = '-%3.1fj' % zimag
+                self.ax.text(x, y, lab,  ha='right', va='bottom', rotation_mode='anchor', rotation=ang,
+                             fontsize=10 * self.fontscale, alpha = alpha, color = color)
+            lab = ' -%3.1fj' % zimag
             if self.cshow[con]:
-                self.ax.text(x, -y, lab, color='r', ha='center', va='center', rotation=180 - ang,
-                             fontsize=10 * self.fontscale)
+                self.ax.text(x, -y, lab,  ha='left', va='bottom',rotation_mode='anchor', rotation=180 - ang,
+                             fontsize=10 * self.fontscale, alpha = alpha, color = color)
         self.ax.set_xlim(-1.2, 1.2)
         self.ax.set_ylim(-1.2, 1.2)
         self.ax.axis('off')
@@ -259,80 +298,39 @@ class Smith:
     ##### plot an inverted chart in blue
 
     def addadmittancegrid(self):
+        self.addimpedancegrid(inverted = True)
 
-        con = -1
-        for zreal in self.clist:
-            con = con + 1
-            zimag = logspace(-4, log10(500), 200)
-            z = zreal + 1j * zimag
-            gamma = (z - 1) / (z + 1)
-            if zreal in self.cfat:
-                llw = 0.8
-            else:
-                llw = 0.3
-            self.ax.plot(-real(gamma), imag(gamma), "b", linewidth=llw, alpha=self.transparency)
-            self.ax.plot(-real(gamma), -imag(gamma), "b", linewidth=llw, alpha=self.transparency)
-            lab = '{:1.1f}'.format(zreal).replace('.0', '')
-            if self.cshow[con]:
-                self.ax.text(-real((zreal - 1.0) / (zreal + 1.0)) - 0.02, -0.02, lab, color='b', ha='center', va='top',
-                             rotation=90, fontsize=10 * self.fontscale)
-        con = -1
-        ### Bends ################
-        for zimag in self.clist:
-            con = con + 1
-            zreal = logspace(-4, log10(self.cendlist[con]), 100)
-            z = zreal + 1j * zimag
-            gamma = (z - 1.0) / (z + 1.0)
-            if zimag in self.cfat:
-                llw = 0.8
-            else:
-                llw = 0.4
-            self.ax.plot(-real(gamma), imag(gamma), "b", linewidth=llw, alpha=self.transparency)
-            self.ax.plot(-real(gamma), -imag(gamma), "b", linewidth=llw, alpha=self.transparency)
-            lab = '%3.1fj' % zimag
-            gg = (1j * zimag - 1) / (1j * zimag + 1)
-            gg = gg * exp(1j * 1.5 / 180.0 * pi) * 0.95
-            x = real(gg)
-            y = imag(gg)
-            ang = angle(gg) * 180.0 / pi
-            if self.cshow[con]:
-                self.ax.text(-x, -y, lab, color='b', ha='center', va='center', rotation=ang,
-                             fontsize=10 * self.fontscale)
-            lab = '-%3.1fj' % zimag
-            if self.cshow[con]:
-                self.ax.text(-x, y, lab, color='b', ha='center', va='center', rotation=180 - ang,
-                             fontsize=10 * self.fontscale)
-        self.ax.set_xlim(-1.2, 1.2)
-        self.ax.set_ylim(-1.2, 1.2)
-        self.ax.axis('off')
-        self.ax.axis('equal')
+    def addpolargrid(self, **kwargs):
+        '''
+        Add a polar grid around the edge of the chart
+        :param kwargs:
+        :return:
+        '''
 
-    def addpolargrid(self, color="green", *args, **kwargs):
-
-        con = -1
         labelradius = 1.2
+        if not "color" in kwargs:   kwargs['color'] = 'k'
+        if not "lw"    in kwargs:  kwargs['lw'] = 0.5
+        if not "alpha" in kwargs:  kwargs['alpha'] = 0.5
         for magn in arange(0.1, 1, 0.1):
-            con = con + 1
-            patch = plt.Circle((0, 0), magn, alpha=.6, fill=False, ec=color, linewidth=0.5, *args, **kwargs)
+            patch = plt.Circle((0, 0), magn, fill=False, **kwargs)
             self.ax.add_patch(patch)
             lab = "{:1.1f}".format(magn)
-            self.ax.text(0, magn + 0.05, lab, color=color, ha='center', va='top',
-                         rotation=0, fontsize=10 * self.fontscale)
+            self.ax.text(0, magn + 0.05, lab, ha='center', va='top',
+                         rotation=0, fontsize=10 * self.fontscale, color = kwargs['color'], alpha = kwargs['alpha'])
         for ang in arange(0, 360, 10):
             xl = cos(ang * pi / 180)
             yl = sin(ang * pi / 180)
-            self.ax.plot((0, labelradius * xl), (0, labelradius * yl), linewidth=0.5, color=color, *args, **kwargs)
+            self.ax.plot((0, labelradius * xl), (0, labelradius * yl),  **kwargs)
             lab = "{:3d}°".format(ang)
             if ang > 180: lab = "{:3d}°".format(-360 + ang)
             xl = labelradius * cos(ang * pi / 180 + 0.025)
             yl = labelradius * sin(ang * pi / 180 + 0.025)
             self.ax.text(xl, yl, lab, ha='center', va='center', rotation=ang,
-                         fontsize=10 * self.fontscale,
-                         color=color, *args, **kwargs)
+                         fontsize=10 * self.fontscale, color = kwargs['color'], alpha = kwargs['alpha'])
 
     ##### Add a ring of angle Values #################################################################
 
-    def addanglering(self, color="gray", *args, **kwargs):
+    def addanglering(self, **kwargs):
         '''
         Adds a ring with angles in lambdas to chart
         :param color:
@@ -340,18 +338,18 @@ class Smith:
         :param kwargs:
         :return:
         '''
-        # angle=pi-lam*4*pi
+        if not "color" in kwargs: kwargs['color'] = 'k'
+        if not "lw"    in kwargs: kwargs['lw'] = 1
+        if not "alpha" in kwargs: kwargs['alpha'] = 0.5
+
         for lam in arange(0.0, 0.5, 0.02):
             ang = pi - 4 * pi * lam
             x = 1.1 * cos(ang)
             y = 1.1 * sin(ang)
-            xl = 1.18 * cos(ang + 0.025)
-            yl = 1.18 * sin(ang + 0.025)
-            self.ax.plot((0.95 * x, 1.05 * x), (0.95 * y, 1.05 * y), linewidth=1, color=color, *args, **kwargs)
+            self.ax.plot((0.95 * x, 1.05 * x), (0.95 * y, 1.05 * y), **kwargs)
             lab = str(lam) + '$\lambda$'
-            self.ax.text(xl * 0.96, yl * 0.96, lab, ha='center', va='center', rotation=ang * 180.0 / pi,
-                         fontsize=10 * self.fontscale,
-                         color=color, *args, **kwargs)
+            self.ax.text(x*0.985 , y*0.985 , lab, ha='left', va='bottom',rotation_mode='anchor', rotation=ang * 180.0 / pi,
+                         fontsize=10 * self.fontscale, color = kwargs['color'], alpha = kwargs['alpha']   )
         for lam in arange(0.0, 0.5, 0.002):  # minor tics
             ang = pi - 4 * pi * lam
             x = 1.1 * cos(ang)
@@ -359,9 +357,9 @@ class Smith:
             length1 = 1.00
             length2 = 0.97
             if int(lam * 1000) % 10 == 0:
-                self.ax.plot((0.95 * x, length1 * x), (0.95 * y, length1 * y), 'k', linewidth=0.4, *args, **kwargs)
+                self.ax.plot((0.95 * x, length1 * x), (0.95 * y, length1 * y), **kwargs)
             else:
-                self.ax.plot((0.95 * x, length2 * x), (0.95 * y, length2 * y), 'k', linewidth=0.4, *args, **kwargs)
+                self.ax.plot((0.95 * x, length2 * x), (0.95 * y, length2 * y), **kwargs)
         #self.ax.axis('off')
         self.ax.axis('equal')
         plt.tight_layout(pad=.0)
@@ -471,9 +469,12 @@ class Smith:
 
     ##### Add a point in a smith chart ###############################################################
 
-    def addpoint(self, Z, label='Z', ori='NE', col='k'):
+    def addpoint(self, Z, label='Z', ori='NE', **kwargs):
         g = gam(Z, self.Z0)
-        patch = plt.Circle((real(g), imag(g)), 0.012, alpha=0.9, fc=col, linewidth=1)
+        if not "color" in kwargs:  kwargs['color'] = 'k'
+        if not "lw" in kwargs:  kwargs['lw'] = 1
+        if not "alpha" in kwargs:  kwargs['alpha'] = 0.9
+        patch = plt.Circle((real(g), imag(g)), 0.012, **kwargs)
         self.ax.add_patch(patch)
         Z = around(real(Z), 3) + 1j * around(imag(Z), 3)  # fix small non-zero values
         if abs(Z) < 1e-10:  # short
@@ -496,10 +497,13 @@ class Smith:
 
     ##### Add a Starting Point    ###############################################################
 
-    def addstart(self, Z1, **args):
+    def addstart(self, Z1, **kwargs):
+        if not "color" in kwargs: kwargs['color'] = 'k'
+        if not "lw" in kwargs: kwargs['lw'] = 3
+        if not "alpha" in kwargs: kwargs['alpha'] = 0.9
         Znew = Z1
         g = gam(Z1, self.Z0)
-        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9, **args)
+        patch = plt.Circle((real(g), imag(g)), 0.01, color = kwargs['color'])
         self.ax.add_patch(patch)
         self.appendelement('Start', Z1, Znew)
         return Znew
@@ -510,26 +514,30 @@ class Smith:
 
     ##### Add impedance in series ###############################################################
 
-    def addseries(self, Z1, Z2):
+    def addseries(self, Z1, Z2, **kwargs):
+        if not "color" in kwargs: kwargs['color'] = 'r'
+        if not "lw" in kwargs: kwargs['lw'] = self.linewidth
         Znew = Z1 + Z2
         t = arange(0.01, 1, 0.01)
         Z = Z1 + Z2 * t
-        self.ax.plot(real(gam(Z, self.Z0)), imag(gam(Z, self.Z0)), 'r', linewidth=2)
+        self.ax.plot(real(gam(Z, self.Z0)), imag(gam(Z, self.Z0)), **kwargs)
         g = gam(Znew, self.Z0)
-        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9, linewidth=1)
+        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9, color = kwargs['color'],lw = 0)
         self.ax.add_patch(patch)
         self.appendelement('Series', Z2, Znew)
         return Znew
 
     ##### Add impedance in parallel ###############################################################
 
-    def addpara(self, Z1, Z2):
+    def addpara(self, Z1, Z2, **kwargs):
+        if not "color" in kwargs: kwargs['color'] = 'b'
+        if not "lw" in kwargs: kwargs['lw'] = self.linewidth
         Znew = Z1 * Z2 / (Z1 + Z2)
         t = arange(0.01, 1, 0.01)
         Z = (Z1 * Z2 / t) / (Z1 + Z2 / t)
-        self.ax.plot(real(gam(Z, self.Z0)), imag(gam(Z, self.Z0)), 'b', linewidth=2)
+        self.ax.plot(real(gam(Z, self.Z0)), imag(gam(Z, self.Z0)), **kwargs)
         g = gam(Znew, self.Z0)
-        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9, linewidth=1)
+        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9, color = kwargs['color'], lw = 0 )
         self.ax.add_patch(patch)
         self.appendelement('Parallel', Z2, Znew)
         return Znew
@@ -568,13 +576,16 @@ class Smith:
 
     ##### Insert Line ###############################################################
 
-    def addline(self, Z1, length, Zline=50):
+    def addline(self, Z1, length, Zline=50, **kwargs):
+        if not "color" in kwargs: kwargs['color'] = 'g'
+        if not "lw" in kwargs: kwargs['lw'] = self.linewidth
+
         Znew = Zline * (Z1 + 1j * Zline * tan(2 * pi * length)) / (Zline + 1j * Z1 * tan(2 * pi * length))
         t = arange(0.005, 1, 0.005)
         Z = Zline * (Z1 + 1j * Zline * tan(2 * pi * t * length)) / (Zline + 1j * Z1 * tan(2 * pi * t * length))
-        self.ax.plot(real(gam(Z, self.Z0)), imag(gam(Z, self.Z0)), 'g', linewidth=2)
+        self.ax.plot(real(gam(Z, self.Z0)), imag(gam(Z, self.Z0)), **kwargs)
         g = gam(Znew, self.Z0)
-        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9, linewidth=1)
+        patch = plt.Circle((real(g), imag(g)), 0.01, alpha=0.9,color = kwargs['color'], lw = 0)
         self.ax.add_patch(patch)
         self.appendelement('inserted', Zline, Znew, {'length': length})
         return Znew
@@ -930,9 +941,19 @@ if __name__ == "__main__":
 
     demo = 1
 
-    if demo == 0:
-        ## Plot smithchart
+
+    if demo == -1:
+        ## Plot Empty smithchart
         fig, ax = plt.subplots(figsize=(16,16))
+        Z0 = 50
+        mysmith = Smith(ax, 'smith', fineness= 0)
+        mysmith.addpolargrid(alpha= 0.3)
+        mysmith.addanglering(alpha=0.6, color = "g")
+        # mysmith = Smith(ax, 'smith', Z0, color = "g", lw = 1, alpha = 0.5)
+        plt.show()
+
+    if demo == 0:
+        fig, ax = plt.subplots()
         Z0 = 50
         mysmith = Smith(ax, 'both', Z0)
         Z1 = mysmith.addstart(20 )
@@ -969,9 +990,9 @@ if __name__ == "__main__":
     #### Complex Demo with circuit schematic generation
     if demo == 1:
         ## Plot smithchart
-        fig, ax = plt.subplots(figsize=(10, 10))
+        fig, ax = plt.subplots(figsize=(10,10))
         Z0 = 50
-        mysmith = Smith(ax, 'both', Z0, fineness=1)
+        mysmith = Smith(ax, 'both', Z0, fineness=3)
         # mysmith.addpolargrid()
 
         Z1 = mysmith.addstart(20 - 10j)
