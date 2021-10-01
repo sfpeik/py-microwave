@@ -73,7 +73,7 @@ def gcoeffs(n, LdB):
         g[n + 1] = 1
         if (n % 2 == 0):
             g[n + 1] = (coth(beta / 4)) ** 2
-    return array(g)
+    return np.array(g)
 
 
 ###############################################################################
@@ -688,8 +688,6 @@ def drawcouplingdiagram(M,respos,ntype):
                 m = d.add(e.LINE,xy=respos[i]*3,to=respos[j]*3)
                 m.add_label(str(round(M[i,j],3)),size=14)
     return d
-
-
 
 if __name__ == "__main__":
     import doctest

@@ -21,7 +21,7 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
-    broadcast_to, identity, matrix, real, imag, tanh, interp
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions
 import matplotlib.pyplot as plt
 import sys
 
@@ -600,6 +600,26 @@ def ABCDtoTransferFct(ABCD,Zs=0,Zl=1e99):
 ################################################################################
 ################################################################################
 
+def latexMatrix(a,rnd=None):
+    """Returns a LaTeX bmatrix
+
+    :a: numpy array
+    :rnd:  rounding digitrs, int
+    :returns: LaTeX bmatrix as a string
+    """
+    set_printoptions(suppress=True)
+    if rnd is not None:
+        a = around(a,rnd)
+    if len(a.shape) > 2:
+        raise ValueError('bmatrix can at most display two dimensions')
+    lines = str(a).replace('[', '').replace(']', '').replace('j','j,').replace('+0.j','').replace('. ','').replace(' 0 ','').replace(' ','').splitlines()
+    rv = [r'\begin{bmatrix}']
+    rv += ['  ' + ' & '.join(l.rstrip(',').split(',')) + r'\\' for l in lines]
+    rv +=  [r'\end{bmatrix}']
+
+    rv =  '\n'.join(rv)
+    rv = rv.replace(' ','')
+    return rv
 
 ### Return a complex type from a number given in magitude and phase (Degrees)
 def magphase(A,phi):
@@ -670,7 +690,7 @@ def save_touchstone(filename, flist, slist, annotations = "Touchstone file creat
     if len(flist) != len(slist):
         raise ValueError('length of flist and slist do not match in save touchstone!')
         return
-    if shape(slist)[1:3] != (2,2):
+    if shape(slist)[1:3] != (2,2) and ndim(slist) != 1:
         raise ValueError('No 2x2 matrices in touchstone swrite!')
         return
     
@@ -684,11 +704,19 @@ def save_touchstone(filename, flist, slist, annotations = "Touchstone file creat
     f.write('! symbol freq-unit parameter-type data-format keyword impedance-ohm\n')
     f.write('#        HZ        S              RI          R       50\n')
     f.write('!---------------------------------------------------------------------\n')
-    f.write('! freq       reS11      imS11       reS21       imS21       reS12       imS12       reS22       imS22\n')
-    s11,s12,s21,s22 = splitmatrixarray(slist)
-    for i in range(len(flist)):
-        l = "{:10.1f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} ".format(flist[i],real(s11[i]), imag(s11[i]), real(s12[i]), imag(s12[i]), real(s21[i]), imag(s21[i]), real(s22[i]), imag(s22[i]), )
-        f.write(l+"\n")
+    if ndim(slist) == 1:
+        # -- One Port parameter -----------
+        f.write('! freq       reS11      imS11 \n')
+        s11 = slist
+        for i in range(len(flist)):
+            l = "{:10.1f} {: 3.9f} {: 3.9f}".format(flist[i],real(s11[i]), imag(s11[i]))
+            f.write(l+"\n")
+    else:
+        #--- two-port paramter -----------
+        s11,s12,s21,s22 = splitmatrixarray(slist)
+        for i in range(len(flist)):
+            l = "{:10.1f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} ".format(flist[i],real(s11[i]), imag(s11[i]), real(s12[i]), imag(s12[i]), real(s21[i]), imag(s21[i]), real(s22[i]), imag(s22[i]), )
+            f.write(l+"\n")
     f.close()
     return
 
@@ -787,7 +815,7 @@ def load_touchstone(filename, annotations=False):
             pass
     flist = array(flist)
     Slist = array(Slist)
-    if annotations: 
+    if annotations:
         return flist,Slist,anno
     else:
         return flist,Slist
@@ -1245,6 +1273,35 @@ def AmpMaxgain(S, verbose = False):
     
 
 #### Matching Circuits ##############
+
+def LMatching(Zl,Z0=50, equaltype=False):
+    '''
+    see: Whites, EE 481/581, Lecture 7: Transmission Line Matching Using Lumped L Networks
+    returns a dictionary with possible solutions
+    when equaltype is True, both elements are chosen of same type, e.g. capacitor and capacitor
+    '''
+    Rl = real(Zl)
+    Xl = imag(Zl)
+    Yl = 1/Zl
+    Gl = real(Yl)
+    Bl = imag(Yl)
+    if Rl > Z0 or equaltype:
+        B1 = ( Xl + sqrt(Rl/Z0) * sqrt(Rl*(Rl-Z0)+Xl**2) ) / (Rl**2 + Xl**2)
+        X1 = 1/B1 + (Xl*Z0)/Rl - Z0/(B1*Rl)
+        B2 = ( Xl - sqrt(Rl/Z0) * sqrt(Rl*(Rl-Z0)+Xl**2) ) / (Rl**2 + Xl**2)
+        X2 = 1/B2 + (Xl*Z0)/Rl - Z0/(B2*Rl)  
+        if isnan(B1): raise ValueError("No Solution")
+        type = 'shunt-series' 
+    else:
+        X1 = + sqrt(Rl*(Z0-Rl)) - Xl
+        B1 = + 1/Z0 * sqrt((Z0-Rl)/Rl)
+        X2 = - sqrt(Rl*(Z0-Rl)) - Xl
+        B2 = - 1/Z0 * sqrt((Z0-Rl)/Rl)
+        if isnan(B1): ValueError("No Solution")
+        type = 'series-shunt'
+    return {'sol1':(X1,B1),'sol2':(X2,B2)}, type
+
+
 def AmpStubmatching(Gammamatch,plotit=False):
     '''
     Performs a complete open stub - line matching for a given desired input :math:`\Gamma`

@@ -249,9 +249,12 @@ class Smith:
             ### Labels ##################
             if self.cshow[con]:
                 gamlabel = (zreal - 1.0) / (zreal + 1.0)
-                if inverted: gamlabel = -gamlabel
+                orient = 1
+                if inverted:
+                    gamlabel = -gamlabel
+                    orient = -1
                 self.ax.text(real(gamlabel) , 0.0, lab,rotation_mode='anchor', ha='left', va='bottom',
-                             rotation=90, fontsize=10 * self.fontscale, color=color, alpha = alpha)
+                             rotation=90*orient, fontsize=10 * self.fontscale, color=color, alpha = alpha)
             if zreal in self.cfat:
                 gamlabel = (zreal + 1j - 1) / (zreal + 1j + 1)
                 anglabel = 180 + angle(gamlabel - 1 - 1j) * 180 / pi
@@ -764,6 +767,13 @@ def startC(d, lab=''):
     d.add(e.CAP, d='down', botlabel=lab)
     d.pop()
 
+def startport(d, lab="$P2$"):
+    d.push()
+    d.add(e.DOT_OPEN)
+    d.add(e.GAP_LABEL, d='down', botlabel=lab)
+    d.add(e.DOT_OPEN)
+    d.pop()
+    
 
 def seriesR(d, lab='', lsh = 2):
     d.push()
@@ -875,6 +885,22 @@ def inputport(d, lab="$Z_{in}$"):
     d.add(e.DOT_OPEN)
     d.add(e.LINE, l=0.9, d='right')
     d.pop()
+    
+    
+    
+def twoport(d, lab = "[S]"):
+    TwoPort = e.Ic(pins=[e.IcPin(side='left'),
+                  e.IcPin(side='left', anchorname='Port1'),
+                  e.IcPin(side='right'),
+                  e.IcPin(side='right', anchorname='Port2')],
+            edgepadW = 1.0,  # Make it a bit wider
+            edgepadH = -0.6,
+            pinspacing=3).label(lab, 'center', fontsize=28)
+    x,y = d.here   
+    d += TwoPort.right().anchor('Port2') 
+    d.move(x-2,y)   
+        
+
 
 class smith(Smith):  # Definition for historical reasons when using small smith class def
     pass
@@ -939,16 +965,15 @@ if __name__ == "__main__":
     # import doctest
     # doctest.testmod()
 
-    demo = 1
-
+    demo = 5
 
     if demo == -1:
         ## Plot Empty smithchart
         fig, ax = plt.subplots(figsize=(16,16))
         Z0 = 50
-        mysmith = Smith(ax, 'smith', fineness= 0)
-        mysmith.addpolargrid(alpha= 0.3)
-        mysmith.addanglering(alpha=0.6, color = "g")
+        mysmith = Smith(ax, 'both', fineness= 3)
+        #mysmith.addpolargrid(alpha= 0.3)
+        #mysmith.addanglering(alpha=0.6, color = "g")
         # mysmith = Smith(ax, 'smith', Z0, color = "g", lw = 1, alpha = 0.5)
         plt.show()
 
