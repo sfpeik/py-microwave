@@ -511,7 +511,7 @@ class Smith:
         self.appendelement('Start', Z1, Znew)
         return Znew
 
-    def addinput(self):
+    def addinput(self, label):
         self.appendelement('inputport',1,1)
         return
 
@@ -648,13 +648,13 @@ class Smith:
         return Znew
 
     ######## Return the schematic as plot object #########################################
-    def plotschematic(self):
+    def plotschematic(self, fontsize = 12):
         if self.isnorm:
             unit = ''
         else:
             unit = '\Omega'
             # plt.ioff()
-        d = schem.Drawing(fontsize=12)
+        d = schem.Drawing(fontsize=fontsize)
 
         for ele in self.circuit:
             connection = ele.connection
@@ -668,7 +668,7 @@ class Smith:
                 else:
                     startR(d, '$' + str(impedance) + unit + '$')
             if connection == 'inputport':
-                inputport(d, "Zin")
+                inputport(d, "Zin\n\n\n\n")
             if typus == "Capacitor" and connection == "Parallel":
                 shuntC(d, '$' + str(imag(impedance)) + 'j' + unit + '$')
             elif typus == "Inductor" and connection == "Parallel":
@@ -877,7 +877,7 @@ def tstub(d, lab="$Z_0$", lab2=''):
     d.add(e.LABEL, label=lab2, lblofst=[-2, 6.7])
 
 
-def inputport(d, lab="$Z_{in}$"):
+def inputport(d, lab=""):
     d.push()
     d.add(e.LINE, l=0.9, d='left')
     d.add(e.DOT_OPEN)
@@ -885,7 +885,6 @@ def inputport(d, lab="$Z_{in}$"):
     d.add(e.DOT_OPEN)
     d.add(e.LINE, l=0.9, d='right')
     d.pop()
-    
     
     
 def twoport(d, lab = "[S]"):

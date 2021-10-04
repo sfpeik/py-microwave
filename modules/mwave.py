@@ -640,6 +640,17 @@ def magphase_tuple(c):
     ''' Returns a tuple with (magn,phase) to print complex numbers in ampl. and phase
     '''
     return ( abs(c) , angle(c)*180/pi )
+    
+    
+def polar(mag,ang,isDegrees=True):
+    '''
+    takes a complex number in polar and returns the complex number
+
+    '''
+    fac = 1
+    if isDegrees:
+        fac = pi/180
+    return mag*exp(1j*ang*fac)
 
 ################################################################################
 def splitmatrixarray(S):
