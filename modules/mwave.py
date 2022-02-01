@@ -634,6 +634,10 @@ def magphase_str(c):
     ''' Returns a nicely formatted string to print complex numbers in ampl. and phase
     '''
     return u'{0:6.3f}\u2220{1:5.1f}\u00B0'.format(abs(c),angle(c)*180/pi)
+    
+################################################################################    
+def magphase_latex(c):
+   return r'{0:6.3f}\angle {1:5.1f}^\circ'.format(abs(c),angle(c)*180/pi)     
 
 ################################################################################
 def magphase_tuple(c):
