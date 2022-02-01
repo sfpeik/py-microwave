@@ -472,7 +472,43 @@ class Smith:
 
     ##### Add a point in a smith chart ###############################################################
 
+    def addgammapoint(self, Gamma, label='', ori='NE', **kwargs):
+        '''
+        Adds a marker at the given reflection coefficient
+        the label can be set
+        :param Z:
+        :param label: Label for the Marker
+        :param ori: Location of the Label in compass direction, NE,NW,SE, or SW
+        :param kwargs: Setting other attributes of point
+        :return:
+        '''
+        g = Gamma
+        lab = label
+        if not "color" in kwargs:  kwargs['color'] = 'k'
+        if not "lw" in kwargs:  kwargs['lw'] = 1
+        if not "alpha" in kwargs:  kwargs['alpha'] = 0.9
+        patch = plt.Circle((real(g), imag(g)), 0.012, **kwargs)
+        self.ax.add_patch(patch)
+        orix, oriy = (0, 0)
+        if ori == 'NE': orix = 1; oriy = 1
+        if ori == 'NW': orix = -4.3; oriy = 1
+        if ori == 'SE': orix = 1; oriy = -1.6
+        if ori == 'SW': orix = -4.3; oriy = -1.6
+        self.ax.annotate(lab, xy=(real(g), imag(g)), xycoords='data', fontsize=12 * self.fontscale,
+                         xytext=(30 * orix * self.fontscale, 30 * oriy * self.fontscale), textcoords='offset points',
+                         bbox=dict(boxstyle="round", fc="0.8", alpha=1.0),
+                         arrowprops=dict(arrowstyle="->", connectionstyle="angle,angleA=0,angleB=90,rad=20"), )
+
     def addpoint(self, Z, label='Z', ori='NE', **kwargs):
+        '''
+        Adds a marker at the given impedance
+        the label includes the Z and Y Value at the point normalized
+        :param Z:
+        :param label: Label for the Impedance
+        :param ori: Location of the Label in compass direction, NE,NW,SE, or SW
+        :param kwargs: Setting other attributes of point
+        :return:
+        '''
         g = gam(Z, self.Z0)
         if not "color" in kwargs:  kwargs['color'] = 'k'
         if not "lw" in kwargs:  kwargs['lw'] = 1
@@ -498,8 +534,8 @@ class Smith:
                          bbox=dict(boxstyle="round", fc="0.8", alpha=1.0),
                          arrowprops=dict(arrowstyle="->", connectionstyle="angle,angleA=0,angleB=90,rad=20"), )
 
-    ##### Add a Starting Point    ###############################################################
 
+    ##### Add a Starting Point    ###############################################################
     def addstart(self, Z1, **kwargs):
         if not "color" in kwargs: kwargs['color'] = 'k'
         if not "lw" in kwargs: kwargs['lw'] = 3
