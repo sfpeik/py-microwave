@@ -1,7 +1,7 @@
 ! 
 ! Export of Touchstone Data from mwave.py Module Author: S.F. Peik 
 ! 
-!Touchstone file created by python mwave module 
+!Touchstone file created by python mwave 
 !---------------------------------------------------------------------
 ! symbol freq-unit parameter-type data-format keyword impedance-ohm
 #        HZ        S              RI          R       50
