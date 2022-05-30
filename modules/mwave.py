@@ -858,7 +858,6 @@ def mdifbiaslist(filename):
         if 'VAR Vc' in line[i]:
             if not 'Ic' in line[i+1]: 
                 raise valueerror('No Vc,Ic VAR defined in mdif')
-            print(line[i+1])
             valueV = re.findall("\d+\.\d+", line[i])[0]
             valueI = line[i+1].rstrip().rstrip("mA").lstrip("VAR Ic=")
             biaslist.append((float(valueV),float(valueI)))
