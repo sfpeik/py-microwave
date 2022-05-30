@@ -882,7 +882,7 @@ def mdifsparlist(filename,Vc,Ic):
                 valueI = float(re.findall("\d+\.\d+", line[i+1])[0])
             except: 
                 valueI = float(re.findall("\d+\\d+", line[i+1])[0])
-            if valueV == Vc and valueI == Ic:
+            if float(valueV) == float(Vc) and float(valueI) == float(Ic):
                 #print("Biaspoint found", valueV, valueI)
                 if not ('BEGIN ACDATA' in line[i+2]): raise ValueError('MDIF Wrong Format no BEGIN ACDATA found ')
                 i +=3
@@ -944,8 +944,10 @@ def mdifnoiselist(filename,Vc,Ic):
     while i< len(line):
         if 'VAR Vc' in line[i]:
             valueV = float(re.findall("\d+\.\d+", line[i])[0])
-            valueI = float(re.findall("\d+\.\d+", line[i+1])[0])
-            if valueV == Vc and valueI == Ic:
+            valueI = line[i + 1].rstrip().rstrip("mA").lstrip("VAR Ic=")
+
+            if float(valueV) == float(Vc) and float(valueI) == float(Ic):
+                #print(line[i])
                 #print("Biaspoint found", valueV, valueI)
                 i+=  2
                 while i< len(line):
