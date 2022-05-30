@@ -858,8 +858,9 @@ def mdifbiaslist(filename):
         if 'VAR Vc' in line[i]:
             if not 'Ic' in line[i+1]: 
                 raise valueerror('No Vc,Ic VAR defined in mdif')
+            print(line[i+1])
             valueV = re.findall("\d+\.\d+", line[i])[0]
-            valueI = re.findall("\d+\.\d+", line[i+1])[0]
+            valueI = line[i+1].rstrip().rstrip("mA").lstrip("VAR Ic=")
             biaslist.append((float(valueV),float(valueI)))
             i += 1   
         i += 1
@@ -930,6 +931,13 @@ def mdifsparlist(filename,Vc,Ic):
 
 ###### Load MDIF Noise #############################################
 def mdifnoiselist(filename,Vc,Ic):
+    """
+    reads and returns the frequency list of noise paramters
+    :param filename: filename of mdif file (str)
+    :param Vc: Bias Voltage (float)
+    :param Ic: Bias Current (float)
+    :return: flist, Nfminlist, Gamoptlist, Rnlist
+    """
     f=open(filename,'r')
     line = f.readlines()
     i=0
