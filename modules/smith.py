@@ -1,4 +1,3 @@
-###########################################
 # Plot a smith chart in a given (ax) plot
 ###########################################
 """This module allows the generation of Smith charts"""
@@ -491,13 +490,14 @@ class Smith:
         self.ax.add_patch(patch)
         orix, oriy = (0, 0)
         if ori == 'NE': orix = 1; oriy = 1
-        if ori == 'NW': orix = -4.3; oriy = 1
+        if ori == 'NW': orix = -2.3; oriy = 1
         if ori == 'SE': orix = 1; oriy = -1.6
-        if ori == 'SW': orix = -4.3; oriy = -1.6
+        if ori == 'SW': orix = -2.3; oriy = -1.6
         self.ax.annotate(lab, xy=(real(g), imag(g)), xycoords='data', fontsize=12 * self.fontscale,
                          xytext=(30 * orix * self.fontscale, 30 * oriy * self.fontscale), textcoords='offset points',
                          bbox=dict(boxstyle="round", fc="0.8", alpha=1.0),
                          arrowprops=dict(arrowstyle="->", connectionstyle="angle,angleA=0,angleB=90,rad=20"), )
+
 
     def addpoint(self, Z, label='Z', ori='NE', **kwargs):
         '''
@@ -547,7 +547,7 @@ class Smith:
         self.appendelement('Start', Z1, Znew)
         return Znew
 
-    def addinput(self, label):
+    def addinput(self, label=""):
         self.appendelement('inputport',1,1)
         return
 
