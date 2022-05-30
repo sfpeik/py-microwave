@@ -25,8 +25,8 @@ class Circulator(elm.Element):
         self.anchors['p1'] = (-off2,off2)
         self.anchors['p2'] = (off2,off2)
         self.anchors['p3'] = (0, -radius*leadextendfactor)
-        self.params['drop'] = [off2,off2]
-        self.params['pick'] = [off2,off2]
+        self.params['drop'] = (off2,off2)
+        self.params['pick'] = (off2,off2)
         self.params['lblloc'] = 'lft'
 
 class Isolator(elm.Element):
@@ -47,7 +47,7 @@ class Isolator(elm.Element):
         self.segments.append(SegmentArrow((0.9, 0), (2.3, 0), lw=2.5, headwidth=0.4, headlength=0.4))
         self.anchors['in'] = (0, 0)
         self.anchors['out'] = (3, 0)
-        self.params['drop'] = [3, 0]
+        self.params['drop'] = (3, 0)
 
 class Port(elm.Element):
     def __init__(self, direction='left', *d, **kwargs):
@@ -93,15 +93,15 @@ class Wilkinson(elm.Element):
         self.segments.append(Segment([(size * 1.8,  0.4 * size), (size * 1.8, -0.4 *  size)], lw=2))
         self.segments.append(Segment([(size * 2.2, 0.4 * size), (size * 2.2, -0.4 * size)], lw=2))
         if showbox:
-            self.segments.append(Segment([(0, 1.5 * size), (size * 3, 1.5 * size)], lw=1))
-            self.segments.append(Segment([(0, -1.5 * size), (size * 3, -1.5 * size)], lw=1))
-            self.segments.append(Segment([(0, 1.5 * size), (0 , -1.5 * size)], lw=1))
-            self.segments.append(Segment([(3, 1.5 * size), (3 , -1.5 * size)], lw=1))
+            self.segments.append(Segment([(-0.1, 1.5 * size), (size * 3+0.1, 1.5 * size)], lw=1))
+            self.segments.append(Segment([(-0.1, -1.5 * size), (size * 3+0.1, -1.5 * size)], lw=1))
+            self.segments.append(Segment([(-0.1, 1.5 * size), (-0.1 , -1.5 * size)], lw=1))
+            self.segments.append(Segment([(3.1, 1.5 * size), (3.1 , -1.5 * size)], lw=1))
         self.anchors['in'] = (0,0)
         self.anchors['out1'] = (size * 3, size)
         self.anchors['out2'] = (size * 3, -size)
-        self.params['drop'] = [size * 3, size]
-        self.params['pick'] = [size * 3, size]
+        self.params['drop'] = (size * 3, size)
+        self.params['pick'] = (size * 3, size)
 
 class Coupler(elm.Element):
     def __init__(self, showbox = True, *d, **kwargs):
@@ -122,17 +122,17 @@ class Coupler(elm.Element):
         self.segments.append(SegmentArrow((size * 2.6, -1.8 * size), (0.4, -0.2), lw=2))
         self.segments.append(SegmentArrow((size * 2.6, -0.2 * size), (0.4, -1.8), lw=2))
         if showbox:
-            self.segments.append(Segment([(0, 0.5 * size), (size * 3, 0.5 * size)], lw=1))
-            self.segments.append(Segment([(0, -2.5 * size), (size * 3, -2.5 * size)], lw=1))
-            self.segments.append(Segment([(0, 0.5 * size), (0 , -2.5 * size)], lw=1))
-            self.segments.append(Segment([(3, 0.5 * size), (3 , -2.5 * size)], lw=1))
+            self.segments.append(Segment([(-0.1, 0.5 * size), (size * 3+0.1, 0.5 * size)], lw=1))
+            self.segments.append(Segment([(-0.1, -2.5 * size), (size * 3+0.1, -2.5 * size)], lw=1))
+            self.segments.append(Segment([(-0.1, 0.5 * size), (-0.1 , -2.5 * size)], lw=1))
+            self.segments.append(Segment([(3.1, 0.5 * size), (3.1 , -2.5 * size)], lw=1))
 
         self.anchors['p1'] = (0, 0)
         self.anchors['p2'] = (size*3, 0)
         self.anchors['p3'] = (size*3, -size*2)
         self.anchors['p4'] = (0, -size*2)
-        self.params['drop'] = [size * 3, 0]
-        self.params['pick'] = [size * 3, 0]
+        self.params['drop'] = (size * 3, 0)
+        self.params['pick'] = (size * 3, 0)
 
 if __name__ == "__main__":
     import schemdraw as schem

@@ -66,6 +66,9 @@ def reflcoeff(Z, Z0=50):
     """
     return (Z - Z0) / (Z + Z0)
 
+hide = False
+def hidesolution(status= True):
+    hide = status
 
 ### convert mag, phase into complex number
 ### phase is given in degrees
@@ -764,24 +767,17 @@ class Transline(e.Element2Term):
         lw = 2.8
         lh = 0.25
         self.segments.append(Segment([[0, 0],[0,lh/2],[lw,lh/2],[lw,-lh/2], [0,-lh/2],[0,0],[lw,0]], fill= 'black'))
-   
 
-### Def new element Tline
 
-llen = 4
+class Tstub(e.Element2Term):
 
-pers = 0.9
-TSTUB = {
-    'name': 'TSTUB',
-    'paths': [array([[0, 0], [0.2, 0]])],
-    'shapes': [{'shape': 'poly',
-                'xy': array([[0, 0.2], [-llen / 2, -llen * pers + 0.2], [-llen / 2, -llen * pers - 0.2], [0, -0.2]]),
-                'fill': True},
-               {'shape': 'poly',
-                'xy': array([[0, -3 + 0.2], [-llen / 2, -3 - llen * pers + 0.2], [-llen / 2, -3 - llen * pers - 0.2],
-                             [0, -3 - 0.2]]),
-                'fill': True}]
-}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        lw = 2.8
+        lh = 0.25
+        perspec = 2.0
+        self.segments.append(
+            Segment([[0, 0], [0, lh / 2], [lw, lh / 2 + perspec], [lw, -lh / 2 + perspec], [0, -lh / 2], [0, 0], [lw, 0]], fill='black'))
 
 
 def startR(d, lab='', lsh = 0.5):
@@ -850,6 +846,7 @@ def shuntR(d, lab='', lsh=1):
     d.add(e.LINE, l=lsh, d='left')
     # d.add(e.DOT)
     d.pop()
+
     d.add(e.LINE, l=lsh, d='left')
     # d.add(e.DOT)
 
@@ -888,6 +885,7 @@ def shuntL(d, lab='', lsh = 1):
 
 def tline(d, lab="$Z_0$"):
     d.add(e.LINE, l=0.5, d='left')
+    if hide: lab = "$Z_0$"
     d.add(Transline, l=2, d='left', label=lab)
     d.add(e.LINE, l=0.5, d='left')
     d.push()
@@ -900,18 +898,21 @@ def tline(d, lab="$Z_0$"):
 
 
 def tstub(d, lab="$Z_0$", lab2=''):
-    # d.add(e.LINE,l=1.5 , d='right')
+    d.add(e.LINE,l=0.9 , d='left')
     d.push()
     d.push()
-    d.add(TSTUB, flip=True, d='left')
+    if hide: lab = "     $Z_0$"; lab2 = ""
+    d += Tstub().right().label(lab+' '+lab2, ofst=(-1.1,-1.6),rotate=35)
     d.pop()
     d.add(e.GAP, label='',d='down')
-    d.add(e.LINE, d='left')
+    d.push()
+    d.add(e.LINE,l=0.9, d='right')
     d.pop()
-    d.add(e.LINE, d='left')
-    d.add(e.LABEL, label=lab, lblofst=[-2, 6])
-    d.add(e.LABEL, label=lab2, lblofst=[-2, 6.7])
-
+    d.push()
+    d.add(Tstub, d='right')
+    d.pop()
+    d.add(e.LINE,l=0.5, d='left')
+    d.pop()
 
 def inputport(d, lab=""):
     d.push()
