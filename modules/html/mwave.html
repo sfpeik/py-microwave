@@ -1,0 +1,3574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>mwave API documentation</title>
+<meta name="description" content="**Module with useful Microwave methods and definitions** …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>mwave</code></h1>
+</header>
+<section id="section-intro">
+<p><strong>Module with useful Microwave methods and definitions</strong></p>
+<p>:Author: S.F. Peik</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">##### use by:
+## import sys
+## sys.path.append(&#39;/home/speik/soridat/pythonlib&#39;)
+## import mwave as mw
+##
+### Uses Napoleon extension for Docstring generation, see https://sphinxcontrib-napoleon.readthedocs.io/en/latest/
+
+&#39;&#39;&#39;
+  **Module with useful Microwave methods and definitions**
+  
+  :Author: S.F. Peik
+
+&#39;&#39;&#39;
+
+
+__license__ = &#34;Soeren Peik&#34;
+__revision__ = &#34; 2021-April &#34;
+__docformat__ = &#39;reStructuredText&#39;
+__version__ = &#34;1.0.1&#34;
+
+
+from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
+    shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions
+import matplotlib.pyplot as plt
+import sys
+
+try:
+    import smith as smi
+except:
+    print(&#34;Smith Module not found, doing without&#34;)
+
+from scipy.optimize import fsolve, brentq
+
+#### some constants
+
+#: Permeability of free space
+mu0  = 4*pi*1e-7   
+#: velocity of light
+c    = 299792458.0  
+#: Permittivity of free space
+eps0 = 1/mu0/c/c    
+#: Boltzman Constant
+k    = 1.3806488e-23 
+#: Free Space impedance
+eta0 = sqrt(mu0/eps0) 
+
+def hello():
+    print(&#34;Here is py-microwave Version:&#34;, __version__)
+########################################################################
+def coth(x):
+    return 1/tanh(x)
+    
+########################################################################    
+def lineinputimpedance(Z0,Zl,betal):
+    r&#39;&#39;&#39;Calculates input impedance of a terminated line
+    
+    Parameters
+    ----------
+    Z0 : complex 
+        Line impedance in Ohm (type complex)
+    Zl : complex
+        Load impedance in Ohm (type complex)
+    betal : float
+        Electrical length :math:`\beta l` in radians (type float)
+    
+    Returns 
+    -------
+    complex
+        Input impedance in Ohm 
+    
+    Examples
+    --------
+    &gt;&gt;&gt; Zin = lineinputimpedance(50,100,3.14/2)
+    &gt;&gt;&gt; around(Zin)
+    (25-0j)
+    &#39;&#39;&#39;
+    
+    Zin = Z0 * (Zl+1j*Z0*tan(betal)) / (Z0+1j*Zl*tan(betal))
+    return Zin
+
+###########################################################################
+def msimpedance(w,h,er):
+  &#39;&#39;&#39;
+    Calculates microstrip line impedance :math:`Z_0` and :math:`\epsilon_{eff}` from Wheeler formula 
+    
+    Parameters
+    ----------
+    
+    w : float
+        width of Microstrip-line 
+    h : float
+        height of substrate 
+    er : float
+        Epsilon relative of substrate
+    
+    Returns
+    -------
+    
+    tuple
+        Z0, eps_eff 
+     
+    Examples
+    --------    
+    
+    &gt;&gt;&gt; msimpedance(1.8,0.83,3.55)
+    (51.129452787061204, 2.773818757727919)
+  &#39;&#39;&#39;
+
+  eta0=377
+  if(w/h&lt;=1):
+      F=1/sqrt(1+12*h/w)+0.004*(1-w/h)**2
+  else:
+      F=1/sqrt(1+12*h/w)
+  e_eff=0.5*(er+1+(er-1)*F)
+
+  if(w/h&lt;=1): 
+      Z0=eta0/sqrt(e_eff)*1/2/pi*log(8*h/w+0.25*w/h)
+  else:
+      Z0=eta0/sqrt(e_eff)*1/(w/h+2.46-0.49*h/w+(1-h/w)**6)
+  return Z0,e_eff
+
+###########################################################################
+def msdimension(Z0wanted,elen,f,h,epsr):
+
+    r&#39;&#39;&#39;
+    Calculates microstrip line dimensions from the impedance, elec. length
+    
+    Note
+    ----
+    This function uses an optimizer to find the dimensions
+    
+    Parameters
+    -----------
+    
+    Z0wanted : float
+        Impedance of MS-line 
+    elen : float
+        elec length of line in :math:`\lambda` 
+    f : float
+        frequency 
+    h : float
+        height of substrate in mm 
+    epsr : float
+        Epsilon relative of substrate 
+        
+    Returns  
+    --------
+    
+    tuple
+        w,l, epseff 
+    
+    
+    Examples
+    --------
+    Here is an Example
+    
+    &gt;&gt;&gt; msdimension(50,1/4.,2e9,0.83,3.55)
+    (1.867, 0.02248463090701959, 2.7815765073092837)
+    &gt;&gt;&gt; msdimension(2,1/4.,2e9,0.83,3.55)
+    Traceback (most recent call last):
+        ...  
+    ValueError: could not find solution in msdimension for 2.000000 Ohms
+    &#39;&#39;&#39;
+
+    lam0=3e8/f
+    imp= lambda w:  msimpedance(w,h,epsr)[0]-Z0wanted
+    try:
+        result = brentq(imp,0.002*h,20.0*h) 
+    except:
+        raise ValueError(&#39;could not find solution in msdimension for %f Ohms&#39; % (Z0wanted))
+    w=round(result,4)
+    Z0,epseff=msimpedance(w,h,epsr)
+    lamms=lam0/sqrt(epseff)
+    l = elen * lamms
+    return (w,l,epseff)
+ 
+########################################################################   
+def coupledlineCaps(w,h,s,epsr):
+    &#39;&#39;&#39;
+    used for the calculation of msCoupledLineImp
+    &#39;&#39;&#39;
+    
+    Zc,epseff=msimpedance(w,h,epsr)
+    #print(Zc,epseff)
+    Cp   = eps0*epsr*w/h             # 4.24
+    Cf   = 1/2. * (sqrt(epseff)/(c*Zc) - Cp)  # 4.26
+    A =exp(-0.1*exp(2.33-2.53*w/h))     # 4.xx
+    Cfpr = Cf / ( 1+A*(h/s) *tanh(8*s/h))   # 4.26
+
+    Cgd = eps0*epsr/pi * log( coth(pi/4*s/h) ) + 0.65* Cf * (0.02*sqrt(epsr)/(s/h) + 1 - 1/epsr**2)
+
+    k = (s/h) / (s/h + 2*w/h)
+    
+    kpr = sqrt(1-k**2)
+
+    if     0&lt;k**2 and k**2&lt;0.5:
+        K_to_K = 1/pi* log(2* (1+sqrt(kpr)) / (1-sqrt(kpr)) ) 
+    elif 0.5&lt;k**2 and k**2&lt;1:
+        K_to_K = pi / log(2* (1+sqrt(k)) / (1-sqrt(k)) ) 
+    else:
+        print(&#34;Outside Range&#34;)
+        exit(1)
+
+    Cga = eps0*K_to_K
+
+    Ce = Cp + Cf + Cfpr
+    Co = Cp + Cf + Cgd + Cga
+    return Ce,Co
+
+########################################################################
+
+def msCoupledLineImp(w,h,s,epsr):
+    &#39;&#39;&#39;
+    Calculates microstrip even and odd impedances of a coupled microstrip line 
+    
+    Parameters
+    ----------
+    
+    w : float
+        width of Microstrip-line 
+    h : float
+        height of substrate 
+    s : float
+        gap between lines         
+    er : float
+        Epsilon relative of substrate
+    
+    Returns
+    -------
+    
+    (float, float)
+        even and odd impedance of coupled lines
+     
+    Examples
+    --------    
+    
+    &gt;&gt;&gt; msCoupledLineImp(1.5,0.5,0.2,2.56)
+    (55.6657732006762, 36.95927306032294)
+    &#39;&#39;&#39;
+    Ce,Co = coupledlineCaps(w,h,s,epsr)
+    Cae,Cao = coupledlineCaps(w,h,s,1.0)
+    Ze = (c * sqrt(Cae*Ce))**-1  # 4.29
+    Zo = (c * sqrt(Cao*Co))**-1  # 4.30
+    return Ze,Zo
+
+########################################################################
+
+def msVia(h,D):
+    &#39;&#39;&#39;
+    Calculates inductance of a MS Via
+
+    Parameters
+    ----------
+
+    h : float
+        height of substrate
+    D : float
+        Diameter of via
+
+    Returns
+    -------
+
+    float
+        Inductance of via in Henry
+
+    Examples
+    --------
+
+    &gt;&gt;&gt; msVia(1.5e-3,0.9e-3)
+    2.408551487285845e-10
+    &#39;&#39;&#39;
+
+    r = D/2
+    L = mu0/2/pi * ( h*log( (h + sqrt(r*r+h*h)) / r )  + 3/2 * (r-sqrt(r*r+h*h)) )
+    return L
+
+
+### ABCD Matrix for Series Element #####################################
+def ABCDseries(Z):
+    r&#39;&#39;&#39;
+    Creates an ABCD matrix (2x2 Array) for a series impedance element
+    
+    :math:`\left[ \begin{matrix} 1 &amp; Z \\ 0 &amp; 1 \end{matrix} \right]`
+    
+    Supports array type Z
+
+    Examples
+    --------
+    
+    &gt;&gt;&gt; ABCDseries(100.0)
+    array([[  1., 100.],
+           [  0.,   1.]])
+    &gt;&gt;&gt; Z = arange(10,40,10)
+    &gt;&gt;&gt; ABCDseries(Z)
+    array([[[ 1, 10],
+            [ 0,  1]],
+    &lt;BLANKLINE&gt;
+           [[ 1, 20],
+            [ 0,  1]],
+    &lt;BLANKLINE&gt;
+           [[ 1, 30],
+            [ 0,  1]]])
+    &#39;&#39;&#39;
+    Z = atleast_1d(Z)
+    x = array([[ones_like(Z),Z],[zeros_like(Z),ones_like(Z)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)
+
+### ABCD Matrix for Shunt Element #########################
+def ABCDshunt(Y):
+    Y = atleast_1d(Y)
+    x = array([[ones_like(Y),zeros_like(Y)],[Y,ones_like(Y)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)
+
+### ABCD Matrix for Shunt Element #########################
+def ABCDinverse(ABCD):
+    x = []
+    for AA in ABCD:
+        x.append( matrix(AA)**-1 )
+    return squeeze(x)
+
+### ABCD Matrix for Line Element #########################
+def ABCDline(beta, length,Z0,alpha=0.0):
+    r&#39;&#39;&#39;
+    Creates an ABCD matrix (2x2 Array) for an inserted line  element
+       
+    Parameters
+    ----------
+    
+    beta : float
+        phase constant at operating freq 
+    l : float
+        length in meter 
+    Z0 : float
+        line impedance       
+    alpha : float
+        loss in Np
+    
+    Returns
+    -------
+    
+    2x2 matrix
+        ABCD matrix at freq point beta
+     
+    
+    Supports array type Z
+
+    Examples
+    --------
+    
+    &gt;&gt;&gt; f = 2e9
+    &gt;&gt;&gt; lam = c/f
+    &gt;&gt;&gt; beta = 2*pi/lam
+    &gt;&gt;&gt; ABCDline(beta,0.1,50.0)
+    array([[-0.49748657-0.00000000e+00j,  0.        -4.33735840e+01j],
+           [ 0.        -1.73494336e-02j, -0.49748657-0.00000000e+00j]])
+
+    &#39;&#39;&#39;
+    beta = atleast_1d(beta)
+    alpha = atleast_1d(alpha)
+    gammal = (alpha+1j*beta)*length
+    x = array([[cosh(gammal), Z0*sinh(gammal)],[ 1./Z0*sinh(gammal), cosh(gammal)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)
+
+############################################################
+def cascade(ABCDlist):
+    &#39;&#39;&#39;
+    Cascades a list of 2x2 matrices, usually ABCD matrices
+    
+    Examples
+    --------
+    &gt;&gt;&gt; ABCDlist = []
+    &gt;&gt;&gt; ABCDlist.append( ABCDseries(100) )
+    &gt;&gt;&gt; ABCDlist.append( ABCDshunt(20) )
+    &gt;&gt;&gt; ABCDlist.append( ABCDseries(50j) )
+    &gt;&gt;&gt; cascade(ABCDlist)
+    array([[2.001e+03     +0.j, 1.000e+02+100050.j],
+           [2.000e+01     +0.j, 1.000e+00  +1000.j]])
+    
+    &#39;&#39;&#39;
+
+    try:
+      if ndim(ABCDlist) == 3:
+          fpoints = 0
+          blocks,two,two = shape(ABCDlist)
+          A = identity(2)
+      else:
+          blocks,fpoints,two,two = shape(ABCDlist)
+          A = broadcast_to(identity(2),(fpoints,2,2))
+      for ABCD in ABCDlist:
+          A = A @ ABCD
+      #print(&#34;Cascaded &#34;,blocks,&#34; ABCD-Blocks&#34;)
+      return A
+    except: 
+        print(&#34;in cascade: array not of shape n_blocks,freqpoints,2,2&#34;)
+
+
+
+############################################################
+def ABCDJInverter(J):
+    r&#39;&#39;&#39;
+    Create the ABCD Matrix of a J inverter with J as input
+    
+    :math:`\left[ \begin{matrix} 0 &amp; j/J \\ j\cdot J &amp; 0 \end{matrix} \right]`
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; ABCDJInverter(5)
+    array([[0.+0.j , 0.+0.2j],
+           [0.+5.j , 0.+0.j ]])
+    &#39;&#39;&#39;
+    J = atleast_1d(J)
+    x = array([[zeros_like(J),-1/(1j*J)],[1j*J,zeros_like(J)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)
+
+########################################################################
+def ABCDKInverter(K):
+    r&#39;&#39;&#39;
+    Create the ABCD Matrix of a K inverter with K as input
+    
+    :math:`\left[ \begin{matrix} 0 &amp; j\cdot K \\ j / K &amp; 0 \end{matrix} \right]`
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; ABCDKInverter(0.2)
+    array([[0.+0.j , 0.+0.2j],
+           [0.+5.j , 0.+0.j ]])
+    &#39;&#39;&#39;
+    K = atleast_1d(K)
+    x = array([[zeros_like(K),1j*K],[-1/(1j*K),zeros_like(K)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)
+
+
+########################################################################
+def ABCDtoS(ABCD,Z0=50):
+    if shape(ABCD) == (2,2):
+        ABCD = array([ABCD])
+    A=ABCD[:,0,0]
+    B=ABCD[:,0,1]
+    C=ABCD[:,1,0]
+    D=ABCD[:,1,1]
+    S11=(A+B/Z0-C*Z0-D)/(A+B/Z0+C*Z0+D)
+    S12=2*(A*D-B*C)/(A+B/Z0+C*Z0+D)
+    S21=2/(A+B/Z0+C*Z0+D)
+    S22=(-A+B/Z0-C*Z0+D)/(A+B/Z0+C*Z0+D)
+    S=array([[S11,S12],[S21,S22]])
+    S=transpose(S,(2,0,1))
+    return squeeze(S)
+
+############################################################
+def Sinterpolate(fnewlist, flist, S):
+    &#39;&#39;&#39;
+    
+    &gt;&gt;&gt; flist = array([1.0e9,1.5e9,2.0e9])
+    &gt;&gt;&gt; fnewlist = arange(1.0e9,2.0e9,0.1e9)
+    &gt;&gt;&gt; ABCD = ABCDseries(2j*pi*flist*10e-9)  # create an array of ABCD matrices for a 10nH inductror
+    &gt;&gt;&gt; S = ABCDtoS(ABCD,50.0)
+    &gt;&gt;&gt; Sinterpolate(fnewlist, flist, S)
+    array([[[0.2830432 +0.45047724j, 0.7169568 -0.45047724j],
+            [0.7169568 -0.45047724j, 0.2830432 +0.45047724j]],
+    &lt;BLANKLINE&gt;
+           [[0.32051719+0.46020656j, 0.67948281-0.46020656j],
+            [0.67948281-0.46020656j, 0.32051719+0.46020656j]],
+    &lt;BLANKLINE&gt;
+           [[0.35799118+0.46993589j, 0.64200882-0.46993589j],
+            [0.64200882-0.46993589j, 0.35799118+0.46993589j]],
+    &lt;BLANKLINE&gt;
+           [[0.39546517+0.47966521j, 0.60453483-0.47966521j],
+            [0.60453483-0.47966521j, 0.39546517+0.47966521j]],
+    &lt;BLANKLINE&gt;
+           [[0.43293916+0.48939453j, 0.56706084-0.48939453j],
+            [0.56706084-0.48939453j, 0.43293916+0.48939453j]],
+    &lt;BLANKLINE&gt;
+           [[0.47041315+0.49912385j, 0.52958685-0.49912385j],
+            [0.52958685-0.49912385j, 0.47041315+0.49912385j]],
+    &lt;BLANKLINE&gt;
+           [[0.49878519+0.49674541j, 0.50121481-0.49674541j],
+            [0.50121481-0.49674541j, 0.49878519+0.49674541j]],
+    &lt;BLANKLINE&gt;
+           [[0.52715723+0.49436697j, 0.47284277-0.49436697j],
+            [0.47284277-0.49436697j, 0.52715723+0.49436697j]],
+    &lt;BLANKLINE&gt;
+           [[0.55552928+0.49198854j, 0.44447072-0.49198854j],
+            [0.44447072-0.49198854j, 0.55552928+0.49198854j]],
+    &lt;BLANKLINE&gt;
+           [[0.58390132+0.4896101j , 0.41609868-0.4896101j ],
+            [0.41609868-0.4896101j , 0.58390132+0.4896101j ]]])
+    &#39;&#39;&#39;   
+    S11=S[:,0,0]
+    S12=S[:,0,1]
+    S21=S[:,1,0]
+    S22=S[:,1,1]
+    
+    S11i = interp(fnewlist, flist, S11)
+    S12i = interp(fnewlist, flist, S12)
+    S21i = interp(fnewlist, flist, S21)
+    S22i = interp(fnewlist, flist, S22)
+    Si=array([[S11i,S12i],[S21i,S22i]])
+    Si=transpose(Si,(2,0,1))
+    return squeeze(Si)
+    
+
+############################################################
+def Svalue(f,flist,S):
+    &#39;&#39;&#39;
+    interpolates the S-matrix for a given freq piont
+    
+    f: freq. point to be interpolated
+    flist: array of freq points (float)
+    S: array of (2,2) matrices same size as flist
+    return:
+    S-matrix for point f
+    &#39;&#39;&#39;
+    S11=S[:,0,0];S12=S[:,0,1];S21=S[:,1,0];S22=S[:,1,1]
+    if len(flist) != len(S11):
+        raise ValueError(&#34;Diffrent Length of f and S&#34;)
+    Si = zeros((2,2),dtype=complex)
+    Si[0,0] = interp(f,flist,S11)
+    Si[0,1] = interp(f,flist,S12)
+    Si[1,0] = interp(f,flist,S21)
+    Si[1,1] = interp(f,flist,S22)
+    return Si
+
+############################################################
+def StoABCD(S,Z0=50):
+    if shape(S) == (2,2):
+        S = array([S])
+   
+    S11=S[:,0,0]
+    S12=S[:,0,1]
+    S21=S[:,1,0]
+    S22=S[:,1,1]
+    A =      ((1+S11)*(1-S22)+S12*S21) / 2/S21
+    B = Z0*  ((1+S11)*(1+S22)-S12*S21) / 2/S21
+    C = 1/Z0*((1-S11)*(1-S22)-S12*S21) / 2/S21
+    D =      ((1-S11)*(1+S22)+S12*S21) / 2/S21
+    ABCD=array([[A,B],[C,D]])
+    ABCD=transpose(ABCD,(2,0,1))
+    return squeeze(ABCD)
+
+#############################################################
+def ZtoS(Z,Z0=50):
+    Z11=Z[0,0]
+    Z12=Z[0,1]
+    Z21=Z[1,0]
+    Z22=Z[1,1]
+    S11 = ( (Z11-Z0)*(Z22+Z0)-Z12*Z21 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S12 = ( 2*Z12*Z0 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S21 = ( 2*Z21*Z0 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S22 = ( (Z11+Z0)*(Z22-Z0)-Z12*Z21 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S=matrix([[S11,S12],[S21,S22]])
+    return S
+
+
+def ABCDtoTransferFct(ABCD,Zs=0,Zl=1e99):
+    &#39;&#39;&#39;
+    To get the transfer function from the ABCD parameters, 
+    we can use the equation shown below. In this equation, 
+    we consider the impedance from the source side of the network (S) 
+    and the load side (L). If the network is terminated to the characteristic 
+    impedance on each side, then the two values are equal to the characteristic impedance Z.
+    see: https://resources.system-analysis.cadence.com/blog/2020-how-to-calculate-a-transfer-function-from-s-parameters
+    
+    Parameters
+    ----------
+    
+    ABCD : array 2x2xsize
+        phase constant at operating freq 
+    Zs : complex
+        source impedance
+    Zl : complex
+        load impedance      
+    
+    Returns
+    -------
+    
+    complex 
+        voltage transfer function H(f) = Vl/Vs
+    
+    &#39;&#39;&#39;
+    if shape(ABCD) == (2,2):
+        ABCD = array([ABCD])
+    A=ABCD[:,0,0]
+    B=ABCD[:,0,1]
+    C=ABCD[:,1,0]
+    D=ABCD[:,1,1]    
+    H = Zl / (A*Zl + B + C*Zs*Zl + D*Zs)
+    return squeeze(H)
+
+################################################################################
+################################################################################
+##    AMP DESIGN 
+################################################################################
+################################################################################
+
+def latexMatrix(a,rnd=None):
+    &#34;&#34;&#34;Returns a LaTeX bmatrix
+
+    :a: numpy array
+    :rnd:  rounding digitrs, int
+    :returns: LaTeX bmatrix as a string
+    &#34;&#34;&#34;
+    set_printoptions(suppress=True)
+    if rnd is not None:
+        a = around(a,rnd)
+    if len(a.shape) &gt; 2:
+        raise ValueError(&#39;bmatrix can at most display two dimensions&#39;)
+    lines = str(a).replace(&#39;[&#39;, &#39;&#39;).replace(&#39;]&#39;, &#39;&#39;).replace(&#39;j&#39;,&#39;j,&#39;).replace(&#39;+0.j&#39;,&#39;&#39;).replace(&#39;. &#39;,&#39;&#39;).replace(&#39; 0 &#39;,&#39;&#39;).replace(&#39; &#39;,&#39;&#39;).splitlines()
+    rv = [r&#39;\begin{bmatrix}&#39;]
+    rv += [&#39;  &#39; + &#39; &amp; &#39;.join(l.rstrip(&#39;,&#39;).split(&#39;,&#39;)) + r&#39;\\&#39; for l in lines]
+    rv +=  [r&#39;\end{bmatrix}&#39;]
+
+    rv =  &#39;\n&#39;.join(rv)
+    rv = rv.replace(&#39; &#39;,&#39;&#39;)
+    return rv
+
+### Return a complex type from a number given in magitude and phase (Degrees)
+def magphase(A,phi):
+    &#39;&#39;&#39;Returns a complex number from  magnitude and phase (in degrees)
+    &#39;&#39;&#39;
+    return A*exp(1j*phi*pi/180.0)
+
+### Return a string formatted from a complex in the form Magn /__ Phase deg
+
+################################################################################
+def magphase_str(c):
+    &#39;&#39;&#39; Returns a nicely formatted string to print complex numbers in ampl. and phase
+    &#39;&#39;&#39;
+    return u&#39;{0:6.3f}\u2220{1:5.1f}\u00B0&#39;.format(abs(c),angle(c)*180/pi)
+    
+################################################################################    
+def magphase_latex(c):
+   return r&#39;{0:6.3f}\angle {1:5.1f}^\circ&#39;.format(abs(c),angle(c)*180/pi)     
+
+################################################################################
+def magphase_tuple(c):
+    &#39;&#39;&#39; Returns a tuple with (magn,phase) to print complex numbers in ampl. and phase
+    &#39;&#39;&#39;
+    return ( abs(c) , angle(c)*180/pi )
+    
+    
+def polar(mag,ang,isDegrees=True):
+    &#39;&#39;&#39;
+    takes a complex number in polar and returns the complex number
+
+    &#39;&#39;&#39;
+    fac = 1
+    if isDegrees:
+        fac = pi/180
+    return mag*exp(1j*ang*fac)
+
+################################################################################
+def splitmatrixarray(S):
+    &#39;&#39;&#39;
+....splits list of matrices into  lists of the individual elements
+    currently two by two matirces only
+    &#39;&#39;&#39;
+    S11 = S[:,0,0]
+    S12 = S[:,0,1]
+    S21 = S[:,1,0]
+    S22 = S[:,1,1]
+    return S11,S12,S21,S22
+
+
+### Save touchstone formatted  S-parameter files ###############################
+def save_touchstone(filename, flist, slist, annotations = &#34;Touchstone file created by python mwave module &#34;):
+    
+    &#39;&#39;&#39;
+    saves a touchstone file of two lists 
+       
+    Parameters
+    ----------
+    filename : string 
+        name of touchstone file  shall end with .s2p
+    flist : array or list
+        list of frequency values
+    slist : array of 2x2 arrays
+        list or array of 2x2 matrices with S-parameters
+    annotations : string
+        annotations in the header of the file e.g. time 
+    Returns 
+    -------
+    nothing
+    
+    Examples
+    --------
+    &gt;&gt;&gt; filename = &#34;touchstone.s2p&#34;
+    &gt;&gt;&gt; flist = array([1e9,2e9,2.2e9])
+    &gt;&gt;&gt; S1 = array([[0.2,0.3],[0.4,0.5-1j]])
+    &gt;&gt;&gt; S2 = array([[0.5,0.333],[0.34,0.35-0.44j]])
+    &gt;&gt;&gt; S3 = array([[0.11,0.234],[0.554,0.55-.55j]])
+    &gt;&gt;&gt; slist = array([S1,S2,S3])
+    &gt;&gt;&gt; save_touchstone(filename, flist, slist)
+        
+    &#39;&#39;&#39;
+    
+    # check for consistent data 
+    if len(flist) != len(slist):
+        raise ValueError(&#39;length of flist and slist do not match in save touchstone!&#39;)
+        return
+    if shape(slist)[1:3] != (2,2) and ndim(slist) != 1:
+        raise ValueError(&#39;No 2x2 matrices in touchstone swrite!&#39;)
+        return
+    
+    f=open(filename,&#39;w&#39;, encoding = &#34;ISO-8859-1&#34;)
+    noise=False
+    f.write(&#39;! \n&#39;)
+    f.write(&#39;! Export of Touchstone Data from mwave.py Module Author: S.F. Peik \n&#39;)
+    f.write(&#39;! \n&#39;)
+    f.write(&#39;!&#39;+annotations +&#39;\n&#39;)
+    f.write(&#39;!---------------------------------------------------------------------\n&#39;)
+    f.write(&#39;! symbol freq-unit parameter-type data-format keyword impedance-ohm\n&#39;)
+    f.write(&#39;#        HZ        S              RI          R       50\n&#39;)
+    f.write(&#39;!---------------------------------------------------------------------\n&#39;)
+    if ndim(slist) == 1:
+        # -- One Port parameter -----------
+        f.write(&#39;! freq       reS11      imS11 \n&#39;)
+        s11 = slist
+        for i in range(len(flist)):
+            l = &#34;{:10.1f} {: 3.9f} {: 3.9f}&#34;.format(flist[i],real(s11[i]), imag(s11[i]))
+            f.write(l+&#34;\n&#34;)
+    else:
+        #--- two-port paramter -----------
+        s11,s12,s21,s22 = splitmatrixarray(slist)
+        for i in range(len(flist)):
+            l = &#34;{:10.1f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} &#34;.format(flist[i],real(s11[i]), imag(s11[i]), real(s12[i]), imag(s12[i]), real(s21[i]), imag(s21[i]), real(s22[i]), imag(s22[i]), )
+            f.write(l+&#34;\n&#34;)
+    f.close()
+    return
+
+### Load touchstone formatted  S-parameter files ###############################
+def load_touchstone(filename, annotations=False):
+    &#39;&#39;&#39;
+    Loads a touchstone file in two lists 
+    
+        :filename: Touchstone filename including path (type string)
+        
+    Returns 
+    -------
+        tuple with: frequency list (type flaot)  S-matrix list (2x2 Matrix list of S Parameters)
+       
+    Note
+    -----
+    
+    currently works with 2x2 matrices only
+    &#39;&#39;&#39;
+    
+    print(&#34;Load Touchstone file &#34;,filename)
+    f=open(filename,&#39;r&#39;, encoding = &#34;ISO-8859-1&#34;)
+    noise=False
+    if filename[-2] == &#39;1&#39;: 
+        Twoport = False
+    elif filename[-2] == &#39;2&#39;: 
+        Twoport = True
+    elif filename[-2:] == &#39;ts&#39;: 
+        Twoport = True
+    else:
+        print(&#39;Load Touchstone: Neither extension s1p or s2p , Exit&#39;)
+        raise NameError(&#39;Neither extension s1p or s2p&#39;)
+    anno = []
+    Slist=[];flist=[]
+    rad=pi/180.0
+    for line in f:
+        #print(line.strip())
+        if line[0]==&#39;!&#39;: 
+            anno.append(line)
+            if line.find(&#39;Fmin&#39;)&gt;0:
+                noise=True
+                #print(&#34;----- Here Noise Data start ------&gt;&#34;)
+            continue
+        if line[0]==&#39;#&#39;:
+            #print(&#34;Format is &#34;,line)
+            if &#39;HZ&#39; in line.upper(): factor=1e0
+            if &#39;KHZ&#39; in line.upper(): factor=1e3
+            if &#39;MHZ&#39; in line.upper(): factor=1e6
+            if &#39;GHZ&#39; in line.upper(): factor=1e9
+            if &#39;MA&#39; in line.upper():
+                sform =&#39;MA&#39;
+            elif &#39;RI&#39; in line.upper(): 
+                sform = &#39;RI&#39;
+            elif &#39;DB&#39; in line.upper(): 
+                sform =&#39;DB&#39;
+            else:
+                print(&#34;Data not in MA or RI Format&#34;)
+                raise RuntimeError(&#34;Data not in MA or RI Format&#34;)
+                return
+            continue
+        if len(line) &lt;10: continue ## empty line
+        if not(noise): ##### Spara Info
+            p=line.split()
+            p=[float(x) for x in p]
+            #print(&#34;f=&#34;,p[0],&#34;S11=&#34;,p[1], &#34;.....&#34;)
+            flist.append(float(p[0])*factor)
+            if sform==&#39;MA&#39;:
+                S11=p[1]*exp(1j*p[2]*rad)
+                S=S11
+                if Twoport:
+                    S21=p[3]*exp(1j*p[4]*rad)
+                    S12=p[5]*exp(1j*p[6]*rad)
+                    S22=p[7]*exp(1j*p[8]*rad)
+                    S=matrix([[S11,S12],[S21,S22]])
+                Slist.append(S)
+            if sform==&#39;RI&#39;:
+                S11=p[1]+p[2]*1j
+                S=S11
+                if Twoport:
+                    S21=p[3]+p[4]*1j
+                    S12=p[5]+p[6]*1j
+                    S22=p[7]+p[8]*1j
+                    S=matrix([[S11,S12],[S21,S22]])
+                Slist.append(S)
+            if sform==&#39;DB&#39;:
+                S11=10**(p[1]/20)*exp(1j*p[2]*rad)
+                S=S11
+                if Twoport:
+                    S21=10**(p[3]/20)*exp(1j*p[4]*rad)
+                    S12=10**(p[5]/20)*exp(1j*p[6]*rad)
+                    S22=10**(p[7]/20)*exp(1j*p[8]*rad)
+                    S=matrix([[S11,S12],[S21,S22]])
+                Slist.append(S)
+            #print S
+        if (noise): ##### Noise Info
+            pass
+    flist = array(flist)
+    Slist = array(Slist)
+    if annotations:
+        return flist,Slist,anno
+    else:
+        return flist,Slist
+
+
+
+#
+# mdif load
+#
+import re
+rad = pi/180.0
+
+######################################################################
+def mdifbiaslist(filename):
+    &#39;&#39;&#39;
+    Shows the possible bias points of a mdif file
+    :param filename: mdif file
+    :return: a list of biases
+    &#39;&#39;&#39;
+    f=open(filename,&#39;r&#39;)
+    line = f.readlines()
+    i=0
+    biaslist = []
+    while i&lt; len(line):
+        if &#39;VAR Vc&#39; in line[i]:
+            if not &#39;Ic&#39; in line[i+1]: 
+                raise valueerror(&#39;No Vc,Ic VAR defined in mdif&#39;)
+            valueV = re.findall(&#34;\d+\.\d+&#34;, line[i])[0]
+            valueI = re.findall(&#34;\d+\.\d+&#34;, line[i+1])[0]
+            biaslist.append((float(valueV),float(valueI)))
+            i += 1   
+        i += 1
+    if biaslist == []: raise valueerror(&#39;No Vc,Ic VAR defined in mdif&#39;)
+    return biaslist
+  
+##########Load MDIF Spara #############################################################
+def mdifsparlist(filename,Vc,Ic):
+    f=open(filename,&#39;r&#39;)
+    line = f.readlines()
+    i=0
+    biaslist = []
+    while i&lt; len(line):
+        if &#39;VAR Vc&#39; in line[i]:
+            try:
+                valueV = float(re.findall(&#34;\d+\.\d+&#34;, line[i])[0])
+            except:
+                valueV = float(re.findall(&#34;\d+\\d+&#34;, line[i])[0])
+            try:
+                valueI = float(re.findall(&#34;\d+\.\d+&#34;, line[i+1])[0])
+            except: 
+                valueI = float(re.findall(&#34;\d+\\d+&#34;, line[i+1])[0])
+            if valueV == Vc and valueI == Ic:
+                #print(&#34;Biaspoint found&#34;, valueV, valueI)
+                if not (&#39;BEGIN ACDATA&#39; in line[i+2]): raise ValueError(&#39;MDIF Wrong Format no BEGIN ACDATA found &#39;)
+                i +=3
+                #print(line[i])
+                if not &#39;#&#39; in line[i]: raise ValueError(&#39;MDIF Wrong Format no # Format found found &#39;)
+                if &#39;HZ&#39;  in line[i]: factor=1e0
+                if &#39;MHZ&#39; in line[i]: factor=1e6
+                if &#39;GHZ&#39; in line[i]: factor=1e9
+                if &#39;MA&#39; in line[i]:
+                    sform =&#39;MA&#39;
+                elif &#39;RI&#39; in line[i]: 
+                    sform = &#39;RI&#39;
+                else:
+                    raise RuntimeError(&#34;MDIF Data not in MA or RI Format&#34;)
+                #print(sform, factor)
+                i += 2
+                
+                ##### Start of spar found reading data ###################
+                flist = []
+                Slist = []
+                while not &#39;END&#39; in line[i]: 
+                    p=line[i].split()
+                    p=[float(x) for x in p]
+                    #print(&#34;f=&#34;,p[0],&#34;S11=&#34;,p[1], &#34;.....&#34;)
+                    flist.append(float(p[0])*factor)
+                    if sform==&#39;MA&#39;:
+                        S11=p[1]*exp(1j*p[2]*rad)
+                        S21=p[3]*exp(1j*p[4]*rad)
+                        S12=p[5]*exp(1j*p[6]*rad)
+                        S22=p[7]*exp(1j*p[8]*rad)
+                    if sform==&#39;RI&#39;:
+                        S11=p[1]+p[2]*1j
+                        S21=p[3]+p[4]*1j
+                        S12=p[5]+p[6]*1j
+                        S22=p[7]+p[8]*1j
+                    S=matrix([[S11,S12],[S21,S22]])
+                    Slist.append(S)
+                    i += 1
+                return flist, Slist
+                ### end of spar data read 
+                
+        i += 1
+    raise ValueError(&#39;Specific Vc,Ic not defined in mdif&#39;)
+    return 
+
+###### Load MDIF Noise #############################################
+def mdifnoiselist(filename,Vc,Ic):
+    f=open(filename,&#39;r&#39;)
+    line = f.readlines()
+    i=0
+    biaslist = []
+    while i&lt; len(line):
+        if &#39;VAR Vc&#39; in line[i]:
+            valueV = float(re.findall(&#34;\d+\.\d+&#34;, line[i])[0])
+            valueI = float(re.findall(&#34;\d+\.\d+&#34;, line[i+1])[0])
+            if valueV == Vc and valueI == Ic:
+                #print(&#34;Biaspoint found&#34;, valueV, valueI)
+                i+=  2
+                while i&lt; len(line):
+                    if (&#39;BEGIN NDATA&#39; in line[i]): break
+                    i += 1
+                if i == len(line): raise ValueError(&#39;MDIF no BEGIN NDATA found &#39;)
+                i += 1
+                if not &#39;#&#39; in line[i]: raise ValueError(&#39;MDIF Wrong Format no # Format found found &#39;)
+                if &#39;HZ&#39;  in line[i]: factor=1e0
+                if &#39;MHZ&#39; in line[i]: factor=1e6
+                if &#39;GHZ&#39; in line[i]: factor=1e9
+                if &#39;MA&#39; in line[i]:
+                    sform =&#39;MA&#39;
+                elif &#39;RI&#39; in line[i]: 
+                    sform = &#39;RI&#39;
+                else:
+                    raise RuntimeError(&#34;MDIF Data not in MA or RI Format&#34;)
+            
+                i += 2
+                ##### Start of spar found reading data ###################
+                flist = []
+                Nfminlist = []
+                Gamoptlist = []
+                Rnlist = []
+                while not (&#39;END&#39; in line[i]): 
+                    p=line[i].split()
+                    p=[float(x) for x in p]
+                    #print(&#34;f=&#34;,p[0],&#34;S11=&#34;,p[1], &#34;.....&#34;)
+                    flist.append(p[0]*factor)
+                    Nfminlist.append(p[1])    ### min Noisefigure
+                    if sform==&#39;MA&#39;:
+                        Gamoptlist.append(p[2]*exp(1j*p[3]*rad)) ## Gamma Opt. 
+                    if sform==&#39;RI&#39;:
+                        Gamoptlist.append(p[2]+p[3]*1j)
+                    Rnlist.append(p[4])
+                    i += 1
+                if flist == []:
+                    print(&#39;MDIF: No Noise data defined&#39;)
+                return flist, Nfminlist, Gamoptlist, Rnlist
+                ### end of spar data read 
+                
+        i += 1
+    raise ValueError(&#39;Specific Vc,Ic not defined in mdif&#39;)
+    return 
+
+
+def ssplit(S):
+    &#39;&#39;&#39;
+    splits list of matrices into  lists of the individual elements
+    
+    currently two by two matirces only
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; S = array([[[ 0.1+0.j,  0.1+0.j],[ 0.1+0.j, -0.3+0.j]],[[ 0.2+0.j,  0. +0.j],[ 0. +0.j, -0.1+0.j]],[[ 0.3+0.j,  0.4+0.j],[ 0.4+0.j,  0.9+0.j]]]) 
+    &gt;&gt;&gt; SSS = ssplit(S)
+    &gt;&gt;&gt; for S in SSS: print(S)
+    [0.1+0.j 0.2+0.j 0.3+0.j]
+    [0.1+0.j 0. +0.j 0.4+0.j]
+    [0.1+0.j 0. +0.j 0.4+0.j]
+    [-0.3+0.j -0.1+0.j  0.9+0.j]
+
+    &#39;&#39;&#39;
+    S11 = S[:,0,0]
+    S12 = S[:,0,1]
+    S21 = S[:,1,0]
+    S22 = S[:,1,1]
+    return S11,S12,S21,S22
+
+def scombine(s11,s12,s21,s22):
+    &#39;&#39;&#39;
+    combines 4 lists of S-paramters into  1 list with matrices
+    
+    currently two by two matirces only
+    
+    Parameters
+    ----------
+    
+    s11 : complex
+        S_11 Parameter and so on 
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; S11 = [0.1,0.2,0.3]
+    &gt;&gt;&gt; S12 = [0.6,0.7,0.8]
+    &gt;&gt;&gt; S21 = [0.1,0.0,0.4]
+    &gt;&gt;&gt; S22 = [-0.3,-0.1,0.9]
+    &gt;&gt;&gt; scombine(S11,S12,S21,S22)
+    array([[[ 0.1+0.j,  0.1+0.j],
+            [ 0.1+0.j, -0.3+0.j]],
+    &lt;BLANKLINE&gt;
+           [[ 0.2+0.j,  0. +0.j],
+            [ 0. +0.j, -0.1+0.j]],
+    &lt;BLANKLINE&gt;
+           [[ 0.3+0.j,  0.4+0.j],
+            [ 0.4+0.j,  0.9+0.j]]])
+
+    &#39;&#39;&#39;
+    S = zeros( (len(s11), 2, 2),dtype=&#34;complex&#34; )
+    for ii in range(len(s11)):
+        S[ii] = array([[s11[ii],s21[ii]],[s21[ii],s22[ii]]])  
+    return S
+
+### Plot S-Parameter in Cart Plot
+def plotspar(flist,Slist=array([0])):
+    fig,ax = plt.subplots(figsize=(10,6))
+    flist=array(flist)
+    if len(Slist) &gt; 1:
+        S11list=array([Slist[i][0,0] for i in range(len(Slist))])
+        S12list=array([Slist[i][0,1] for i in range(len(Slist))])
+        S21list=array([Slist[i][1,0] for i in range(len(Slist))])
+        S22list=array([Slist[i][1,1] for i in range(len(Slist))])
+        ax.plot(flist,20*log10(abs(S11list)),label=&#39;$S_{11}$&#39;)
+        ax.plot(flist,20*log10(abs(S21list)),label=&#39;$S_{21}$&#39;)
+        ax.plot(flist,20*log10(abs(S12list)),label=&#39;$S_{12}$&#39;)
+        ax.plot(flist,20*log10(abs(S22list)),label=&#39;$S_{22}$&#39;)
+        plt.legend(loc=4)
+    else:
+        print(&#34;Create empty Chart&#34;)
+    plt.xlabel(&#39;Freq in Hz&#39;)
+    plt.ylabel(&#39;S in dB&#39;)
+    plt.grid()
+    plt.ylim(-50,5)
+    plt.title(&#34;S-Parameter Response&#34;)
+    plt.tight_layout()
+    return fig,ax
+    
+
+
+def mufactor(S):
+    &#39;&#39;&#39;
+    calculate Mu Factor for an S-parameter Array list
+    &#39;&#39;&#39;
+    
+    S11=S[:,0,0];S12=S[:,0,1];S21=S[:,1,0];S22=S[:,1,1]
+    Delta=S11*S22-S12*S21
+    mu1=(1-abs(S11)**2)/(abs(S22-Delta*conj(S11))+abs(S12*S21))
+    mu2=(1-abs(S22)**2)/(abs(S11-Delta*conj(S22))+abs(S12*S21))
+    return mu1, mu2
+
+###### determine Stability Circles and mu factor
+def AmpStabilityCircle(S,plotit=False): 
+    &#39;&#39;&#39;
+    calculate Stability Circles for given S-Matrix
+    return: return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax
+            when plotit is false: 
+            return Cs,Rs,Cl,Rl,mu1, mu2
+    &#39;&#39;&#39;
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    #print(u&#34;\n \u25AD\u25AD\u25AD\u25AD Stability \u25AD\u25AD\u25AD\u25AD&#34;)
+    Delta=S11*S22-S12*S21
+    #print(&#34;|Delta|=&#34;,abs(Delta))
+    Cl=conj(S22-Delta*conj(S11))/(abs(S22)**2-abs(Delta)**2)
+    Rl=abs(S12*S21/(abs(S22)**2-abs(Delta)**2))
+    Cs=conj(S11-Delta*conj(S22))/(abs(S11)**2-abs(Delta)**2)
+    Rs=abs(S12*S21/(abs(S11)**2-abs(Delta)**2))
+    mu1=(1-abs(S11)**2)/(abs(S22-Delta*conj(S11))+abs(S12*S21));
+    mu2=(1-abs(S22)**2)/(abs(S11-Delta*conj(S22))+abs(S12*S21));
+    k=(1-abs(S11)**2-abs(S22)**2+Delta**2)/(2*abs(S12*S21));
+
+    fig, ax = (0,0)
+    if plotit:
+        fig, ax = plt.subplots() 
+        plt.tight_layout()
+        ax.set_title(&#39;Stability Circles&#39;) 
+        fig.set_facecolor(&#39;white&#39;)
+        Z0=1 
+        mysmith=smi.smith(ax,&#39;smith&#39;,Z0,0.5)
+        mysmith.addcircle(Cl,Rl)
+        mysmith.addcircle(Cs,Rs,&#39;r&#39;)
+        #plt.savefig(&#39;stabcircles.pdf&#39;)
+        return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax
+    return Cs,Rs,Cl,Rl,mu1, mu2
+
+
+##### determine Noise Circle and Noise Number N
+def AmpNoiseCircle(S,FmindB,Gamopt,rn,FsetdB,plotit): 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Delta=S11*S22-S12*S21
+    F=10**(FsetdB/10)
+    Fmin=10**(FmindB/10)
+    N=(F-Fmin)/4/rn*abs(1+Gamopt)**2
+    Cf=Gamopt/(N+1)
+    Rf=sqrt(N*(N+1-abs(Gamopt)**2))/(N+1)
+    fig, ax = (0,0)
+    if plotit:
+        fig, ax = plt.subplots() 
+        plt.tight_layout()
+        ax.set_title(&#39;Noise Circle&#39;, fontsize=15) 
+        fig.set_facecolor(&#39;white&#39;)
+        Z0=1 
+        mysmith=smi.smith(ax,&#39;smith&#39;,Z0,0.5)
+        mysmith.addcircle(Cf,Rf)
+    return Cf, Rf, N, fig, ax
+
+##### determine Gain Circle 
+def AmpGainCircleSource(S,GaindB): 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    if S12 != 0:
+        raise ValueError(&#39;Device is not Unilateral!&#39;)
+        return
+    Delta=S11*S22-S12*S21
+    Gain=10**(GaindB/10);
+    Gsmax=1/(1-abs(S11)**2);
+    GsmaxdB=10*log10(Gsmax);
+    gs=10**(GaindB/10)/Gsmax;
+    if 1-gs &lt;0:
+        return nan,nan,nan
+    Cs=gs*conj(S11)/(1-(1-gs)*abs(S11)**2);
+    Rs=sqrt(1-gs)*(1-abs(S11**2))/(1-(1-gs)*abs(S11)**2);
+    return Cs, Rs, GsmaxdB
+
+##### determine Gain Circle 
+def AmpGainCircleLoad(S,GaindB): 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    if S12 != 0:
+        raise ValueError(&#39;Device is not Unilateral!&#39;)
+        return
+    Delta=S11*S22-S12*S21
+    Gain=10**(GaindB/10);
+    Gsmax=1/(1-abs(S22)**2);
+    GsmaxdB=10*log10(Gsmax);
+    gs=10**(GaindB/10)/Gsmax;
+    if 1-gs &lt;0:
+        return nan,nan, nan
+    Cs=gs*conj(S22)/(1-(1-gs)*abs(S22)**2);
+    Rs=sqrt(1-gs)*(1-abs(S22**2))/(1-(1-gs)*abs(S22)**2);
+    return Cs, Rs, GsmaxdB
+
+
+def transducerGain(S, Gams, Gaml):
+    &#39;&#39;&#39;
+    Calculates the transducer gain for a given S-Matrix
+    and Γ_s and Γ_l
+
+    Parameters
+    ----------
+    :param S: (2x2 Matrix complex) or array of matrices
+    :param Gams: Γ_s (complex)
+    :param Gaml: Γ_l (complex)
+    :return: Transducer Gain Gt in dB (float or array float)
+
+    Example
+    -------
+    &gt;&gt;&gt; S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
+    &gt;&gt;&gt; Gam_s, Gam_l = 0.3, 0.1-0.5j
+    &gt;&gt;&gt; GtdB = transducerGain(S, Gam_s, Gam_l)
+    &gt;&gt;&gt; GtdB
+    16.51983047097562
+
+    &#39;&#39;&#39;
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Gamin = S11 + (S12 * S21 * Gaml) / (1 - S22 * Gaml)
+    Gamout = S22 + (S12 * S21 * Gams) / (1 - S11 * Gams)
+    Gs = (1 - abs(Gams) ** 2) / abs(1 - Gamin * Gams) ** 2
+    G0 = abs(S21) ** 2
+    Gl = (1 - abs(Gaml) ** 2) / abs(1 - S22 * Gaml) ** 2
+    Gt = Gs * G0 * Gl
+    GsdB = 10 * log10(Gs)
+    G0dB = 10 * log10(G0)
+    GldB = 10 * log10(Gl)
+    GtdB = GsdB + G0dB + GldB
+    return GtdB
+
+####### Bilateral Max. Gain Design
+def AmpMaxgain(S, verbose = False):
+    u&#39;&#39;&#39;
+    Calculates Maximum Gain input and output loads
+    
+    Parameters
+    ----------
+    
+    S : 2x2 Matrix
+        S-Matrix containing linear transistor S data 
+    
+    Returns
+    -------
+    tuple 
+        :math:`\Gamma_s` (type complex), :math:`\Gamma_l` (type complex), GtdB (type float)
+    
+    Returns (0,0,0) if no stable solution is found
+    Examples
+    --------
+    
+    &gt;&gt;&gt; S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
+    &gt;&gt;&gt; Gs,Gl,Gmax = AmpMaxgain(S)
+    &gt;&gt;&gt; print(around(Gmax,2))
+    17.21
+    &gt;&gt;&gt; print(magphase_str(Gs),magphase_str(Gl)) 
+     0.399∠-13.7°  0.718∠-86.8°
+    &#39;&#39;&#39;
+ 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Delta=S11*S22-S12*S21
+    if verbose: print(u&#34;\n\u25AD\u25AD\u25AD\u25AD Conj. Matching \u25AD\u25AD\u25AD\u25AD\n&#34;)
+    B1=1+abs(S11)**2-abs(S22)**2-abs(Delta)**2
+    B2=1+abs(S22)**2-abs(S11)**2-abs(Delta)**2
+    C1=S11-Delta*conj(S22)
+    C2=S22-Delta*conj(S11)
+    stablegain=0
+    if verbose: print(B1,B2,C1,C2,Delta)
+    if verbose: print(&#34;Solution 1:&#34;)
+    Gams1=(B1-sqrt(B1**2-4*abs(C1)**2+0j))/2/C1
+    Gaml1=(B2-sqrt(B2**2-4*abs(C2)**2+0j))/2/C2
+    if verbose: print(u&#34;   \u0393s1=&#34;,magphase_str(Gams1))
+    if verbose: print(u&#34;   \u0393l1=&#34;,magphase_str(Gaml1))
+    if verbose: print(&#34;Solution 2:&#34;)
+    Gams2=(B1+sqrt(B1**2-4*abs(C1)**2+0j))/2/C1
+    Gaml2=(B2+sqrt(B2**2-4*abs(C2)**2+0j))/2/C2
+    if verbose: print(u&#34;   \u0393s2=&#34;,magphase_str(Gams2))
+    if verbose: print(u&#34;   \u0393l2=&#34;,magphase_str(Gaml2))
+    if (abs(Gams1)&lt;0.99 and abs(Gaml1)&lt;0.99):
+        if verbose: print(&#34;&gt;&gt; Choosen Sol.1:&#34;)
+        if verbose: print( u&#34;   \u0393s=&#34;,magphase_str(Gams1))
+        if verbose: print( u&#34;   \u0393l=&#34;,magphase_str(Gaml1))
+        Gaml=Gaml1
+        Gams=Gams1
+        stablegain=1;
+    if (abs(Gams2)&lt;0.99 and abs(Gaml2)&lt;0.99):
+        if verbose: print(&#34;&gt;&gt; Choosen Sol.2:&#34;)
+        if verbose: print(u&#34;   \u0393s=&#34;,magphase_str(Gams2))
+        if verbose: print(u&#34;   \u0393l=&#34;,magphase_str(Gaml2))
+        Gaml=Gaml2
+        Gams=Gams2
+        stablegain=1
+    if not(stablegain):
+        if verbose: print(&#34; ***** Geht Nicht Unstable *****&#34;)
+        raise ValueError(&#34;Unstable&#34;)
+        return 0,0,0
+    else:
+        if verbose: print(&#34;\n=== Transducer Power Gain: ===&#34;)
+        Gamin=S11+(S12*S21*Gaml)/(1-S22*Gaml)
+        Gamout=S22+(S12*S21*Gams)/(1-S11*Gams)
+        Gs=(1-abs(Gams)**2)/abs(1-Gamin*Gams)**2
+        G0=abs(S21)**2
+        Gl=(1-abs(Gaml)**2)/abs(1-S22*Gaml)**2
+        Gt=Gs*G0*Gl
+        GsdB=10*log10(Gs)
+        G0dB=10*log10(G0)
+        GldB=10*log10(Gl)
+        GtdB=GsdB+G0dB+GldB
+        if verbose: print(u&#34;Gt={0:.2f}*{1:.2f}*{2:.2f}={3:.2f}&#34;.format(Gs,G0,Gl,Gt))
+        if verbose: print(u&#34;GtdB={0:.2f}dB+{1:.2f}dB+{2:.2f}dB={3:.2f}dB&#34;.format(GsdB,G0dB,GldB,GtdB) )
+        return Gams,Gaml,GtdB
+    
+
+#### Matching Circuits ##############
+
+def LMatching(Zl,Z0=50, equaltype=False):
+    &#39;&#39;&#39;
+    see: Whites, EE 481/581, Lecture 7: Transmission Line Matching Using Lumped L Networks
+    returns a dictionary with possible solutions
+    when equaltype is True, both elements are chosen of same type, e.g. capacitor and capacitor
+    &#39;&#39;&#39;
+    Rl = real(Zl)
+    Xl = imag(Zl)
+    Yl = 1/Zl
+    Gl = real(Yl)
+    Bl = imag(Yl)
+    if Rl &gt; Z0 or equaltype:
+        B1 = ( Xl + sqrt(Rl/Z0) * sqrt(Rl*(Rl-Z0)+Xl**2) ) / (Rl**2 + Xl**2)
+        X1 = 1/B1 + (Xl*Z0)/Rl - Z0/(B1*Rl)
+        B2 = ( Xl - sqrt(Rl/Z0) * sqrt(Rl*(Rl-Z0)+Xl**2) ) / (Rl**2 + Xl**2)
+        X2 = 1/B2 + (Xl*Z0)/Rl - Z0/(B2*Rl)  
+        if isnan(B1): raise ValueError(&#34;No Solution&#34;)
+        type = &#39;shunt-series&#39; 
+    else:
+        X1 = + sqrt(Rl*(Z0-Rl)) - Xl
+        B1 = + 1/Z0 * sqrt((Z0-Rl)/Rl)
+        X2 = - sqrt(Rl*(Z0-Rl)) - Xl
+        B2 = - 1/Z0 * sqrt((Z0-Rl)/Rl)
+        if isnan(B1): ValueError(&#34;No Solution&#34;)
+        type = &#39;series-shunt&#39;
+    return {&#39;sol1&#39;:(X1,B1),&#39;sol2&#39;:(X2,B2)}, type
+
+
+def AmpStubmatching(Gammamatch,plotit=False):
+    &#39;&#39;&#39;
+    Performs a complete open stub - line matching for a given desired input :math:`\Gamma`
+    
+    Plots the smith chart with the constructed matching network 
+    
+    Parameters
+    ----------
+    
+    Gammamatch : complex
+        desired input :math:`\Gamma` 
+    plotit : Boolean
+        Flag for plotting, if True a Plot is generated
+    
+    Returns
+    -------
+    
+    tuple 
+        line length of stub (float), line length of line (float), fig, ax (handles of smith plot)
+    &#39;&#39;&#39;
+
+    Z0=1
+    Z1=Z0
+    ### finding length of open stub line
+    for len1 in arange(0.001,1,0.001):
+        betal=2*pi*len1
+        Zstub=-1j*Z0/tan(betal)
+        Z2=Z1*Zstub/(Z1+Zstub)
+        Gam=(Z2-Z0)/(Z2+Z0)
+        if abs(Gam)&gt;abs(Gammamatch): break
+    ### finding length of inserted line
+    if(angle(Gam)&gt;angle(Gammamatch)):
+        betal=(angle(Gam)-angle(Gammamatch))/2
+    else:
+        betal=(angle(Gam)-angle(Gammamatch))/2+pi
+    len2=round(betal/2/pi,3)
+    #print(u&#34;stub length={0:.3f} \u03BB inserted line length={1:.3f}\u03BB&#34;.format(len1,len2))
+    if plotit:
+        fig, ax = plt.subplots()
+        fig.set_size_inches(6,6)
+        plt.tight_layout()
+        fig.set_facecolor(&#39;white&#39;)
+        plt.clf()
+        ax = plt.axes() 
+        Z0=1 
+        mysmith=smi.smith(ax,&#39;both&#39;,Z0) 
+        #mysmith.addanglering()
+        Zl=mysmith.addstart(1) 
+        Z2=mysmith.addstubopen(1,len1,1)    
+        Z3=mysmith.addline(Z2,len2,1)
+        mysmith.addpoint(1,&#39;$Z_{50}$&#39;,&#39;NE&#39;)
+        mysmith.addpoint(Z2,&#39;$Z_2$&#39;,&#39;NE&#39;) 
+        mysmith.addpoint(Z3,&#39;$Z_3$&#39;,&#39;NE&#39;)
+        return len1,len2, fig, ax
+    else:
+        return len1,len2,0,0
+
+
+
+if __name__ == &#34;__main__&#34;:
+    import doctest
+    doctest.testmod()
+    
+ </code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="mwave.c"><code class="name">var <span class="ident">c</span></code></dt>
+<dd>
+<div class="desc"><p>velocity of light</p></div>
+</dd>
+<dt id="mwave.eps0"><code class="name">var <span class="ident">eps0</span></code></dt>
+<dd>
+<div class="desc"><p>Permittivity of free space</p></div>
+</dd>
+<dt id="mwave.eta0"><code class="name">var <span class="ident">eta0</span></code></dt>
+<dd>
+<div class="desc"><p>Free Space impedance</p></div>
+</dd>
+<dt id="mwave.k"><code class="name">var <span class="ident">k</span></code></dt>
+<dd>
+<div class="desc"><p>Boltzman Constant</p></div>
+</dd>
+<dt id="mwave.mu0"><code class="name">var <span class="ident">mu0</span></code></dt>
+<dd>
+<div class="desc"><p>Permeability of free space</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="mwave.ABCDJInverter"><code class="name flex">
+<span>def <span class="ident">ABCDJInverter</span></span>(<span>J)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the ABCD Matrix of a J inverter with J as input</p>
+<p>:math:<code>\left[ \begin{matrix} 0 &amp; j/J \\ j\cdot J &amp; 0 \end{matrix} \right]</code></p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; ABCDJInverter(5)
+array([[0.+0.j , 0.+0.2j],
+       [0.+5.j , 0.+0.j ]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDJInverter(J):
+    r&#39;&#39;&#39;
+    Create the ABCD Matrix of a J inverter with J as input
+    
+    :math:`\left[ \begin{matrix} 0 &amp; j/J \\ j\cdot J &amp; 0 \end{matrix} \right]`
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; ABCDJInverter(5)
+    array([[0.+0.j , 0.+0.2j],
+           [0.+5.j , 0.+0.j ]])
+    &#39;&#39;&#39;
+    J = atleast_1d(J)
+    x = array([[zeros_like(J),-1/(1j*J)],[1j*J,zeros_like(J)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDKInverter"><code class="name flex">
+<span>def <span class="ident">ABCDKInverter</span></span>(<span>K)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the ABCD Matrix of a K inverter with K as input</p>
+<p>:math:<code>\left[ \begin{matrix} 0 &amp; j\cdot K \\ j / K &amp; 0 \end{matrix} \right]</code></p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; ABCDKInverter(0.2)
+array([[0.+0.j , 0.+0.2j],
+       [0.+5.j , 0.+0.j ]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDKInverter(K):
+    r&#39;&#39;&#39;
+    Create the ABCD Matrix of a K inverter with K as input
+    
+    :math:`\left[ \begin{matrix} 0 &amp; j\cdot K \\ j / K &amp; 0 \end{matrix} \right]`
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; ABCDKInverter(0.2)
+    array([[0.+0.j , 0.+0.2j],
+           [0.+5.j , 0.+0.j ]])
+    &#39;&#39;&#39;
+    K = atleast_1d(K)
+    x = array([[zeros_like(K),1j*K],[-1/(1j*K),zeros_like(K)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDinverse"><code class="name flex">
+<span>def <span class="ident">ABCDinverse</span></span>(<span>ABCD)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDinverse(ABCD):
+    x = []
+    for AA in ABCD:
+        x.append( matrix(AA)**-1 )
+    return squeeze(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDline"><code class="name flex">
+<span>def <span class="ident">ABCDline</span></span>(<span>beta, length, Z0, alpha=0.0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates an ABCD matrix (2x2 Array) for an inserted line
+element</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>beta</code></strong> :&ensp;<code>float</code></dt>
+<dd>phase constant at operating freq</dd>
+<dt><strong><code>l</code></strong> :&ensp;<code>float</code></dt>
+<dd>length in meter</dd>
+<dt><strong><code>Z0</code></strong> :&ensp;<code>float</code></dt>
+<dd>line impedance</dd>
+<dt><strong><code>alpha</code></strong> :&ensp;<code>float</code></dt>
+<dd>loss in Np</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>2x2 matrix</code></dt>
+<dd>ABCD matrix at freq point beta</dd>
+<dt><code>Supports array type Z</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; f = 2e9
+&gt;&gt;&gt; lam = c/f
+&gt;&gt;&gt; beta = 2*pi/lam
+&gt;&gt;&gt; ABCDline(beta,0.1,50.0)
+array([[-0.49748657-0.00000000e+00j,  0.        -4.33735840e+01j],
+       [ 0.        -1.73494336e-02j, -0.49748657-0.00000000e+00j]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDline(beta, length,Z0,alpha=0.0):
+    r&#39;&#39;&#39;
+    Creates an ABCD matrix (2x2 Array) for an inserted line  element
+       
+    Parameters
+    ----------
+    
+    beta : float
+        phase constant at operating freq 
+    l : float
+        length in meter 
+    Z0 : float
+        line impedance       
+    alpha : float
+        loss in Np
+    
+    Returns
+    -------
+    
+    2x2 matrix
+        ABCD matrix at freq point beta
+     
+    
+    Supports array type Z
+
+    Examples
+    --------
+    
+    &gt;&gt;&gt; f = 2e9
+    &gt;&gt;&gt; lam = c/f
+    &gt;&gt;&gt; beta = 2*pi/lam
+    &gt;&gt;&gt; ABCDline(beta,0.1,50.0)
+    array([[-0.49748657-0.00000000e+00j,  0.        -4.33735840e+01j],
+           [ 0.        -1.73494336e-02j, -0.49748657-0.00000000e+00j]])
+
+    &#39;&#39;&#39;
+    beta = atleast_1d(beta)
+    alpha = atleast_1d(alpha)
+    gammal = (alpha+1j*beta)*length
+    x = array([[cosh(gammal), Z0*sinh(gammal)],[ 1./Z0*sinh(gammal), cosh(gammal)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDseries"><code class="name flex">
+<span>def <span class="ident">ABCDseries</span></span>(<span>Z)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates an ABCD matrix (2x2 Array) for a series impedance element</p>
+<p>:math:<code>\left[ \begin{matrix} 1 &amp; Z \\ 0 &amp; 1 \end{matrix} \right]</code></p>
+<p>Supports array type Z</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; ABCDseries(100.0)
+array([[  1., 100.],
+       [  0.,   1.]])
+&gt;&gt;&gt; Z = arange(10,40,10)
+&gt;&gt;&gt; ABCDseries(Z)
+array([[[ 1, 10],
+        [ 0,  1]],
+&lt;BLANKLINE&gt;
+       [[ 1, 20],
+        [ 0,  1]],
+&lt;BLANKLINE&gt;
+       [[ 1, 30],
+        [ 0,  1]]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDseries(Z):
+    r&#39;&#39;&#39;
+    Creates an ABCD matrix (2x2 Array) for a series impedance element
+    
+    :math:`\left[ \begin{matrix} 1 &amp; Z \\ 0 &amp; 1 \end{matrix} \right]`
+    
+    Supports array type Z
+
+    Examples
+    --------
+    
+    &gt;&gt;&gt; ABCDseries(100.0)
+    array([[  1., 100.],
+           [  0.,   1.]])
+    &gt;&gt;&gt; Z = arange(10,40,10)
+    &gt;&gt;&gt; ABCDseries(Z)
+    array([[[ 1, 10],
+            [ 0,  1]],
+    &lt;BLANKLINE&gt;
+           [[ 1, 20],
+            [ 0,  1]],
+    &lt;BLANKLINE&gt;
+           [[ 1, 30],
+            [ 0,  1]]])
+    &#39;&#39;&#39;
+    Z = atleast_1d(Z)
+    x = array([[ones_like(Z),Z],[zeros_like(Z),ones_like(Z)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDshunt"><code class="name flex">
+<span>def <span class="ident">ABCDshunt</span></span>(<span>Y)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDshunt(Y):
+    Y = atleast_1d(Y)
+    x = array([[ones_like(Y),zeros_like(Y)],[Y,ones_like(Y)]])
+    x = transpose(x,(2,0,1))
+    return squeeze(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDtoS"><code class="name flex">
+<span>def <span class="ident">ABCDtoS</span></span>(<span>ABCD, Z0=50)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDtoS(ABCD,Z0=50):
+    if shape(ABCD) == (2,2):
+        ABCD = array([ABCD])
+    A=ABCD[:,0,0]
+    B=ABCD[:,0,1]
+    C=ABCD[:,1,0]
+    D=ABCD[:,1,1]
+    S11=(A+B/Z0-C*Z0-D)/(A+B/Z0+C*Z0+D)
+    S12=2*(A*D-B*C)/(A+B/Z0+C*Z0+D)
+    S21=2/(A+B/Z0+C*Z0+D)
+    S22=(-A+B/Z0-C*Z0+D)/(A+B/Z0+C*Z0+D)
+    S=array([[S11,S12],[S21,S22]])
+    S=transpose(S,(2,0,1))
+    return squeeze(S)</code></pre>
+</details>
+</dd>
+<dt id="mwave.ABCDtoTransferFct"><code class="name flex">
+<span>def <span class="ident">ABCDtoTransferFct</span></span>(<span>ABCD, Zs=0, Zl=1e+99)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>To get the transfer function from the ABCD parameters,
+we can use the equation shown below. In this equation,
+we consider the impedance from the source side of the network (S)
+and the load side (L). If the network is terminated to the characteristic
+impedance on each side, then the two values are equal to the characteristic impedance Z.
+see: <a href="https://resources.system-analysis.cadence.com/blog/2020-how-to-calculate-a-transfer-function-from-s-parameters">https://resources.system-analysis.cadence.com/blog/2020-how-to-calculate-a-transfer-function-from-s-parameters</a></p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ABCD</code></strong> :&ensp;<code>array 2x2xsize</code></dt>
+<dd>phase constant at operating freq</dd>
+<dt><strong><code>Zs</code></strong> :&ensp;<code>complex</code></dt>
+<dd>source impedance</dd>
+<dt><strong><code>Zl</code></strong> :&ensp;<code>complex</code></dt>
+<dd>load impedance</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>complex </code></dt>
+<dd>voltage transfer function H(f) = Vl/Vs</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ABCDtoTransferFct(ABCD,Zs=0,Zl=1e99):
+    &#39;&#39;&#39;
+    To get the transfer function from the ABCD parameters, 
+    we can use the equation shown below. In this equation, 
+    we consider the impedance from the source side of the network (S) 
+    and the load side (L). If the network is terminated to the characteristic 
+    impedance on each side, then the two values are equal to the characteristic impedance Z.
+    see: https://resources.system-analysis.cadence.com/blog/2020-how-to-calculate-a-transfer-function-from-s-parameters
+    
+    Parameters
+    ----------
+    
+    ABCD : array 2x2xsize
+        phase constant at operating freq 
+    Zs : complex
+        source impedance
+    Zl : complex
+        load impedance      
+    
+    Returns
+    -------
+    
+    complex 
+        voltage transfer function H(f) = Vl/Vs
+    
+    &#39;&#39;&#39;
+    if shape(ABCD) == (2,2):
+        ABCD = array([ABCD])
+    A=ABCD[:,0,0]
+    B=ABCD[:,0,1]
+    C=ABCD[:,1,0]
+    D=ABCD[:,1,1]    
+    H = Zl / (A*Zl + B + C*Zs*Zl + D*Zs)
+    return squeeze(H)</code></pre>
+</details>
+</dd>
+<dt id="mwave.AmpGainCircleLoad"><code class="name flex">
+<span>def <span class="ident">AmpGainCircleLoad</span></span>(<span>S, GaindB)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def AmpGainCircleLoad(S,GaindB): 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    if S12 != 0:
+        raise ValueError(&#39;Device is not Unilateral!&#39;)
+        return
+    Delta=S11*S22-S12*S21
+    Gain=10**(GaindB/10);
+    Gsmax=1/(1-abs(S22)**2);
+    GsmaxdB=10*log10(Gsmax);
+    gs=10**(GaindB/10)/Gsmax;
+    if 1-gs &lt;0:
+        return nan,nan, nan
+    Cs=gs*conj(S22)/(1-(1-gs)*abs(S22)**2);
+    Rs=sqrt(1-gs)*(1-abs(S22**2))/(1-(1-gs)*abs(S22)**2);
+    return Cs, Rs, GsmaxdB</code></pre>
+</details>
+</dd>
+<dt id="mwave.AmpGainCircleSource"><code class="name flex">
+<span>def <span class="ident">AmpGainCircleSource</span></span>(<span>S, GaindB)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def AmpGainCircleSource(S,GaindB): 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    if S12 != 0:
+        raise ValueError(&#39;Device is not Unilateral!&#39;)
+        return
+    Delta=S11*S22-S12*S21
+    Gain=10**(GaindB/10);
+    Gsmax=1/(1-abs(S11)**2);
+    GsmaxdB=10*log10(Gsmax);
+    gs=10**(GaindB/10)/Gsmax;
+    if 1-gs &lt;0:
+        return nan,nan,nan
+    Cs=gs*conj(S11)/(1-(1-gs)*abs(S11)**2);
+    Rs=sqrt(1-gs)*(1-abs(S11**2))/(1-(1-gs)*abs(S11)**2);
+    return Cs, Rs, GsmaxdB</code></pre>
+</details>
+</dd>
+<dt id="mwave.AmpMaxgain"><code class="name flex">
+<span>def <span class="ident">AmpMaxgain</span></span>(<span>S, verbose=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates Maximum Gain input and output loads</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>S</code></strong> :&ensp;<code>2x2 Matrix</code></dt>
+<dd>S-Matrix containing linear transistor S data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple </code></dt>
+<dd>:math:<code>\Gamma_s</code> (type complex), :math:<code>\Gamma_l</code> (type complex), GtdB (type float)</dd>
+<dt><code>Returns (0,0,0) if no stable solution is found</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
+&gt;&gt;&gt; Gs,Gl,Gmax = AmpMaxgain(S)
+&gt;&gt;&gt; print(around(Gmax,2))
+17.21
+&gt;&gt;&gt; print(magphase_str(Gs),magphase_str(Gl)) 
+ 0.399∠-13.7°  0.718∠-86.8°
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def AmpMaxgain(S, verbose = False):
+    u&#39;&#39;&#39;
+    Calculates Maximum Gain input and output loads
+    
+    Parameters
+    ----------
+    
+    S : 2x2 Matrix
+        S-Matrix containing linear transistor S data 
+    
+    Returns
+    -------
+    tuple 
+        :math:`\Gamma_s` (type complex), :math:`\Gamma_l` (type complex), GtdB (type float)
+    
+    Returns (0,0,0) if no stable solution is found
+    Examples
+    --------
+    
+    &gt;&gt;&gt; S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
+    &gt;&gt;&gt; Gs,Gl,Gmax = AmpMaxgain(S)
+    &gt;&gt;&gt; print(around(Gmax,2))
+    17.21
+    &gt;&gt;&gt; print(magphase_str(Gs),magphase_str(Gl)) 
+     0.399∠-13.7°  0.718∠-86.8°
+    &#39;&#39;&#39;
+ 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Delta=S11*S22-S12*S21
+    if verbose: print(u&#34;\n\u25AD\u25AD\u25AD\u25AD Conj. Matching \u25AD\u25AD\u25AD\u25AD\n&#34;)
+    B1=1+abs(S11)**2-abs(S22)**2-abs(Delta)**2
+    B2=1+abs(S22)**2-abs(S11)**2-abs(Delta)**2
+    C1=S11-Delta*conj(S22)
+    C2=S22-Delta*conj(S11)
+    stablegain=0
+    if verbose: print(B1,B2,C1,C2,Delta)
+    if verbose: print(&#34;Solution 1:&#34;)
+    Gams1=(B1-sqrt(B1**2-4*abs(C1)**2+0j))/2/C1
+    Gaml1=(B2-sqrt(B2**2-4*abs(C2)**2+0j))/2/C2
+    if verbose: print(u&#34;   \u0393s1=&#34;,magphase_str(Gams1))
+    if verbose: print(u&#34;   \u0393l1=&#34;,magphase_str(Gaml1))
+    if verbose: print(&#34;Solution 2:&#34;)
+    Gams2=(B1+sqrt(B1**2-4*abs(C1)**2+0j))/2/C1
+    Gaml2=(B2+sqrt(B2**2-4*abs(C2)**2+0j))/2/C2
+    if verbose: print(u&#34;   \u0393s2=&#34;,magphase_str(Gams2))
+    if verbose: print(u&#34;   \u0393l2=&#34;,magphase_str(Gaml2))
+    if (abs(Gams1)&lt;0.99 and abs(Gaml1)&lt;0.99):
+        if verbose: print(&#34;&gt;&gt; Choosen Sol.1:&#34;)
+        if verbose: print( u&#34;   \u0393s=&#34;,magphase_str(Gams1))
+        if verbose: print( u&#34;   \u0393l=&#34;,magphase_str(Gaml1))
+        Gaml=Gaml1
+        Gams=Gams1
+        stablegain=1;
+    if (abs(Gams2)&lt;0.99 and abs(Gaml2)&lt;0.99):
+        if verbose: print(&#34;&gt;&gt; Choosen Sol.2:&#34;)
+        if verbose: print(u&#34;   \u0393s=&#34;,magphase_str(Gams2))
+        if verbose: print(u&#34;   \u0393l=&#34;,magphase_str(Gaml2))
+        Gaml=Gaml2
+        Gams=Gams2
+        stablegain=1
+    if not(stablegain):
+        if verbose: print(&#34; ***** Geht Nicht Unstable *****&#34;)
+        raise ValueError(&#34;Unstable&#34;)
+        return 0,0,0
+    else:
+        if verbose: print(&#34;\n=== Transducer Power Gain: ===&#34;)
+        Gamin=S11+(S12*S21*Gaml)/(1-S22*Gaml)
+        Gamout=S22+(S12*S21*Gams)/(1-S11*Gams)
+        Gs=(1-abs(Gams)**2)/abs(1-Gamin*Gams)**2
+        G0=abs(S21)**2
+        Gl=(1-abs(Gaml)**2)/abs(1-S22*Gaml)**2
+        Gt=Gs*G0*Gl
+        GsdB=10*log10(Gs)
+        G0dB=10*log10(G0)
+        GldB=10*log10(Gl)
+        GtdB=GsdB+G0dB+GldB
+        if verbose: print(u&#34;Gt={0:.2f}*{1:.2f}*{2:.2f}={3:.2f}&#34;.format(Gs,G0,Gl,Gt))
+        if verbose: print(u&#34;GtdB={0:.2f}dB+{1:.2f}dB+{2:.2f}dB={3:.2f}dB&#34;.format(GsdB,G0dB,GldB,GtdB) )
+        return Gams,Gaml,GtdB</code></pre>
+</details>
+</dd>
+<dt id="mwave.AmpNoiseCircle"><code class="name flex">
+<span>def <span class="ident">AmpNoiseCircle</span></span>(<span>S, FmindB, Gamopt, rn, FsetdB, plotit)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def AmpNoiseCircle(S,FmindB,Gamopt,rn,FsetdB,plotit): 
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Delta=S11*S22-S12*S21
+    F=10**(FsetdB/10)
+    Fmin=10**(FmindB/10)
+    N=(F-Fmin)/4/rn*abs(1+Gamopt)**2
+    Cf=Gamopt/(N+1)
+    Rf=sqrt(N*(N+1-abs(Gamopt)**2))/(N+1)
+    fig, ax = (0,0)
+    if plotit:
+        fig, ax = plt.subplots() 
+        plt.tight_layout()
+        ax.set_title(&#39;Noise Circle&#39;, fontsize=15) 
+        fig.set_facecolor(&#39;white&#39;)
+        Z0=1 
+        mysmith=smi.smith(ax,&#39;smith&#39;,Z0,0.5)
+        mysmith.addcircle(Cf,Rf)
+    return Cf, Rf, N, fig, ax</code></pre>
+</details>
+</dd>
+<dt id="mwave.AmpStabilityCircle"><code class="name flex">
+<span>def <span class="ident">AmpStabilityCircle</span></span>(<span>S, plotit=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>calculate Stability Circles for given S-Matrix
+return: return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax
+when plotit is false:
+return Cs,Rs,Cl,Rl,mu1, mu2</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def AmpStabilityCircle(S,plotit=False): 
+    &#39;&#39;&#39;
+    calculate Stability Circles for given S-Matrix
+    return: return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax
+            when plotit is false: 
+            return Cs,Rs,Cl,Rl,mu1, mu2
+    &#39;&#39;&#39;
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    #print(u&#34;\n \u25AD\u25AD\u25AD\u25AD Stability \u25AD\u25AD\u25AD\u25AD&#34;)
+    Delta=S11*S22-S12*S21
+    #print(&#34;|Delta|=&#34;,abs(Delta))
+    Cl=conj(S22-Delta*conj(S11))/(abs(S22)**2-abs(Delta)**2)
+    Rl=abs(S12*S21/(abs(S22)**2-abs(Delta)**2))
+    Cs=conj(S11-Delta*conj(S22))/(abs(S11)**2-abs(Delta)**2)
+    Rs=abs(S12*S21/(abs(S11)**2-abs(Delta)**2))
+    mu1=(1-abs(S11)**2)/(abs(S22-Delta*conj(S11))+abs(S12*S21));
+    mu2=(1-abs(S22)**2)/(abs(S11-Delta*conj(S22))+abs(S12*S21));
+    k=(1-abs(S11)**2-abs(S22)**2+Delta**2)/(2*abs(S12*S21));
+
+    fig, ax = (0,0)
+    if plotit:
+        fig, ax = plt.subplots() 
+        plt.tight_layout()
+        ax.set_title(&#39;Stability Circles&#39;) 
+        fig.set_facecolor(&#39;white&#39;)
+        Z0=1 
+        mysmith=smi.smith(ax,&#39;smith&#39;,Z0,0.5)
+        mysmith.addcircle(Cl,Rl)
+        mysmith.addcircle(Cs,Rs,&#39;r&#39;)
+        #plt.savefig(&#39;stabcircles.pdf&#39;)
+        return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax
+    return Cs,Rs,Cl,Rl,mu1, mu2</code></pre>
+</details>
+</dd>
+<dt id="mwave.AmpStubmatching"><code class="name flex">
+<span>def <span class="ident">AmpStubmatching</span></span>(<span>Gammamatch, plotit=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs a complete open stub - line matching for a given desired input :math:<code>\Gamma</code></p>
+<p>Plots the smith chart with the constructed matching network </p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Gammamatch</code></strong> :&ensp;<code>complex</code></dt>
+<dd>desired input :math:<code>\Gamma</code></dd>
+<dt><strong><code>plotit</code></strong> :&ensp;<code>Boolean</code></dt>
+<dd>Flag for plotting, if True a Plot is generated</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple </code></dt>
+<dd>line length of stub (float), line length of line (float), fig, ax (handles of smith plot)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def AmpStubmatching(Gammamatch,plotit=False):
+    &#39;&#39;&#39;
+    Performs a complete open stub - line matching for a given desired input :math:`\Gamma`
+    
+    Plots the smith chart with the constructed matching network 
+    
+    Parameters
+    ----------
+    
+    Gammamatch : complex
+        desired input :math:`\Gamma` 
+    plotit : Boolean
+        Flag for plotting, if True a Plot is generated
+    
+    Returns
+    -------
+    
+    tuple 
+        line length of stub (float), line length of line (float), fig, ax (handles of smith plot)
+    &#39;&#39;&#39;
+
+    Z0=1
+    Z1=Z0
+    ### finding length of open stub line
+    for len1 in arange(0.001,1,0.001):
+        betal=2*pi*len1
+        Zstub=-1j*Z0/tan(betal)
+        Z2=Z1*Zstub/(Z1+Zstub)
+        Gam=(Z2-Z0)/(Z2+Z0)
+        if abs(Gam)&gt;abs(Gammamatch): break
+    ### finding length of inserted line
+    if(angle(Gam)&gt;angle(Gammamatch)):
+        betal=(angle(Gam)-angle(Gammamatch))/2
+    else:
+        betal=(angle(Gam)-angle(Gammamatch))/2+pi
+    len2=round(betal/2/pi,3)
+    #print(u&#34;stub length={0:.3f} \u03BB inserted line length={1:.3f}\u03BB&#34;.format(len1,len2))
+    if plotit:
+        fig, ax = plt.subplots()
+        fig.set_size_inches(6,6)
+        plt.tight_layout()
+        fig.set_facecolor(&#39;white&#39;)
+        plt.clf()
+        ax = plt.axes() 
+        Z0=1 
+        mysmith=smi.smith(ax,&#39;both&#39;,Z0) 
+        #mysmith.addanglering()
+        Zl=mysmith.addstart(1) 
+        Z2=mysmith.addstubopen(1,len1,1)    
+        Z3=mysmith.addline(Z2,len2,1)
+        mysmith.addpoint(1,&#39;$Z_{50}$&#39;,&#39;NE&#39;)
+        mysmith.addpoint(Z2,&#39;$Z_2$&#39;,&#39;NE&#39;) 
+        mysmith.addpoint(Z3,&#39;$Z_3$&#39;,&#39;NE&#39;)
+        return len1,len2, fig, ax
+    else:
+        return len1,len2,0,0</code></pre>
+</details>
+</dd>
+<dt id="mwave.LMatching"><code class="name flex">
+<span>def <span class="ident">LMatching</span></span>(<span>Zl, Z0=50, equaltype=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>see: Whites, EE 481/581, Lecture 7: Transmission Line Matching Using Lumped L Networks
+returns a dictionary with possible solutions
+when equaltype is True, both elements are chosen of same type, e.g. capacitor and capacitor</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def LMatching(Zl,Z0=50, equaltype=False):
+    &#39;&#39;&#39;
+    see: Whites, EE 481/581, Lecture 7: Transmission Line Matching Using Lumped L Networks
+    returns a dictionary with possible solutions
+    when equaltype is True, both elements are chosen of same type, e.g. capacitor and capacitor
+    &#39;&#39;&#39;
+    Rl = real(Zl)
+    Xl = imag(Zl)
+    Yl = 1/Zl
+    Gl = real(Yl)
+    Bl = imag(Yl)
+    if Rl &gt; Z0 or equaltype:
+        B1 = ( Xl + sqrt(Rl/Z0) * sqrt(Rl*(Rl-Z0)+Xl**2) ) / (Rl**2 + Xl**2)
+        X1 = 1/B1 + (Xl*Z0)/Rl - Z0/(B1*Rl)
+        B2 = ( Xl - sqrt(Rl/Z0) * sqrt(Rl*(Rl-Z0)+Xl**2) ) / (Rl**2 + Xl**2)
+        X2 = 1/B2 + (Xl*Z0)/Rl - Z0/(B2*Rl)  
+        if isnan(B1): raise ValueError(&#34;No Solution&#34;)
+        type = &#39;shunt-series&#39; 
+    else:
+        X1 = + sqrt(Rl*(Z0-Rl)) - Xl
+        B1 = + 1/Z0 * sqrt((Z0-Rl)/Rl)
+        X2 = - sqrt(Rl*(Z0-Rl)) - Xl
+        B2 = - 1/Z0 * sqrt((Z0-Rl)/Rl)
+        if isnan(B1): ValueError(&#34;No Solution&#34;)
+        type = &#39;series-shunt&#39;
+    return {&#39;sol1&#39;:(X1,B1),&#39;sol2&#39;:(X2,B2)}, type</code></pre>
+</details>
+</dd>
+<dt id="mwave.Sinterpolate"><code class="name flex">
+<span>def <span class="ident">Sinterpolate</span></span>(<span>fnewlist, flist, S)</span>
+</code></dt>
+<dd>
+<div class="desc"><pre><code class="language-python-repl">&gt;&gt;&gt; flist = array([1.0e9,1.5e9,2.0e9])
+&gt;&gt;&gt; fnewlist = arange(1.0e9,2.0e9,0.1e9)
+&gt;&gt;&gt; ABCD = ABCDseries(2j*pi*flist*10e-9)  # create an array of ABCD matrices for a 10nH inductror
+&gt;&gt;&gt; S = ABCDtoS(ABCD,50.0)
+&gt;&gt;&gt; Sinterpolate(fnewlist, flist, S)
+array([[[0.2830432 +0.45047724j, 0.7169568 -0.45047724j],
+        [0.7169568 -0.45047724j, 0.2830432 +0.45047724j]],
+&lt;BLANKLINE&gt;
+       [[0.32051719+0.46020656j, 0.67948281-0.46020656j],
+        [0.67948281-0.46020656j, 0.32051719+0.46020656j]],
+&lt;BLANKLINE&gt;
+       [[0.35799118+0.46993589j, 0.64200882-0.46993589j],
+        [0.64200882-0.46993589j, 0.35799118+0.46993589j]],
+&lt;BLANKLINE&gt;
+       [[0.39546517+0.47966521j, 0.60453483-0.47966521j],
+        [0.60453483-0.47966521j, 0.39546517+0.47966521j]],
+&lt;BLANKLINE&gt;
+       [[0.43293916+0.48939453j, 0.56706084-0.48939453j],
+        [0.56706084-0.48939453j, 0.43293916+0.48939453j]],
+&lt;BLANKLINE&gt;
+       [[0.47041315+0.49912385j, 0.52958685-0.49912385j],
+        [0.52958685-0.49912385j, 0.47041315+0.49912385j]],
+&lt;BLANKLINE&gt;
+       [[0.49878519+0.49674541j, 0.50121481-0.49674541j],
+        [0.50121481-0.49674541j, 0.49878519+0.49674541j]],
+&lt;BLANKLINE&gt;
+       [[0.52715723+0.49436697j, 0.47284277-0.49436697j],
+        [0.47284277-0.49436697j, 0.52715723+0.49436697j]],
+&lt;BLANKLINE&gt;
+       [[0.55552928+0.49198854j, 0.44447072-0.49198854j],
+        [0.44447072-0.49198854j, 0.55552928+0.49198854j]],
+&lt;BLANKLINE&gt;
+       [[0.58390132+0.4896101j , 0.41609868-0.4896101j ],
+        [0.41609868-0.4896101j , 0.58390132+0.4896101j ]]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Sinterpolate(fnewlist, flist, S):
+    &#39;&#39;&#39;
+    
+    &gt;&gt;&gt; flist = array([1.0e9,1.5e9,2.0e9])
+    &gt;&gt;&gt; fnewlist = arange(1.0e9,2.0e9,0.1e9)
+    &gt;&gt;&gt; ABCD = ABCDseries(2j*pi*flist*10e-9)  # create an array of ABCD matrices for a 10nH inductror
+    &gt;&gt;&gt; S = ABCDtoS(ABCD,50.0)
+    &gt;&gt;&gt; Sinterpolate(fnewlist, flist, S)
+    array([[[0.2830432 +0.45047724j, 0.7169568 -0.45047724j],
+            [0.7169568 -0.45047724j, 0.2830432 +0.45047724j]],
+    &lt;BLANKLINE&gt;
+           [[0.32051719+0.46020656j, 0.67948281-0.46020656j],
+            [0.67948281-0.46020656j, 0.32051719+0.46020656j]],
+    &lt;BLANKLINE&gt;
+           [[0.35799118+0.46993589j, 0.64200882-0.46993589j],
+            [0.64200882-0.46993589j, 0.35799118+0.46993589j]],
+    &lt;BLANKLINE&gt;
+           [[0.39546517+0.47966521j, 0.60453483-0.47966521j],
+            [0.60453483-0.47966521j, 0.39546517+0.47966521j]],
+    &lt;BLANKLINE&gt;
+           [[0.43293916+0.48939453j, 0.56706084-0.48939453j],
+            [0.56706084-0.48939453j, 0.43293916+0.48939453j]],
+    &lt;BLANKLINE&gt;
+           [[0.47041315+0.49912385j, 0.52958685-0.49912385j],
+            [0.52958685-0.49912385j, 0.47041315+0.49912385j]],
+    &lt;BLANKLINE&gt;
+           [[0.49878519+0.49674541j, 0.50121481-0.49674541j],
+            [0.50121481-0.49674541j, 0.49878519+0.49674541j]],
+    &lt;BLANKLINE&gt;
+           [[0.52715723+0.49436697j, 0.47284277-0.49436697j],
+            [0.47284277-0.49436697j, 0.52715723+0.49436697j]],
+    &lt;BLANKLINE&gt;
+           [[0.55552928+0.49198854j, 0.44447072-0.49198854j],
+            [0.44447072-0.49198854j, 0.55552928+0.49198854j]],
+    &lt;BLANKLINE&gt;
+           [[0.58390132+0.4896101j , 0.41609868-0.4896101j ],
+            [0.41609868-0.4896101j , 0.58390132+0.4896101j ]]])
+    &#39;&#39;&#39;   
+    S11=S[:,0,0]
+    S12=S[:,0,1]
+    S21=S[:,1,0]
+    S22=S[:,1,1]
+    
+    S11i = interp(fnewlist, flist, S11)
+    S12i = interp(fnewlist, flist, S12)
+    S21i = interp(fnewlist, flist, S21)
+    S22i = interp(fnewlist, flist, S22)
+    Si=array([[S11i,S12i],[S21i,S22i]])
+    Si=transpose(Si,(2,0,1))
+    return squeeze(Si)</code></pre>
+</details>
+</dd>
+<dt id="mwave.StoABCD"><code class="name flex">
+<span>def <span class="ident">StoABCD</span></span>(<span>S, Z0=50)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def StoABCD(S,Z0=50):
+    if shape(S) == (2,2):
+        S = array([S])
+   
+    S11=S[:,0,0]
+    S12=S[:,0,1]
+    S21=S[:,1,0]
+    S22=S[:,1,1]
+    A =      ((1+S11)*(1-S22)+S12*S21) / 2/S21
+    B = Z0*  ((1+S11)*(1+S22)-S12*S21) / 2/S21
+    C = 1/Z0*((1-S11)*(1-S22)-S12*S21) / 2/S21
+    D =      ((1-S11)*(1+S22)+S12*S21) / 2/S21
+    ABCD=array([[A,B],[C,D]])
+    ABCD=transpose(ABCD,(2,0,1))
+    return squeeze(ABCD)</code></pre>
+</details>
+</dd>
+<dt id="mwave.Svalue"><code class="name flex">
+<span>def <span class="ident">Svalue</span></span>(<span>f, flist, S)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>interpolates the S-matrix for a given freq piont</p>
+<p>f: freq. point to be interpolated
+flist: array of freq points (float)
+S: array of (2,2) matrices same size as flist
+return:
+S-matrix for point f</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Svalue(f,flist,S):
+    &#39;&#39;&#39;
+    interpolates the S-matrix for a given freq piont
+    
+    f: freq. point to be interpolated
+    flist: array of freq points (float)
+    S: array of (2,2) matrices same size as flist
+    return:
+    S-matrix for point f
+    &#39;&#39;&#39;
+    S11=S[:,0,0];S12=S[:,0,1];S21=S[:,1,0];S22=S[:,1,1]
+    if len(flist) != len(S11):
+        raise ValueError(&#34;Diffrent Length of f and S&#34;)
+    Si = zeros((2,2),dtype=complex)
+    Si[0,0] = interp(f,flist,S11)
+    Si[0,1] = interp(f,flist,S12)
+    Si[1,0] = interp(f,flist,S21)
+    Si[1,1] = interp(f,flist,S22)
+    return Si</code></pre>
+</details>
+</dd>
+<dt id="mwave.ZtoS"><code class="name flex">
+<span>def <span class="ident">ZtoS</span></span>(<span>Z, Z0=50)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ZtoS(Z,Z0=50):
+    Z11=Z[0,0]
+    Z12=Z[0,1]
+    Z21=Z[1,0]
+    Z22=Z[1,1]
+    S11 = ( (Z11-Z0)*(Z22+Z0)-Z12*Z21 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S12 = ( 2*Z12*Z0 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S21 = ( 2*Z21*Z0 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S22 = ( (Z11+Z0)*(Z22-Z0)-Z12*Z21 ) / ((Z11+Z0)*(Z22+Z0)-Z12*Z21)
+    S=matrix([[S11,S12],[S21,S22]])
+    return S</code></pre>
+</details>
+</dd>
+<dt id="mwave.cascade"><code class="name flex">
+<span>def <span class="ident">cascade</span></span>(<span>ABCDlist)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Cascades a list of 2x2 matrices, usually ABCD matrices</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; ABCDlist = []
+&gt;&gt;&gt; ABCDlist.append( ABCDseries(100) )
+&gt;&gt;&gt; ABCDlist.append( ABCDshunt(20) )
+&gt;&gt;&gt; ABCDlist.append( ABCDseries(50j) )
+&gt;&gt;&gt; cascade(ABCDlist)
+array([[2.001e+03     +0.j, 1.000e+02+100050.j],
+       [2.000e+01     +0.j, 1.000e+00  +1000.j]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cascade(ABCDlist):
+    &#39;&#39;&#39;
+    Cascades a list of 2x2 matrices, usually ABCD matrices
+    
+    Examples
+    --------
+    &gt;&gt;&gt; ABCDlist = []
+    &gt;&gt;&gt; ABCDlist.append( ABCDseries(100) )
+    &gt;&gt;&gt; ABCDlist.append( ABCDshunt(20) )
+    &gt;&gt;&gt; ABCDlist.append( ABCDseries(50j) )
+    &gt;&gt;&gt; cascade(ABCDlist)
+    array([[2.001e+03     +0.j, 1.000e+02+100050.j],
+           [2.000e+01     +0.j, 1.000e+00  +1000.j]])
+    
+    &#39;&#39;&#39;
+
+    try:
+      if ndim(ABCDlist) == 3:
+          fpoints = 0
+          blocks,two,two = shape(ABCDlist)
+          A = identity(2)
+      else:
+          blocks,fpoints,two,two = shape(ABCDlist)
+          A = broadcast_to(identity(2),(fpoints,2,2))
+      for ABCD in ABCDlist:
+          A = A @ ABCD
+      #print(&#34;Cascaded &#34;,blocks,&#34; ABCD-Blocks&#34;)
+      return A
+    except: 
+        print(&#34;in cascade: array not of shape n_blocks,freqpoints,2,2&#34;)</code></pre>
+</details>
+</dd>
+<dt id="mwave.coth"><code class="name flex">
+<span>def <span class="ident">coth</span></span>(<span>x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coth(x):
+    return 1/tanh(x)</code></pre>
+</details>
+</dd>
+<dt id="mwave.coupledlineCaps"><code class="name flex">
+<span>def <span class="ident">coupledlineCaps</span></span>(<span>w, h, s, epsr)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>used for the calculation of msCoupledLineImp</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coupledlineCaps(w,h,s,epsr):
+    &#39;&#39;&#39;
+    used for the calculation of msCoupledLineImp
+    &#39;&#39;&#39;
+    
+    Zc,epseff=msimpedance(w,h,epsr)
+    #print(Zc,epseff)
+    Cp   = eps0*epsr*w/h             # 4.24
+    Cf   = 1/2. * (sqrt(epseff)/(c*Zc) - Cp)  # 4.26
+    A =exp(-0.1*exp(2.33-2.53*w/h))     # 4.xx
+    Cfpr = Cf / ( 1+A*(h/s) *tanh(8*s/h))   # 4.26
+
+    Cgd = eps0*epsr/pi * log( coth(pi/4*s/h) ) + 0.65* Cf * (0.02*sqrt(epsr)/(s/h) + 1 - 1/epsr**2)
+
+    k = (s/h) / (s/h + 2*w/h)
+    
+    kpr = sqrt(1-k**2)
+
+    if     0&lt;k**2 and k**2&lt;0.5:
+        K_to_K = 1/pi* log(2* (1+sqrt(kpr)) / (1-sqrt(kpr)) ) 
+    elif 0.5&lt;k**2 and k**2&lt;1:
+        K_to_K = pi / log(2* (1+sqrt(k)) / (1-sqrt(k)) ) 
+    else:
+        print(&#34;Outside Range&#34;)
+        exit(1)
+
+    Cga = eps0*K_to_K
+
+    Ce = Cp + Cf + Cfpr
+    Co = Cp + Cf + Cgd + Cga
+    return Ce,Co</code></pre>
+</details>
+</dd>
+<dt id="mwave.hello"><code class="name flex">
+<span>def <span class="ident">hello</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hello():
+    print(&#34;Here is py-microwave Version:&#34;, __version__)</code></pre>
+</details>
+</dd>
+<dt id="mwave.latexMatrix"><code class="name flex">
+<span>def <span class="ident">latexMatrix</span></span>(<span>a, rnd=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a LaTeX bmatrix</p>
+<p>:a: numpy array
+:rnd:
+rounding digitrs, int
+:returns: LaTeX bmatrix as a string</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def latexMatrix(a,rnd=None):
+    &#34;&#34;&#34;Returns a LaTeX bmatrix
+
+    :a: numpy array
+    :rnd:  rounding digitrs, int
+    :returns: LaTeX bmatrix as a string
+    &#34;&#34;&#34;
+    set_printoptions(suppress=True)
+    if rnd is not None:
+        a = around(a,rnd)
+    if len(a.shape) &gt; 2:
+        raise ValueError(&#39;bmatrix can at most display two dimensions&#39;)
+    lines = str(a).replace(&#39;[&#39;, &#39;&#39;).replace(&#39;]&#39;, &#39;&#39;).replace(&#39;j&#39;,&#39;j,&#39;).replace(&#39;+0.j&#39;,&#39;&#39;).replace(&#39;. &#39;,&#39;&#39;).replace(&#39; 0 &#39;,&#39;&#39;).replace(&#39; &#39;,&#39;&#39;).splitlines()
+    rv = [r&#39;\begin{bmatrix}&#39;]
+    rv += [&#39;  &#39; + &#39; &amp; &#39;.join(l.rstrip(&#39;,&#39;).split(&#39;,&#39;)) + r&#39;\\&#39; for l in lines]
+    rv +=  [r&#39;\end{bmatrix}&#39;]
+
+    rv =  &#39;\n&#39;.join(rv)
+    rv = rv.replace(&#39; &#39;,&#39;&#39;)
+    return rv</code></pre>
+</details>
+</dd>
+<dt id="mwave.lineinputimpedance"><code class="name flex">
+<span>def <span class="ident">lineinputimpedance</span></span>(<span>Z0, Zl, betal)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates input impedance of a terminated line</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Z0</code></strong> :&ensp;<code>complex </code></dt>
+<dd>Line impedance in Ohm (type complex)</dd>
+<dt><strong><code>Zl</code></strong> :&ensp;<code>complex</code></dt>
+<dd>Load impedance in Ohm (type complex)</dd>
+<dt><strong><code>betal</code></strong> :&ensp;<code>float</code></dt>
+<dd>Electrical length :math:<code>\beta l</code> in radians (type float)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>complex
+Input impedance in Ohm </p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; Zin = lineinputimpedance(50,100,3.14/2)
+&gt;&gt;&gt; around(Zin)
+(25-0j)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def lineinputimpedance(Z0,Zl,betal):
+    r&#39;&#39;&#39;Calculates input impedance of a terminated line
+    
+    Parameters
+    ----------
+    Z0 : complex 
+        Line impedance in Ohm (type complex)
+    Zl : complex
+        Load impedance in Ohm (type complex)
+    betal : float
+        Electrical length :math:`\beta l` in radians (type float)
+    
+    Returns 
+    -------
+    complex
+        Input impedance in Ohm 
+    
+    Examples
+    --------
+    &gt;&gt;&gt; Zin = lineinputimpedance(50,100,3.14/2)
+    &gt;&gt;&gt; around(Zin)
+    (25-0j)
+    &#39;&#39;&#39;
+    
+    Zin = Z0 * (Zl+1j*Z0*tan(betal)) / (Z0+1j*Zl*tan(betal))
+    return Zin</code></pre>
+</details>
+</dd>
+<dt id="mwave.load_touchstone"><code class="name flex">
+<span>def <span class="ident">load_touchstone</span></span>(<span>filename, annotations=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loads a touchstone file in two lists </p>
+<pre><code>:filename: Touchstone filename including path (type string)
+</code></pre>
+<h2 id="returns">Returns</h2>
+<pre><code>tuple with: frequency list (type flaot)  S-matrix list (2x2 Matrix list of S Parameters)
+</code></pre>
+<h2 id="note">Note</h2>
+<p>currently works with 2x2 matrices only</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_touchstone(filename, annotations=False):
+    &#39;&#39;&#39;
+    Loads a touchstone file in two lists 
+    
+        :filename: Touchstone filename including path (type string)
+        
+    Returns 
+    -------
+        tuple with: frequency list (type flaot)  S-matrix list (2x2 Matrix list of S Parameters)
+       
+    Note
+    -----
+    
+    currently works with 2x2 matrices only
+    &#39;&#39;&#39;
+    
+    print(&#34;Load Touchstone file &#34;,filename)
+    f=open(filename,&#39;r&#39;, encoding = &#34;ISO-8859-1&#34;)
+    noise=False
+    if filename[-2] == &#39;1&#39;: 
+        Twoport = False
+    elif filename[-2] == &#39;2&#39;: 
+        Twoport = True
+    elif filename[-2:] == &#39;ts&#39;: 
+        Twoport = True
+    else:
+        print(&#39;Load Touchstone: Neither extension s1p or s2p , Exit&#39;)
+        raise NameError(&#39;Neither extension s1p or s2p&#39;)
+    anno = []
+    Slist=[];flist=[]
+    rad=pi/180.0
+    for line in f:
+        #print(line.strip())
+        if line[0]==&#39;!&#39;: 
+            anno.append(line)
+            if line.find(&#39;Fmin&#39;)&gt;0:
+                noise=True
+                #print(&#34;----- Here Noise Data start ------&gt;&#34;)
+            continue
+        if line[0]==&#39;#&#39;:
+            #print(&#34;Format is &#34;,line)
+            if &#39;HZ&#39; in line.upper(): factor=1e0
+            if &#39;KHZ&#39; in line.upper(): factor=1e3
+            if &#39;MHZ&#39; in line.upper(): factor=1e6
+            if &#39;GHZ&#39; in line.upper(): factor=1e9
+            if &#39;MA&#39; in line.upper():
+                sform =&#39;MA&#39;
+            elif &#39;RI&#39; in line.upper(): 
+                sform = &#39;RI&#39;
+            elif &#39;DB&#39; in line.upper(): 
+                sform =&#39;DB&#39;
+            else:
+                print(&#34;Data not in MA or RI Format&#34;)
+                raise RuntimeError(&#34;Data not in MA or RI Format&#34;)
+                return
+            continue
+        if len(line) &lt;10: continue ## empty line
+        if not(noise): ##### Spara Info
+            p=line.split()
+            p=[float(x) for x in p]
+            #print(&#34;f=&#34;,p[0],&#34;S11=&#34;,p[1], &#34;.....&#34;)
+            flist.append(float(p[0])*factor)
+            if sform==&#39;MA&#39;:
+                S11=p[1]*exp(1j*p[2]*rad)
+                S=S11
+                if Twoport:
+                    S21=p[3]*exp(1j*p[4]*rad)
+                    S12=p[5]*exp(1j*p[6]*rad)
+                    S22=p[7]*exp(1j*p[8]*rad)
+                    S=matrix([[S11,S12],[S21,S22]])
+                Slist.append(S)
+            if sform==&#39;RI&#39;:
+                S11=p[1]+p[2]*1j
+                S=S11
+                if Twoport:
+                    S21=p[3]+p[4]*1j
+                    S12=p[5]+p[6]*1j
+                    S22=p[7]+p[8]*1j
+                    S=matrix([[S11,S12],[S21,S22]])
+                Slist.append(S)
+            if sform==&#39;DB&#39;:
+                S11=10**(p[1]/20)*exp(1j*p[2]*rad)
+                S=S11
+                if Twoport:
+                    S21=10**(p[3]/20)*exp(1j*p[4]*rad)
+                    S12=10**(p[5]/20)*exp(1j*p[6]*rad)
+                    S22=10**(p[7]/20)*exp(1j*p[8]*rad)
+                    S=matrix([[S11,S12],[S21,S22]])
+                Slist.append(S)
+            #print S
+        if (noise): ##### Noise Info
+            pass
+    flist = array(flist)
+    Slist = array(Slist)
+    if annotations:
+        return flist,Slist,anno
+    else:
+        return flist,Slist</code></pre>
+</details>
+</dd>
+<dt id="mwave.magphase"><code class="name flex">
+<span>def <span class="ident">magphase</span></span>(<span>A, phi)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a complex number from
+magnitude and phase (in degrees)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def magphase(A,phi):
+    &#39;&#39;&#39;Returns a complex number from  magnitude and phase (in degrees)
+    &#39;&#39;&#39;
+    return A*exp(1j*phi*pi/180.0)</code></pre>
+</details>
+</dd>
+<dt id="mwave.magphase_latex"><code class="name flex">
+<span>def <span class="ident">magphase_latex</span></span>(<span>c)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def magphase_latex(c):
+   return r&#39;{0:6.3f}\angle {1:5.1f}^\circ&#39;.format(abs(c),angle(c)*180/pi)     </code></pre>
+</details>
+</dd>
+<dt id="mwave.magphase_str"><code class="name flex">
+<span>def <span class="ident">magphase_str</span></span>(<span>c)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a nicely formatted string to print complex numbers in ampl. and phase</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def magphase_str(c):
+    &#39;&#39;&#39; Returns a nicely formatted string to print complex numbers in ampl. and phase
+    &#39;&#39;&#39;
+    return u&#39;{0:6.3f}\u2220{1:5.1f}\u00B0&#39;.format(abs(c),angle(c)*180/pi)</code></pre>
+</details>
+</dd>
+<dt id="mwave.magphase_tuple"><code class="name flex">
+<span>def <span class="ident">magphase_tuple</span></span>(<span>c)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a tuple with (magn,phase) to print complex numbers in ampl. and phase</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def magphase_tuple(c):
+    &#39;&#39;&#39; Returns a tuple with (magn,phase) to print complex numbers in ampl. and phase
+    &#39;&#39;&#39;
+    return ( abs(c) , angle(c)*180/pi )</code></pre>
+</details>
+</dd>
+<dt id="mwave.mdifbiaslist"><code class="name flex">
+<span>def <span class="ident">mdifbiaslist</span></span>(<span>filename)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Shows the possible bias points of a mdif file
+:param filename: mdif file
+:return: a list of biases</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mdifbiaslist(filename):
+    &#39;&#39;&#39;
+    Shows the possible bias points of a mdif file
+    :param filename: mdif file
+    :return: a list of biases
+    &#39;&#39;&#39;
+    f=open(filename,&#39;r&#39;)
+    line = f.readlines()
+    i=0
+    biaslist = []
+    while i&lt; len(line):
+        if &#39;VAR Vc&#39; in line[i]:
+            if not &#39;Ic&#39; in line[i+1]: 
+                raise valueerror(&#39;No Vc,Ic VAR defined in mdif&#39;)
+            valueV = re.findall(&#34;\d+\.\d+&#34;, line[i])[0]
+            valueI = re.findall(&#34;\d+\.\d+&#34;, line[i+1])[0]
+            biaslist.append((float(valueV),float(valueI)))
+            i += 1   
+        i += 1
+    if biaslist == []: raise valueerror(&#39;No Vc,Ic VAR defined in mdif&#39;)
+    return biaslist</code></pre>
+</details>
+</dd>
+<dt id="mwave.mdifnoiselist"><code class="name flex">
+<span>def <span class="ident">mdifnoiselist</span></span>(<span>filename, Vc, Ic)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mdifnoiselist(filename,Vc,Ic):
+    f=open(filename,&#39;r&#39;)
+    line = f.readlines()
+    i=0
+    biaslist = []
+    while i&lt; len(line):
+        if &#39;VAR Vc&#39; in line[i]:
+            valueV = float(re.findall(&#34;\d+\.\d+&#34;, line[i])[0])
+            valueI = float(re.findall(&#34;\d+\.\d+&#34;, line[i+1])[0])
+            if valueV == Vc and valueI == Ic:
+                #print(&#34;Biaspoint found&#34;, valueV, valueI)
+                i+=  2
+                while i&lt; len(line):
+                    if (&#39;BEGIN NDATA&#39; in line[i]): break
+                    i += 1
+                if i == len(line): raise ValueError(&#39;MDIF no BEGIN NDATA found &#39;)
+                i += 1
+                if not &#39;#&#39; in line[i]: raise ValueError(&#39;MDIF Wrong Format no # Format found found &#39;)
+                if &#39;HZ&#39;  in line[i]: factor=1e0
+                if &#39;MHZ&#39; in line[i]: factor=1e6
+                if &#39;GHZ&#39; in line[i]: factor=1e9
+                if &#39;MA&#39; in line[i]:
+                    sform =&#39;MA&#39;
+                elif &#39;RI&#39; in line[i]: 
+                    sform = &#39;RI&#39;
+                else:
+                    raise RuntimeError(&#34;MDIF Data not in MA or RI Format&#34;)
+            
+                i += 2
+                ##### Start of spar found reading data ###################
+                flist = []
+                Nfminlist = []
+                Gamoptlist = []
+                Rnlist = []
+                while not (&#39;END&#39; in line[i]): 
+                    p=line[i].split()
+                    p=[float(x) for x in p]
+                    #print(&#34;f=&#34;,p[0],&#34;S11=&#34;,p[1], &#34;.....&#34;)
+                    flist.append(p[0]*factor)
+                    Nfminlist.append(p[1])    ### min Noisefigure
+                    if sform==&#39;MA&#39;:
+                        Gamoptlist.append(p[2]*exp(1j*p[3]*rad)) ## Gamma Opt. 
+                    if sform==&#39;RI&#39;:
+                        Gamoptlist.append(p[2]+p[3]*1j)
+                    Rnlist.append(p[4])
+                    i += 1
+                if flist == []:
+                    print(&#39;MDIF: No Noise data defined&#39;)
+                return flist, Nfminlist, Gamoptlist, Rnlist
+                ### end of spar data read 
+                
+        i += 1
+    raise ValueError(&#39;Specific Vc,Ic not defined in mdif&#39;)
+    return </code></pre>
+</details>
+</dd>
+<dt id="mwave.mdifsparlist"><code class="name flex">
+<span>def <span class="ident">mdifsparlist</span></span>(<span>filename, Vc, Ic)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mdifsparlist(filename,Vc,Ic):
+    f=open(filename,&#39;r&#39;)
+    line = f.readlines()
+    i=0
+    biaslist = []
+    while i&lt; len(line):
+        if &#39;VAR Vc&#39; in line[i]:
+            try:
+                valueV = float(re.findall(&#34;\d+\.\d+&#34;, line[i])[0])
+            except:
+                valueV = float(re.findall(&#34;\d+\\d+&#34;, line[i])[0])
+            try:
+                valueI = float(re.findall(&#34;\d+\.\d+&#34;, line[i+1])[0])
+            except: 
+                valueI = float(re.findall(&#34;\d+\\d+&#34;, line[i+1])[0])
+            if valueV == Vc and valueI == Ic:
+                #print(&#34;Biaspoint found&#34;, valueV, valueI)
+                if not (&#39;BEGIN ACDATA&#39; in line[i+2]): raise ValueError(&#39;MDIF Wrong Format no BEGIN ACDATA found &#39;)
+                i +=3
+                #print(line[i])
+                if not &#39;#&#39; in line[i]: raise ValueError(&#39;MDIF Wrong Format no # Format found found &#39;)
+                if &#39;HZ&#39;  in line[i]: factor=1e0
+                if &#39;MHZ&#39; in line[i]: factor=1e6
+                if &#39;GHZ&#39; in line[i]: factor=1e9
+                if &#39;MA&#39; in line[i]:
+                    sform =&#39;MA&#39;
+                elif &#39;RI&#39; in line[i]: 
+                    sform = &#39;RI&#39;
+                else:
+                    raise RuntimeError(&#34;MDIF Data not in MA or RI Format&#34;)
+                #print(sform, factor)
+                i += 2
+                
+                ##### Start of spar found reading data ###################
+                flist = []
+                Slist = []
+                while not &#39;END&#39; in line[i]: 
+                    p=line[i].split()
+                    p=[float(x) for x in p]
+                    #print(&#34;f=&#34;,p[0],&#34;S11=&#34;,p[1], &#34;.....&#34;)
+                    flist.append(float(p[0])*factor)
+                    if sform==&#39;MA&#39;:
+                        S11=p[1]*exp(1j*p[2]*rad)
+                        S21=p[3]*exp(1j*p[4]*rad)
+                        S12=p[5]*exp(1j*p[6]*rad)
+                        S22=p[7]*exp(1j*p[8]*rad)
+                    if sform==&#39;RI&#39;:
+                        S11=p[1]+p[2]*1j
+                        S21=p[3]+p[4]*1j
+                        S12=p[5]+p[6]*1j
+                        S22=p[7]+p[8]*1j
+                    S=matrix([[S11,S12],[S21,S22]])
+                    Slist.append(S)
+                    i += 1
+                return flist, Slist
+                ### end of spar data read 
+                
+        i += 1
+    raise ValueError(&#39;Specific Vc,Ic not defined in mdif&#39;)
+    return </code></pre>
+</details>
+</dd>
+<dt id="mwave.msCoupledLineImp"><code class="name flex">
+<span>def <span class="ident">msCoupledLineImp</span></span>(<span>w, h, s, epsr)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates microstrip even and odd impedances of a coupled microstrip line </p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>w</code></strong> :&ensp;<code>float</code></dt>
+<dd>width of Microstrip-line</dd>
+<dt><strong><code>h</code></strong> :&ensp;<code>float</code></dt>
+<dd>height of substrate</dd>
+<dt><strong><code>s</code></strong> :&ensp;<code>float</code></dt>
+<dd>gap between lines</dd>
+<dt><strong><code>er</code></strong> :&ensp;<code>float</code></dt>
+<dd>Epsilon relative of substrate</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(float, float)
+even and odd impedance of coupled lines</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; msCoupledLineImp(1.5,0.5,0.2,2.56)
+(55.6657732006762, 36.95927306032294)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def msCoupledLineImp(w,h,s,epsr):
+    &#39;&#39;&#39;
+    Calculates microstrip even and odd impedances of a coupled microstrip line 
+    
+    Parameters
+    ----------
+    
+    w : float
+        width of Microstrip-line 
+    h : float
+        height of substrate 
+    s : float
+        gap between lines         
+    er : float
+        Epsilon relative of substrate
+    
+    Returns
+    -------
+    
+    (float, float)
+        even and odd impedance of coupled lines
+     
+    Examples
+    --------    
+    
+    &gt;&gt;&gt; msCoupledLineImp(1.5,0.5,0.2,2.56)
+    (55.6657732006762, 36.95927306032294)
+    &#39;&#39;&#39;
+    Ce,Co = coupledlineCaps(w,h,s,epsr)
+    Cae,Cao = coupledlineCaps(w,h,s,1.0)
+    Ze = (c * sqrt(Cae*Ce))**-1  # 4.29
+    Zo = (c * sqrt(Cao*Co))**-1  # 4.30
+    return Ze,Zo</code></pre>
+</details>
+</dd>
+<dt id="mwave.msVia"><code class="name flex">
+<span>def <span class="ident">msVia</span></span>(<span>h, D)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates inductance of a MS Via</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>h</code></strong> :&ensp;<code>float</code></dt>
+<dd>height of substrate</dd>
+<dt><strong><code>D</code></strong> :&ensp;<code>float</code></dt>
+<dd>Diameter of via</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>Inductance of via in Henry</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; msVia(1.5e-3,0.9e-3)
+2.408551487285845e-10
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def msVia(h,D):
+    &#39;&#39;&#39;
+    Calculates inductance of a MS Via
+
+    Parameters
+    ----------
+
+    h : float
+        height of substrate
+    D : float
+        Diameter of via
+
+    Returns
+    -------
+
+    float
+        Inductance of via in Henry
+
+    Examples
+    --------
+
+    &gt;&gt;&gt; msVia(1.5e-3,0.9e-3)
+    2.408551487285845e-10
+    &#39;&#39;&#39;
+
+    r = D/2
+    L = mu0/2/pi * ( h*log( (h + sqrt(r*r+h*h)) / r )  + 3/2 * (r-sqrt(r*r+h*h)) )
+    return L</code></pre>
+</details>
+</dd>
+<dt id="mwave.msdimension"><code class="name flex">
+<span>def <span class="ident">msdimension</span></span>(<span>Z0wanted, elen, f, h, epsr)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates microstrip line dimensions from the impedance, elec. length</p>
+<h2 id="note">Note</h2>
+<p>This function uses an optimizer to find the dimensions</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Z0wanted</code></strong> :&ensp;<code>float</code></dt>
+<dd>Impedance of MS-line</dd>
+<dt><strong><code>elen</code></strong> :&ensp;<code>float</code></dt>
+<dd>elec length of line in :math:<code>\lambda</code></dd>
+<dt><strong><code>f</code></strong> :&ensp;<code>float</code></dt>
+<dd>frequency</dd>
+<dt><strong><code>h</code></strong> :&ensp;<code>float</code></dt>
+<dd>height of substrate in mm</dd>
+<dt><strong><code>epsr</code></strong> :&ensp;<code>float</code></dt>
+<dd>Epsilon relative of substrate</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>tuple
+w,l, epseff </p>
+<h2 id="examples">Examples</h2>
+<p>Here is an Example</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; msdimension(50,1/4.,2e9,0.83,3.55)
+(1.867, 0.02248463090701959, 2.7815765073092837)
+&gt;&gt;&gt; msdimension(2,1/4.,2e9,0.83,3.55)
+Traceback (most recent call last):
+    ...  
+ValueError: could not find solution in msdimension for 2.000000 Ohms
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def msdimension(Z0wanted,elen,f,h,epsr):
+
+    r&#39;&#39;&#39;
+    Calculates microstrip line dimensions from the impedance, elec. length
+    
+    Note
+    ----
+    This function uses an optimizer to find the dimensions
+    
+    Parameters
+    -----------
+    
+    Z0wanted : float
+        Impedance of MS-line 
+    elen : float
+        elec length of line in :math:`\lambda` 
+    f : float
+        frequency 
+    h : float
+        height of substrate in mm 
+    epsr : float
+        Epsilon relative of substrate 
+        
+    Returns  
+    --------
+    
+    tuple
+        w,l, epseff 
+    
+    
+    Examples
+    --------
+    Here is an Example
+    
+    &gt;&gt;&gt; msdimension(50,1/4.,2e9,0.83,3.55)
+    (1.867, 0.02248463090701959, 2.7815765073092837)
+    &gt;&gt;&gt; msdimension(2,1/4.,2e9,0.83,3.55)
+    Traceback (most recent call last):
+        ...  
+    ValueError: could not find solution in msdimension for 2.000000 Ohms
+    &#39;&#39;&#39;
+
+    lam0=3e8/f
+    imp= lambda w:  msimpedance(w,h,epsr)[0]-Z0wanted
+    try:
+        result = brentq(imp,0.002*h,20.0*h) 
+    except:
+        raise ValueError(&#39;could not find solution in msdimension for %f Ohms&#39; % (Z0wanted))
+    w=round(result,4)
+    Z0,epseff=msimpedance(w,h,epsr)
+    lamms=lam0/sqrt(epseff)
+    l = elen * lamms
+    return (w,l,epseff)</code></pre>
+</details>
+</dd>
+<dt id="mwave.msimpedance"><code class="name flex">
+<span>def <span class="ident">msimpedance</span></span>(<span>w, h, er)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates microstrip line impedance :math:<code>Z_0</code> and :math:<code>\epsilon_{eff}</code> from Wheeler formula </p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>w</code></strong> :&ensp;<code>float</code></dt>
+<dd>width of Microstrip-line</dd>
+<dt><strong><code>h</code></strong> :&ensp;<code>float</code></dt>
+<dd>height of substrate</dd>
+<dt><strong><code>er</code></strong> :&ensp;<code>float</code></dt>
+<dd>Epsilon relative of substrate</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>Z0, eps_eff</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; msimpedance(1.8,0.83,3.55)
+(51.129452787061204, 2.773818757727919)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def msimpedance(w,h,er):
+  &#39;&#39;&#39;
+    Calculates microstrip line impedance :math:`Z_0` and :math:`\epsilon_{eff}` from Wheeler formula 
+    
+    Parameters
+    ----------
+    
+    w : float
+        width of Microstrip-line 
+    h : float
+        height of substrate 
+    er : float
+        Epsilon relative of substrate
+    
+    Returns
+    -------
+    
+    tuple
+        Z0, eps_eff 
+     
+    Examples
+    --------    
+    
+    &gt;&gt;&gt; msimpedance(1.8,0.83,3.55)
+    (51.129452787061204, 2.773818757727919)
+  &#39;&#39;&#39;
+
+  eta0=377
+  if(w/h&lt;=1):
+      F=1/sqrt(1+12*h/w)+0.004*(1-w/h)**2
+  else:
+      F=1/sqrt(1+12*h/w)
+  e_eff=0.5*(er+1+(er-1)*F)
+
+  if(w/h&lt;=1): 
+      Z0=eta0/sqrt(e_eff)*1/2/pi*log(8*h/w+0.25*w/h)
+  else:
+      Z0=eta0/sqrt(e_eff)*1/(w/h+2.46-0.49*h/w+(1-h/w)**6)
+  return Z0,e_eff</code></pre>
+</details>
+</dd>
+<dt id="mwave.mufactor"><code class="name flex">
+<span>def <span class="ident">mufactor</span></span>(<span>S)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>calculate Mu Factor for an S-parameter Array list</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mufactor(S):
+    &#39;&#39;&#39;
+    calculate Mu Factor for an S-parameter Array list
+    &#39;&#39;&#39;
+    
+    S11=S[:,0,0];S12=S[:,0,1];S21=S[:,1,0];S22=S[:,1,1]
+    Delta=S11*S22-S12*S21
+    mu1=(1-abs(S11)**2)/(abs(S22-Delta*conj(S11))+abs(S12*S21))
+    mu2=(1-abs(S22)**2)/(abs(S11-Delta*conj(S22))+abs(S12*S21))
+    return mu1, mu2</code></pre>
+</details>
+</dd>
+<dt id="mwave.plotspar"><code class="name flex">
+<span>def <span class="ident">plotspar</span></span>(<span>flist, Slist=array([0]))</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plotspar(flist,Slist=array([0])):
+    fig,ax = plt.subplots(figsize=(10,6))
+    flist=array(flist)
+    if len(Slist) &gt; 1:
+        S11list=array([Slist[i][0,0] for i in range(len(Slist))])
+        S12list=array([Slist[i][0,1] for i in range(len(Slist))])
+        S21list=array([Slist[i][1,0] for i in range(len(Slist))])
+        S22list=array([Slist[i][1,1] for i in range(len(Slist))])
+        ax.plot(flist,20*log10(abs(S11list)),label=&#39;$S_{11}$&#39;)
+        ax.plot(flist,20*log10(abs(S21list)),label=&#39;$S_{21}$&#39;)
+        ax.plot(flist,20*log10(abs(S12list)),label=&#39;$S_{12}$&#39;)
+        ax.plot(flist,20*log10(abs(S22list)),label=&#39;$S_{22}$&#39;)
+        plt.legend(loc=4)
+    else:
+        print(&#34;Create empty Chart&#34;)
+    plt.xlabel(&#39;Freq in Hz&#39;)
+    plt.ylabel(&#39;S in dB&#39;)
+    plt.grid()
+    plt.ylim(-50,5)
+    plt.title(&#34;S-Parameter Response&#34;)
+    plt.tight_layout()
+    return fig,ax</code></pre>
+</details>
+</dd>
+<dt id="mwave.polar"><code class="name flex">
+<span>def <span class="ident">polar</span></span>(<span>mag, ang, isDegrees=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>takes a complex number in polar and returns the complex number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def polar(mag,ang,isDegrees=True):
+    &#39;&#39;&#39;
+    takes a complex number in polar and returns the complex number
+
+    &#39;&#39;&#39;
+    fac = 1
+    if isDegrees:
+        fac = pi/180
+    return mag*exp(1j*ang*fac)</code></pre>
+</details>
+</dd>
+<dt id="mwave.save_touchstone"><code class="name flex">
+<span>def <span class="ident">save_touchstone</span></span>(<span>filename, flist, slist, annotations='Touchstone file created by python mwave module ')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>saves a touchstone file of two lists </p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>string </code></dt>
+<dd>name of touchstone file
+shall end with .s2p</dd>
+<dt><strong><code>flist</code></strong> :&ensp;<code>array</code> or <code>list</code></dt>
+<dd>list of frequency values</dd>
+<dt><strong><code>slist</code></strong> :&ensp;<code>array</code> of <code>2x2 arrays</code></dt>
+<dd>list or array of 2x2 matrices with S-parameters</dd>
+<dt><strong><code>annotations</code></strong> :&ensp;<code>string</code></dt>
+<dd>annotations in the header of the file e.g. time</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>nothing</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; filename = &quot;touchstone.s2p&quot;
+&gt;&gt;&gt; flist = array([1e9,2e9,2.2e9])
+&gt;&gt;&gt; S1 = array([[0.2,0.3],[0.4,0.5-1j]])
+&gt;&gt;&gt; S2 = array([[0.5,0.333],[0.34,0.35-0.44j]])
+&gt;&gt;&gt; S3 = array([[0.11,0.234],[0.554,0.55-.55j]])
+&gt;&gt;&gt; slist = array([S1,S2,S3])
+&gt;&gt;&gt; save_touchstone(filename, flist, slist)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_touchstone(filename, flist, slist, annotations = &#34;Touchstone file created by python mwave module &#34;):
+    
+    &#39;&#39;&#39;
+    saves a touchstone file of two lists 
+       
+    Parameters
+    ----------
+    filename : string 
+        name of touchstone file  shall end with .s2p
+    flist : array or list
+        list of frequency values
+    slist : array of 2x2 arrays
+        list or array of 2x2 matrices with S-parameters
+    annotations : string
+        annotations in the header of the file e.g. time 
+    Returns 
+    -------
+    nothing
+    
+    Examples
+    --------
+    &gt;&gt;&gt; filename = &#34;touchstone.s2p&#34;
+    &gt;&gt;&gt; flist = array([1e9,2e9,2.2e9])
+    &gt;&gt;&gt; S1 = array([[0.2,0.3],[0.4,0.5-1j]])
+    &gt;&gt;&gt; S2 = array([[0.5,0.333],[0.34,0.35-0.44j]])
+    &gt;&gt;&gt; S3 = array([[0.11,0.234],[0.554,0.55-.55j]])
+    &gt;&gt;&gt; slist = array([S1,S2,S3])
+    &gt;&gt;&gt; save_touchstone(filename, flist, slist)
+        
+    &#39;&#39;&#39;
+    
+    # check for consistent data 
+    if len(flist) != len(slist):
+        raise ValueError(&#39;length of flist and slist do not match in save touchstone!&#39;)
+        return
+    if shape(slist)[1:3] != (2,2) and ndim(slist) != 1:
+        raise ValueError(&#39;No 2x2 matrices in touchstone swrite!&#39;)
+        return
+    
+    f=open(filename,&#39;w&#39;, encoding = &#34;ISO-8859-1&#34;)
+    noise=False
+    f.write(&#39;! \n&#39;)
+    f.write(&#39;! Export of Touchstone Data from mwave.py Module Author: S.F. Peik \n&#39;)
+    f.write(&#39;! \n&#39;)
+    f.write(&#39;!&#39;+annotations +&#39;\n&#39;)
+    f.write(&#39;!---------------------------------------------------------------------\n&#39;)
+    f.write(&#39;! symbol freq-unit parameter-type data-format keyword impedance-ohm\n&#39;)
+    f.write(&#39;#        HZ        S              RI          R       50\n&#39;)
+    f.write(&#39;!---------------------------------------------------------------------\n&#39;)
+    if ndim(slist) == 1:
+        # -- One Port parameter -----------
+        f.write(&#39;! freq       reS11      imS11 \n&#39;)
+        s11 = slist
+        for i in range(len(flist)):
+            l = &#34;{:10.1f} {: 3.9f} {: 3.9f}&#34;.format(flist[i],real(s11[i]), imag(s11[i]))
+            f.write(l+&#34;\n&#34;)
+    else:
+        #--- two-port paramter -----------
+        s11,s12,s21,s22 = splitmatrixarray(slist)
+        for i in range(len(flist)):
+            l = &#34;{:10.1f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} {: 3.9f} &#34;.format(flist[i],real(s11[i]), imag(s11[i]), real(s12[i]), imag(s12[i]), real(s21[i]), imag(s21[i]), real(s22[i]), imag(s22[i]), )
+            f.write(l+&#34;\n&#34;)
+    f.close()
+    return</code></pre>
+</details>
+</dd>
+<dt id="mwave.scombine"><code class="name flex">
+<span>def <span class="ident">scombine</span></span>(<span>s11, s12, s21, s22)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>combines 4 lists of S-paramters into
+1 list with matrices</p>
+<p>currently two by two matirces only</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>s11</code></strong> :&ensp;<code>complex</code></dt>
+<dd>S_11 Parameter and so on</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; S11 = [0.1,0.2,0.3]
+&gt;&gt;&gt; S12 = [0.6,0.7,0.8]
+&gt;&gt;&gt; S21 = [0.1,0.0,0.4]
+&gt;&gt;&gt; S22 = [-0.3,-0.1,0.9]
+&gt;&gt;&gt; scombine(S11,S12,S21,S22)
+array([[[ 0.1+0.j,  0.1+0.j],
+        [ 0.1+0.j, -0.3+0.j]],
+&lt;BLANKLINE&gt;
+       [[ 0.2+0.j,  0. +0.j],
+        [ 0. +0.j, -0.1+0.j]],
+&lt;BLANKLINE&gt;
+       [[ 0.3+0.j,  0.4+0.j],
+        [ 0.4+0.j,  0.9+0.j]]])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scombine(s11,s12,s21,s22):
+    &#39;&#39;&#39;
+    combines 4 lists of S-paramters into  1 list with matrices
+    
+    currently two by two matirces only
+    
+    Parameters
+    ----------
+    
+    s11 : complex
+        S_11 Parameter and so on 
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; S11 = [0.1,0.2,0.3]
+    &gt;&gt;&gt; S12 = [0.6,0.7,0.8]
+    &gt;&gt;&gt; S21 = [0.1,0.0,0.4]
+    &gt;&gt;&gt; S22 = [-0.3,-0.1,0.9]
+    &gt;&gt;&gt; scombine(S11,S12,S21,S22)
+    array([[[ 0.1+0.j,  0.1+0.j],
+            [ 0.1+0.j, -0.3+0.j]],
+    &lt;BLANKLINE&gt;
+           [[ 0.2+0.j,  0. +0.j],
+            [ 0. +0.j, -0.1+0.j]],
+    &lt;BLANKLINE&gt;
+           [[ 0.3+0.j,  0.4+0.j],
+            [ 0.4+0.j,  0.9+0.j]]])
+
+    &#39;&#39;&#39;
+    S = zeros( (len(s11), 2, 2),dtype=&#34;complex&#34; )
+    for ii in range(len(s11)):
+        S[ii] = array([[s11[ii],s21[ii]],[s21[ii],s22[ii]]])  
+    return S</code></pre>
+</details>
+</dd>
+<dt id="mwave.splitmatrixarray"><code class="name flex">
+<span>def <span class="ident">splitmatrixarray</span></span>(<span>S)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>....splits list of matrices into
+lists of the individual elements
+currently two by two matirces only</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def splitmatrixarray(S):
+    &#39;&#39;&#39;
+....splits list of matrices into  lists of the individual elements
+    currently two by two matirces only
+    &#39;&#39;&#39;
+    S11 = S[:,0,0]
+    S12 = S[:,0,1]
+    S21 = S[:,1,0]
+    S22 = S[:,1,1]
+    return S11,S12,S21,S22</code></pre>
+</details>
+</dd>
+<dt id="mwave.ssplit"><code class="name flex">
+<span>def <span class="ident">ssplit</span></span>(<span>S)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>splits list of matrices into
+lists of the individual elements</p>
+<p>currently two by two matirces only</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; S = array([[[ 0.1+0.j,  0.1+0.j],[ 0.1+0.j, -0.3+0.j]],[[ 0.2+0.j,  0. +0.j],[ 0. +0.j, -0.1+0.j]],[[ 0.3+0.j,  0.4+0.j],[ 0.4+0.j,  0.9+0.j]]]) 
+&gt;&gt;&gt; SSS = ssplit(S)
+&gt;&gt;&gt; for S in SSS: print(S)
+[0.1+0.j 0.2+0.j 0.3+0.j]
+[0.1+0.j 0. +0.j 0.4+0.j]
+[0.1+0.j 0. +0.j 0.4+0.j]
+[-0.3+0.j -0.1+0.j  0.9+0.j]
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ssplit(S):
+    &#39;&#39;&#39;
+    splits list of matrices into  lists of the individual elements
+    
+    currently two by two matirces only
+    
+    Examples
+    --------
+    
+    &gt;&gt;&gt; S = array([[[ 0.1+0.j,  0.1+0.j],[ 0.1+0.j, -0.3+0.j]],[[ 0.2+0.j,  0. +0.j],[ 0. +0.j, -0.1+0.j]],[[ 0.3+0.j,  0.4+0.j],[ 0.4+0.j,  0.9+0.j]]]) 
+    &gt;&gt;&gt; SSS = ssplit(S)
+    &gt;&gt;&gt; for S in SSS: print(S)
+    [0.1+0.j 0.2+0.j 0.3+0.j]
+    [0.1+0.j 0. +0.j 0.4+0.j]
+    [0.1+0.j 0. +0.j 0.4+0.j]
+    [-0.3+0.j -0.1+0.j  0.9+0.j]
+
+    &#39;&#39;&#39;
+    S11 = S[:,0,0]
+    S12 = S[:,0,1]
+    S21 = S[:,1,0]
+    S22 = S[:,1,1]
+    return S11,S12,S21,S22</code></pre>
+</details>
+</dd>
+<dt id="mwave.transducerGain"><code class="name flex">
+<span>def <span class="ident">transducerGain</span></span>(<span>S, Gams, Gaml)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the transducer gain for a given S-Matrix
+and Γ_s and Γ_l</p>
+<h2 id="parameters">Parameters</h2>
+<p>:param S: (2x2 Matrix complex) or array of matrices
+:param Gams: Γ_s (complex)
+:param Gaml: Γ_l (complex)
+:return: Transducer Gain Gt in dB (float or array float)</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
+&gt;&gt;&gt; Gam_s, Gam_l = 0.3, 0.1-0.5j
+&gt;&gt;&gt; GtdB = transducerGain(S, Gam_s, Gam_l)
+&gt;&gt;&gt; GtdB
+16.51983047097562
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def transducerGain(S, Gams, Gaml):
+    &#39;&#39;&#39;
+    Calculates the transducer gain for a given S-Matrix
+    and Γ_s and Γ_l
+
+    Parameters
+    ----------
+    :param S: (2x2 Matrix complex) or array of matrices
+    :param Gams: Γ_s (complex)
+    :param Gaml: Γ_l (complex)
+    :return: Transducer Gain Gt in dB (float or array float)
+
+    Example
+    -------
+    &gt;&gt;&gt; S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
+    &gt;&gt;&gt; Gam_s, Gam_l = 0.3, 0.1-0.5j
+    &gt;&gt;&gt; GtdB = transducerGain(S, Gam_s, Gam_l)
+    &gt;&gt;&gt; GtdB
+    16.51983047097562
+
+    &#39;&#39;&#39;
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Gamin = S11 + (S12 * S21 * Gaml) / (1 - S22 * Gaml)
+    Gamout = S22 + (S12 * S21 * Gams) / (1 - S11 * Gams)
+    Gs = (1 - abs(Gams) ** 2) / abs(1 - Gamin * Gams) ** 2
+    G0 = abs(S21) ** 2
+    Gl = (1 - abs(Gaml) ** 2) / abs(1 - S22 * Gaml) ** 2
+    Gt = Gs * G0 * Gl
+    GsdB = 10 * log10(Gs)
+    G0dB = 10 * log10(G0)
+    GldB = 10 * log10(Gl)
+    GtdB = GsdB + G0dB + GldB
+    return GtdB</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="mwave.c" href="#mwave.c">c</a></code></li>
+<li><code><a title="mwave.eps0" href="#mwave.eps0">eps0</a></code></li>
+<li><code><a title="mwave.eta0" href="#mwave.eta0">eta0</a></code></li>
+<li><code><a title="mwave.k" href="#mwave.k">k</a></code></li>
+<li><code><a title="mwave.mu0" href="#mwave.mu0">mu0</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="mwave.ABCDJInverter" href="#mwave.ABCDJInverter">ABCDJInverter</a></code></li>
+<li><code><a title="mwave.ABCDKInverter" href="#mwave.ABCDKInverter">ABCDKInverter</a></code></li>
+<li><code><a title="mwave.ABCDinverse" href="#mwave.ABCDinverse">ABCDinverse</a></code></li>
+<li><code><a title="mwave.ABCDline" href="#mwave.ABCDline">ABCDline</a></code></li>
+<li><code><a title="mwave.ABCDseries" href="#mwave.ABCDseries">ABCDseries</a></code></li>
+<li><code><a title="mwave.ABCDshunt" href="#mwave.ABCDshunt">ABCDshunt</a></code></li>
+<li><code><a title="mwave.ABCDtoS" href="#mwave.ABCDtoS">ABCDtoS</a></code></li>
+<li><code><a title="mwave.ABCDtoTransferFct" href="#mwave.ABCDtoTransferFct">ABCDtoTransferFct</a></code></li>
+<li><code><a title="mwave.AmpGainCircleLoad" href="#mwave.AmpGainCircleLoad">AmpGainCircleLoad</a></code></li>
+<li><code><a title="mwave.AmpGainCircleSource" href="#mwave.AmpGainCircleSource">AmpGainCircleSource</a></code></li>
+<li><code><a title="mwave.AmpMaxgain" href="#mwave.AmpMaxgain">AmpMaxgain</a></code></li>
+<li><code><a title="mwave.AmpNoiseCircle" href="#mwave.AmpNoiseCircle">AmpNoiseCircle</a></code></li>
+<li><code><a title="mwave.AmpStabilityCircle" href="#mwave.AmpStabilityCircle">AmpStabilityCircle</a></code></li>
+<li><code><a title="mwave.AmpStubmatching" href="#mwave.AmpStubmatching">AmpStubmatching</a></code></li>
+<li><code><a title="mwave.LMatching" href="#mwave.LMatching">LMatching</a></code></li>
+<li><code><a title="mwave.Sinterpolate" href="#mwave.Sinterpolate">Sinterpolate</a></code></li>
+<li><code><a title="mwave.StoABCD" href="#mwave.StoABCD">StoABCD</a></code></li>
+<li><code><a title="mwave.Svalue" href="#mwave.Svalue">Svalue</a></code></li>
+<li><code><a title="mwave.ZtoS" href="#mwave.ZtoS">ZtoS</a></code></li>
+<li><code><a title="mwave.cascade" href="#mwave.cascade">cascade</a></code></li>
+<li><code><a title="mwave.coth" href="#mwave.coth">coth</a></code></li>
+<li><code><a title="mwave.coupledlineCaps" href="#mwave.coupledlineCaps">coupledlineCaps</a></code></li>
+<li><code><a title="mwave.hello" href="#mwave.hello">hello</a></code></li>
+<li><code><a title="mwave.latexMatrix" href="#mwave.latexMatrix">latexMatrix</a></code></li>
+<li><code><a title="mwave.lineinputimpedance" href="#mwave.lineinputimpedance">lineinputimpedance</a></code></li>
+<li><code><a title="mwave.load_touchstone" href="#mwave.load_touchstone">load_touchstone</a></code></li>
+<li><code><a title="mwave.magphase" href="#mwave.magphase">magphase</a></code></li>
+<li><code><a title="mwave.magphase_latex" href="#mwave.magphase_latex">magphase_latex</a></code></li>
+<li><code><a title="mwave.magphase_str" href="#mwave.magphase_str">magphase_str</a></code></li>
+<li><code><a title="mwave.magphase_tuple" href="#mwave.magphase_tuple">magphase_tuple</a></code></li>
+<li><code><a title="mwave.mdifbiaslist" href="#mwave.mdifbiaslist">mdifbiaslist</a></code></li>
+<li><code><a title="mwave.mdifnoiselist" href="#mwave.mdifnoiselist">mdifnoiselist</a></code></li>
+<li><code><a title="mwave.mdifsparlist" href="#mwave.mdifsparlist">mdifsparlist</a></code></li>
+<li><code><a title="mwave.msCoupledLineImp" href="#mwave.msCoupledLineImp">msCoupledLineImp</a></code></li>
+<li><code><a title="mwave.msVia" href="#mwave.msVia">msVia</a></code></li>
+<li><code><a title="mwave.msdimension" href="#mwave.msdimension">msdimension</a></code></li>
+<li><code><a title="mwave.msimpedance" href="#mwave.msimpedance">msimpedance</a></code></li>
+<li><code><a title="mwave.mufactor" href="#mwave.mufactor">mufactor</a></code></li>
+<li><code><a title="mwave.plotspar" href="#mwave.plotspar">plotspar</a></code></li>
+<li><code><a title="mwave.polar" href="#mwave.polar">polar</a></code></li>
+<li><code><a title="mwave.save_touchstone" href="#mwave.save_touchstone">save_touchstone</a></code></li>
+<li><code><a title="mwave.scombine" href="#mwave.scombine">scombine</a></code></li>
+<li><code><a title="mwave.splitmatrixarray" href="#mwave.splitmatrixarray">splitmatrixarray</a></code></li>
+<li><code><a title="mwave.ssplit" href="#mwave.ssplit">ssplit</a></code></li>
+<li><code><a title="mwave.transducerGain" href="#mwave.transducerGain">transducerGain</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
