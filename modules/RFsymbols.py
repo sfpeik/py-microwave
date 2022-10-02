@@ -58,7 +58,7 @@ class Port(elm.Element):
             * p
         '''
         super().__init__(*d, **kwargs)
-        size = 0.6
+        size = 0.4
         dir = 1
         if direction =='right': dir = -1
         self.segments.append(Segment([(0, 0), (-size*dir, -size*0.7)]))
