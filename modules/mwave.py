@@ -1235,10 +1235,10 @@ def AmpMaxgain(S, verbose = False):
     --------
     
     >>> S = matrix([[0.3+0.2j,0.02],[4.0+2.6j,0.7j]])
-    >>> Gs,Gl,Gmax = AmpMaxgain(S)
+    >>> Gams,Gaml,Gmax = AmpMaxgain(S)
     >>> print(around(Gmax,2))
     17.21
-    >>> print(magphase_str(Gs),magphase_str(Gl)) 
+    >>> print(magphase_str(Gams),magphase_str(Gl)) 
      0.399∠-13.7°  0.718∠-86.8°
     '''
  
