@@ -708,18 +708,24 @@ class Smith:
                     startR(d, '$' + str(impedance) + unit + '$')
             if connection == 'inputport':
                 inputport(d, "Zin\n\n\n\n")
+                
             if typus == "Capacitor" and connection == "Parallel":
                 shuntC(d, '$' + str(imag(impedance)) + 'j' + unit + '$')
             elif typus == "Inductor" and connection == "Parallel":
                 shuntL(d, '$' + str(imag(impedance)) + 'j' + unit + '$')
             elif typus == "Resistor" and connection == "Parallel":
                 shuntR(d, '$' + str(impedance) + unit + '$')
+            elif typus == "Impedance" and connection == "Parallel":
+                shuntR(d, '$' + str(impedance) + unit + '$')    
             elif typus == "Capacitor" and connection == "Series":
                 seriesC(d, '$' + str(imag(impedance)) + 'j' + unit + '$')
             elif typus == "Inductor" and connection == "Series":
                 seriesL(d, '$' + str(imag(impedance)) + 'j' + unit + '$')
             elif typus == "Resistor" and connection == "Series":
                 seriesR(d, '$' + str(impedance) + unit + '$')
+            elif typus == "Impedance" and connection == "Series":
+                seriesR(d, '$' + str(impedance) + unit + '$')    
+            
 
             if typus == "Line":
                 lamlen = ele.attr['length']
