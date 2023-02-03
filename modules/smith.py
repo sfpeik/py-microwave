@@ -1001,7 +1001,7 @@ if __name__ == "__main__":
     # import doctest
     # doctest.testmod()
 
-    demo = 5
+    demo = 0
 
     if demo == -1:
         ## Plot Empty smithchart
