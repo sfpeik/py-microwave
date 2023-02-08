@@ -768,9 +768,9 @@ from schemdraw.segments import *
     
 class Transline(e.Element2Term):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, l=3, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        lw = 2.8
+        lw = 2.8 * l/4
         lh = 0.25
         self.segments.append(Segment([[0, 0],[0,lh/2],[lw,lh/2],[lw,-lh/2], [0,-lh/2],[0,0],[lw,0]], fill= 'black'))
 
@@ -889,15 +889,15 @@ def shuntL(d, lab='', lsh = 1):
     # d.add(e.DOT)
 
 
-def tline(d, lab="$Z_0$"):
+def tline(d, lab="$Z_0$", l=3):
     d.add(e.LINE, l=0.5, d='left')
     if hide: lab = "$Z_0$"
-    d.add(Transline, l=2, d='left', label=lab)
+    d.add(Transline, l=l, d='left', label=lab)
     d.add(e.LINE, l=0.5, d='left')
     d.push()
     d.add(e.GAP, label='', d='down')
     d.add(e.LINE, l=0.5, d='right')
-    d.add(Transline, l=2, d='right')
+    d.add(Transline, l=l, d='right')
     d.add(e.LINE, l=0.5, d='right')
     d.pop()
     # d.add(e.DOT)
@@ -929,7 +929,25 @@ def inputport(d, lab=""):
     d.add(e.LINE, l=0.9, d='right')
     d.pop()
     
-    
+def generator(d, lab="$U_0$"):
+    d.push()
+    d.add(e.DOT_OPEN)
+    d.add(e.LINE, l=0.3, d='left')
+    d.add(e.ResistorIEC, d='left')
+    d.add(e.SourceSin, d='down', label=lab)
+    d.add(e.LINE, l=3.3, d='right')
+    d.add(e.DOT_OPEN)
+    d.pop()
+
+def portannotation(d,lab,**kwargs):
+    d.push()
+    d.add(e.LINE, l=0.45, d='left')
+    d += (mygap:= e.GAP_LABEL(d='down', label="",**kwargs))
+    d += e.CurrentLabel().at(mygap).down().label(lab)
+    d.add(e.LINE, l=0.45, d='right')
+    d.pop()
+
+
 def twoport(d, lab = "[S]"):
     TwoPort = e.Ic(pins=[e.IcPin(side='left'),
                   e.IcPin(side='left', anchorname='Port1'),
