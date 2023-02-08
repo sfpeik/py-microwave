@@ -186,6 +186,8 @@ class Smith:
         self.Zinlist = []
         self.isnorm = False
         self.paper = False
+        self.showArrows = False
+
         if Z0 == 1:
             self.isnorm = True
         if typ == 'smith' or type == 'impedance':
@@ -708,7 +710,7 @@ class Smith:
                     startR(d, '$' + str(impedance) + unit + '$')
             if connection == 'inputport':
                 inputport(d, "Zin\n\n\n\n")
-                
+                return d
             if typus == "Capacitor" and connection == "Parallel":
                 shuntC(d, '$' + str(imag(impedance)) + 'j' + unit + '$')
             elif typus == "Inductor" and connection == "Parallel":
@@ -725,7 +727,6 @@ class Smith:
                 seriesR(d, '$' + str(impedance) + unit + '$')
             elif typus == "Impedance" and connection == "Series":
                 seriesR(d, '$' + str(impedance) + unit + '$')    
-            
 
             if typus == "Line":
                 lamlen = ele.attr['length']
@@ -752,7 +753,8 @@ class Smith:
                 if abs(lamlen - 1. / 6) < 0.001:
                     lamstr = r'\lambda/6'
                 tstub(d, '$' + str(ele.value) + unit + '$', '$' + lamstr + '$')
-        # input(d)
+            if self.showArrows:
+                intermediateImpedanceLabel(d, "$Z_"+str(ele.id)+"$")
         return d
 
 
@@ -784,6 +786,18 @@ class Tstub(e.Element2Term):
         perspec = 2.0
         self.segments.append(
             Segment([[0, 0], [0, lh / 2], [lw, lh / 2 + perspec], [lw, -lh / 2 + perspec], [0, -lh / 2], [0, 0], [lw, 0]], fill='black'))
+
+
+class ImpArrow(e.Element):
+
+    def __init__(self, *d, **kwargs):
+        super().__init__(*d, **kwargs)
+        lw = 0.5
+        lh = 1.5
+        a = 0.1
+        off = 2.3
+        self.segments.append(Segment([[0, off], [lw, off], [lw, off+lh]]) )
+        self.segments.append(Segment([[0, off], [a, off+a], [a, off-a],[0,off]], fill='green') )
 
 
 def startR(d, lab='', lsh = 0.5):
@@ -939,12 +953,18 @@ def generator(d, lab="$U_0$"):
     d.add(e.DOT_OPEN)
     d.pop()
 
+
 def portannotation(d,lab,**kwargs):
     d.push()
     d.add(e.LINE, l=0.45, d='left')
     d += (mygap:= e.GAP_LABEL(d='down', label="",**kwargs))
     d += e.CurrentLabel().at(mygap).down().label(lab)
     d.add(e.LINE, l=0.45, d='right')
+    d.pop()
+
+def intermediateImpedanceLabel(d,lab="$Z$",**kwargs):
+    d.push()
+    d += ImpArrow(color="green").label(label=lab,loc="bottom",ofst=(0.3,0.2)).left()
     d.pop()
 
 
@@ -1025,7 +1045,7 @@ if __name__ == "__main__":
     # import doctest
     # doctest.testmod()
 
-    demo = 0
+    demo = 1
 
     if demo == -1:
         ## Plot Empty smithchart
@@ -1079,13 +1099,14 @@ if __name__ == "__main__":
         Z0 = 50
         mysmith = Smith(ax, 'both', Z0, fineness=3)
         # mysmith.addpolargrid()
-
+        mysmith.showArrows = True
         Z1 = mysmith.addstart(20 - 10j)
         Z2 = mysmith.addpara(Z1, 30j)
         Z3 = mysmith.addline(Z2, 0.3)
         mysmith.addangle(Z2)
         mysmith.addangle(Z3)
         Z4 = mysmith.addseries(Z3, -60j)
+        mysmith.addinput()
         mysmith.addpoint(Z1, '$Z_1$', 'SW')
         mysmith.addpoint(Z2, '$Z_2$', 'NE')
         mysmith.addpoint(Z3, '$Z_3$', 'SW')
@@ -1106,15 +1127,9 @@ if __name__ == "__main__":
         plt.show()
 
         ### Create a circuit schematic of the analysed circuit  ##
-        fig2, ax2 = plt.subplots(figsize=(7, 2))
-        ax2.set_axis_off()
-        plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
         d = mysmith.plotschematic()
-        d.draw(ax2, show=False)  # must be set to false, otherwise plot will draw already in schemdraw module
-        plt.tight_layout()
+        d.draw()
         plt.show()
-        plt.close(fig)
-        plt.close(fig2)
 
     if demo == 2:
         ### Example of circles #####################################
