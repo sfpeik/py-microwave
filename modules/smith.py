@@ -790,14 +790,16 @@ class Tstub(e.Element2Term):
 
 class ImpArrow(e.Element):
 
-    def __init__(self, *d, **kwargs):
+    def __init__(self, *d, ofst=(0,0), **kwargs):
         super().__init__(*d, **kwargs)
         lw = 0.5
         lh = 1.5
-        a = 0.1
+        a = 0.15
         off = 2.3
-        self.segments.append(Segment([[0, off], [lw, off], [lw, off+lh]]) )
-        self.segments.append(Segment([[0, off], [a, off+a], [a, off-a],[0,off]], fill='green') )
+        x = ofst[0]
+        y = ofst[1]
+        self.segments.append(Segment([[0+x, off+y], [lw+x, off+y], [lw+x, off+lh+y]]) )
+        self.segments.append(Segment([[0+x, off+y], [a+x, off+0.4*a+y], [a+x, off-0.4*a+y],[0+x,off+y]], fill='green') ) # arrowhead
 
 
 def startR(d, lab='', lsh = 0.5):
