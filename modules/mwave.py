@@ -1054,22 +1054,32 @@ def scombine(s11,s12,s21,s22):
     return S
 
 ### Plot S-Parameter in Cart Plot
-def plotspar(flist,Slist=array([0])):
+def plotspar(flist,Slist=array([0]),funit="Hz"):
     fig,ax = plt.subplots(figsize=(10,6))
     flist=array(flist)
+    if funit == 'Hz':
+        factor = 1.0
+    elif funit == 'MHz':
+        factor = 1e6
+    elif funit == 'GHz':
+        factor = 1e9
+    elif funit == "1/s":
+        factor = 1.0
+    else:
+        raise ValueError("funit must be one of Hz MHz GHz or 1/s")
     if len(Slist) > 1:
         S11list=array([Slist[i][0,0] for i in range(len(Slist))])
         S12list=array([Slist[i][0,1] for i in range(len(Slist))])
         S21list=array([Slist[i][1,0] for i in range(len(Slist))])
         S22list=array([Slist[i][1,1] for i in range(len(Slist))])
-        ax.plot(flist,20*log10(abs(S11list)),label='$S_{11}$')
-        ax.plot(flist,20*log10(abs(S21list)),label='$S_{21}$')
-        ax.plot(flist,20*log10(abs(S12list)),label='$S_{12}$')
-        ax.plot(flist,20*log10(abs(S22list)),label='$S_{22}$')
+        ax.plot(flist/factor,20*log10(abs(S11list)),label='$S_{11}$')
+        ax.plot(flist/factor,20*log10(abs(S21list)),label='$S_{21}$')
+        ax.plot(flist/factor,20*log10(abs(S12list)),label='$S_{12}$')
+        ax.plot(flist/factor,20*log10(abs(S22list)),label='$S_{22}$')
         plt.legend(loc=4)
     else:
         print("Create empty Chart")
-    plt.xlabel('Freq in Hz')
+    plt.xlabel('Freq in '+funit)
     plt.ylabel('S in dB')
     plt.grid()
     plt.ylim(-50,5)
