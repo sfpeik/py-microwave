@@ -103,6 +103,7 @@ class Wilkinson(elm.Element):
         self.params['drop'] = (size * 3, size)
         self.params['pick'] = (size * 3, size)
 
+
 class Coupler(elm.Element):
     def __init__(self, showbox = True, *d, **kwargs):
         '''
@@ -113,19 +114,19 @@ class Coupler(elm.Element):
             * p4
         '''
         super().__init__(*d, **kwargs)
-        size = 1
+        size = 0.5
         llw = 6
-        self.segments.append(Segment([(0, 0), (size * 3, 0)], lw=5))
-        self.segments.append(Segment([(0, -2*size), (size * 3, -2*size)], lw=5))
-        self.segments.append(SegmentArrow((0.4, -0.2), (size * 2.6, -1.8 * size), lw=2))
-        self.segments.append(SegmentArrow((0.4, -1.8), (size * 2.6, -0.2 * size), lw=2))
-        self.segments.append(SegmentArrow((size * 2.6, -1.8 * size), (0.4, -0.2), lw=2))
-        self.segments.append(SegmentArrow((size * 2.6, -0.2 * size), (0.4, -1.8), lw=2))
+        self.segments.append(Segment([(0, 0), (size * 3, 0)], lw=6*size))
+        self.segments.append(Segment([(0, -2*size), (size * 3, -2*size)], lw=6*size))
+        self.segments.append(SegmentArrow((size * 0.3, -0.3 * size), (size * 2.6, -1.7 * size), lw=2*size)) 
+        self.segments.append(SegmentArrow((size * 0.3, -1.7 * size), (size * 2.6, -0.3 * size), lw=2*size))
+        self.segments.append(SegmentArrow((size * 2.6, -1.7 * size), (size * 0.3, -0.3 * size), lw=2*size)) # Reverse directions
+        self.segments.append(SegmentArrow((size * 2.6, -0.3 * size), (size * 0.3, -1.7 * size), lw=2*size))
         if showbox:
-            self.segments.append(Segment([(-0.1, 0.5 * size), (size * 3+0.1, 0.5 * size)], lw=1))
-            self.segments.append(Segment([(-0.1, -2.5 * size), (size * 3+0.1, -2.5 * size)], lw=1))
-            self.segments.append(Segment([(-0.1, 0.5 * size), (-0.1 , -2.5 * size)], lw=1))
-            self.segments.append(Segment([(3.1, 0.5 * size), (3.1 , -2.5 * size)], lw=1))
+            self.segments.append(Segment([(size * 0, 0.5 * size), (size * 3, 0.5 * size)], lw=1))
+            self.segments.append(Segment([(size * 0, -2.5 * size),(size * 3, -2.5 * size)], lw=1))
+            self.segments.append(Segment([(size * 0, 0.5 * size), (size * 0 , -2.5 * size)], lw=1*size))
+            self.segments.append(Segment([(size * 3, 0.5 * size),  (size * 3 , -2.5 * size)], lw=1*size))
 
         self.anchors['p1'] = (0, 0)
         self.anchors['p2'] = (size*3, 0)
@@ -133,7 +134,8 @@ class Coupler(elm.Element):
         self.anchors['p4'] = (0, -size*2)
         self.params['drop'] = (size * 3, 0)
         self.params['pick'] = (size * 3, 0)
-
+        
+ 
 if __name__ == "__main__":
     import schemdraw as schem
     d = schem.Drawing()

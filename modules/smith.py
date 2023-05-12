@@ -187,6 +187,7 @@ class Smith:
         self.isnorm = False
         self.paper = False
         self.showArrows = False
+        e.style(e.STYLE_IEC)
 
         if Z0 == 1:
             self.isnorm = True
@@ -804,164 +805,164 @@ class ImpArrow(e.Element):
 
 def startR(d, lab='', lsh = 0.5):
     d.push()
-    d.add(e.LINE, l=lsh, d='right')
-    d.add(e.RBOX, d='down', botlabel=lab)
-    d.add(e.LINE, l=lsh, d='left')
+    d += e.Line(l=lsh).right()
+    d += e.Resistor().down().label(lab,'bot')
+    d += e.Line(l=lsh).left()
     d.pop()
 
 
 def startL(d, lab=''):
     d.push()
-    d.add(e.INDUCTOR, d='down', botlabel=lab)
+    d += e.Inductor().down().label(lab,'bot')
     d.pop()
 
 
 def startC(d, lab=''):
     d.push()
-    d.add(e.CAP, d='down', botlabel=lab)
+    d += e.Capacitor.down().label(lab,'bot')
     d.pop()
 
 def startport(d, lab="$P2$"):
     d.push()
-    d.add(e.DOT_OPEN)
-    d.add(e.GAP_LABEL, d='down', botlabel=lab)
-    d.add(e.DOT_OPEN)
+    d += e.Dot(open=True)
+    d += e.Gap().down().label(lab,'bot')
+    d += e.Dot(open=True)
     d.pop()
     
 
 def seriesR(d, lab='', lsh = 2):
     d.push()
-    d.add(e.RBOX, l=lsh, d='left', label=lab)
+    d += e.Resistor(l=lsh).left().label(lab)
     d.pop()
-    d.add(e.GAP, label='', d='down')
-    d.add(e.LINE, l=lsh, d='left')
-    d.add(e.GAP,  label='', d='up')
+    d += e.Gap.down().label('')
+    d += e.Line(l=lsh).left()
+    d += e.Gap().up().label('')
 
 
 def seriesC(d, lab='', lsh = 2):
     d.push()
-    d.add(e.CAP, l=lsh, d='left', label=lab)
+    d += e.Capacitor(l=lsh).left().label(lab)
     d.pop()
-    d.add(e.GAP,  label='', d='down')
-    d.add(e.LINE, l=lsh, d='left')
-    d.add(e.GAP, label='', d='up')
+    d += e.Gap().label('').down()
+    d += e.Line(l=lsh).left()
+    d += e.Gap().label('').up()
 
 
 def seriesL(d, lab='', lsh = 2):
     d.push()
-    d.add(e.INDUCTOR, l=lsh, flip=True, d='left', label=lab)
+    d += e.Inductor(l=lsh, flip=True).left().label(lab)
     d.pop()
-    d.add(e.GAP, label='', d='down')
-    d.add(e.LINE, d='left', l=lsh)
-    d.add(e.GAP, label='', d='up')
+    d += e.Gap().label('').down()
+    d += e.Line(l=lsh).left()
+    d += e.Gap().label('').up()
 
 
 def shuntR(d, lab='', lsh=1):
-    d.add(e.LINE, l=lsh, d='left')
-    d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    d += e.Dot()
     d.push()
-    d.add(e.RBOX, d='down', label=lab)
-    d.add(e.DOT)
+    d += e.Resistor().down().label(lab)
+    d += e.Dot()
     d.push()
-    d.add(e.LINE, l=lsh, d='right')
+    d += e.Line(l=lsh).right()
     d.pop()
-    d.add(e.LINE, l=lsh, d='left')
-    # d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    # d += e.DOT)
     d.pop()
 
-    d.add(e.LINE, l=lsh, d='left')
-    # d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    # d += e.DOT)
 
 
 def shuntC(d, lab='', lsh=1):
-    d.add(e.LINE, l=lsh, d='left')
-    d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    d += e.Dot()
     d.push()
-    d.add(e.CAP, d='down', label=lab)
-    d.add(e.DOT)
+    d += e.Capacitor().down().label(lab)
+    d += e.Dot()
     d.push()
-    d.add(e.LINE, l=lsh, d='right')
+    d += e.Line(l=lsh).right()
     d.pop()
-    d.add(e.LINE, l=lsh, d='left')
-    # d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    # d += e.DOT)
     d.pop()
-    d.add(e.LINE, l=lsh, d='left')
-    # d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    # d += e.DOT)
 
 
 def shuntL(d, lab='', lsh = 1):
-    d.add(e.LINE, l=1., d='left')
-    d.add(e.DOT)
+    d += e.Line(l=1.).left()
+    d += e.Dot()
     d.push()
-    d.add(e.INDUCTOR, d='down', label=lab)
-    d.add(e.DOT)
+    d += e.Inductor().down().label(lab)
+    d += e.Dot()
     d.push()
-    d.add(e.LINE, l=lsh, d='right')
+    d += e.Line(l=lsh).right()
     d.pop()
-    d.add(e.LINE, l=lsh, d='left')
-    # d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    # d += e.DOT)
     d.pop()
-    d.add(e.LINE, l=lsh, d='left')
-    # d.add(e.DOT)
+    d += e.Line(l=lsh).left()
+    # d += e.DOT)
 
 
 def tline(d, lab="$Z_0$", l=3):
-    d.add(e.LINE, l=0.5, d='left')
+    d += e.Line(l=0.5).left()
     if hide: lab = "$Z_0$"
-    d.add(Transline, l=l, d='left', label=lab)
-    d.add(e.LINE, l=0.5, d='left')
+    d += Transline(l=l).left().label(lab)
+    d += e.Line(l=0.5).left()
     d.push()
-    d.add(e.GAP, label='', d='down')
-    d.add(e.LINE, l=0.5, d='right')
-    d.add(Transline, l=l, d='right')
-    d.add(e.LINE, l=0.5, d='right')
+    d += e.Gap().label('').down()
+    d += e.Line(l=0.5).right()
+    d += Transline(l=l).right()
+    d += e.Line(l=0.5).right()
     d.pop()
-    # d.add(e.DOT)
+    # d += e.DOT)
 
 
 def tstub(d, lab="$Z_0$", lab2=''):
-    d.add(e.LINE,l=0.9 , d='left')
+    d += e.Line(l=0.9).left()
     d.push()
     d.push()
     if hide: lab = "     $Z_0$"; lab2 = ""
     d += Tstub().right().label(lab+' '+lab2, ofst=(-1.1,-1.6),rotate=35)
     d.pop()
-    d.add(e.GAP, label='',d='down')
+    d += e.Gap().label('').down()
     d.push()
-    d.add(e.LINE,l=0.9, d='right')
+    d += e.Line(l=0.9).right()
     d.pop()
     d.push()
-    d.add(Tstub, d='right')
+    d += Tstub.right()
     d.pop()
-    d.add(e.LINE,l=0.5, d='left')
+    d += e.Line(l=0.5).left()
     d.pop()
 
 def inputport(d, lab=""):
     d.push()
-    d.add(e.LINE, l=0.9, d='left')
-    d.add(e.DOT_OPEN)
-    d.add(e.GAP_LABEL, d='down', toplabel=lab)
-    d.add(e.DOT_OPEN)
-    d.add(e.LINE, l=0.9, d='right')
+    d += e.Line(l=0.9).left()
+    d += e.Dot(open=True)
+    d += e.Gap().down().label(lab,'top')
+    d += e.Dot(open=True)
+    d += e.Line(l=0.9).right()
     d.pop()
     
 def generator(d, lab="$U_0$"):
     d.push()
-    d.add(e.DOT_OPEN)
-    d.add(e.LINE, l=0.3, d='left')
-    d.add(e.ResistorIEC, d='left')
-    d.add(e.SourceSin, d='down', label=lab)
-    d.add(e.LINE, l=3.3, d='right')
-    d.add(e.DOT_OPEN)
+    d += e.Dot(open=True)
+    d += e.Line(l=0.3).left()
+    d += e.Resistor().left()
+    d += e.SourceSin().down().label(lab)
+    d += e.Line(l=3.3).right()
+    d += e.Dot(open=True)
     d.pop()
 
 
 def portannotation(d,lab,**kwargs):
     d.push()
-    d.add(e.LINE, l=0.45, d='left')
-    d += (mygap:= e.GAP_LABEL(d='down', label="",**kwargs))
+    d += e.Line(l=0.45).left()
+    d += (mygap:= e.Gap().down().label(""))
     d += e.CurrentLabel().at(mygap).down().label(lab)
-    d.add(e.LINE, l=0.45, d='right')
+    d += e.Line(l=0.45).right()
     d.pop()
 
 def intermediateImpedanceLabel(d,lab="$Z$",**kwargs):
