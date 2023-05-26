@@ -1,6 +1,7 @@
 from schemdraw.segments import *
 import schemdraw.elements as elm
-from numpy import sqrt
+from numpy import sqrt, cos, sin, pi
+
 
 class Circulator(elm.Element):
     def __init__(self, direction='cw', *d, **kwargs):
@@ -91,6 +92,33 @@ class Splitter(elm.Element):
         self.params['pick'] = (size * 1.5, size/2)
 
 
+class Ratrace(elm.Element):
+    def __init__(self, showbox = True, size=1 , couplabel="Rat Race", *d, **kwargs):
+        '''
+        Anchors:
+            * in
+            *out1
+            *out2
+        '''
+        super().__init__(*d, **kwargs)
+        llw = 3*size
+        radius = size
+        an = 30*pi/180
+        x,y = (-radius*cos(an), radius*sin(an))
+        self.segments.append(SegmentCircle((0, 0), radius, lw=llw))
+        self.segments.append(Segment([(0, radius), (0,radius + size/2)],lw=2*llw, capstyle="butt",joinstyle= 'miter'))
+        self.segments.append(Segment([(0, -radius), (0,-radius - size/2)],lw=2*llw, capstyle="butt",joinstyle= 'miter'))
+        self.segments.append(Segment([(x,  y), (x*(1+size/2), y*(1+size/2))], lw=2 * llw, capstyle="butt", joinstyle='miter'))
+        self.segments.append(Segment([ (x,-y), (x*(1+size/2),-y*(1+size/2))], lw=2 * llw, capstyle="butt", joinstyle='miter'))
+        ## Coupling Label
+        self.segments.append(SegmentText((0,0),couplabel,fontsize = 9*sqrt(size)))
+
+        self.anchors['sum'] = (x*(1+size/2), y*(1+size/2))
+        self.anchors['delta'] = (0, -radius- size/2)
+        self.anchors['in1'] = (0, radius+ size/2)
+        self.anchors['in2'] = (x*(1+size/2),-y*(1+size/2))
+        self.params['drop'] =  (-radius-size,radius)
+        self.params['pick'] = (-radius-size,radius)
 class Coupler(elm.Element):
     def __init__(self, showbox = True, size= 1, *d, **kwargs):
         '''
@@ -124,8 +152,15 @@ if __name__ == "__main__":
     import schemdraw as schem
     import schemdraw.dsp as dsp
     d = schem.Drawing()
-    d += Port().label("Port1").fill('skyblue')
-    d += elm.Line(l=1)
+    d += (rat :=Ratrace().anchor('sum'))
+    d += Port().label("In1",'right').fill('skyblue').at(rat.in1).down()
+    d += Port(theta=30).label("In2").fill('skyblue').at(rat.in2)
+    d += Port(theta=-30).label("$\Sigma$").fill('skyblue').at(rat.sum)
+    d += Port().label("$\Delta$",'left').fill('skyblue').at(rat.delta).up()
+    d.draw()
+    plt.show()
+    exit(0)
+
     d += ( cir1 := Circulator('cw').flip().anchor('p1').fill('peachpuff') )
     d += Port(direction='right').up().at(cir1.p3).label("Port2").fill('skyblue')
     d += elm.Line(l=1).at(cir1.p2)
