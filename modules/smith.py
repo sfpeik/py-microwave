@@ -832,11 +832,11 @@ def startport(d, lab="$P2$"):
 
 def seriesR(d, lab='', lsh = 2):
     d.push()
-    d += e.Resistor(l=lsh).left().label(lab)
+    d += e.Resistor(l=lsh, flip=True).left().label(lab)
     d.pop()
-    d += e.Gap.down().label('')
+    d += e.Gap().label('').down()
     d += e.Line(l=lsh).left()
-    d += e.Gap().up().label('')
+    d += e.Gap().label('').up()
 
 
 def seriesC(d, lab='', lsh = 2):
@@ -856,6 +856,13 @@ def seriesL(d, lab='', lsh = 2):
     d += e.Line(l=lsh).left()
     d += e.Gap().label('').up()
 
+def seriesSpace(d, lab='', lsh = 2):
+    d.push()
+    d += e.Line(l=lsh).left().label(lab)
+    d.pop()
+    d += e.Gap().label('').down()
+    d += e.Line(l=lsh).left()
+    d += e.Gap().label('').up()
 
 def shuntR(d, lab='', lsh=1):
     d += e.Line(l=lsh).left()
@@ -946,11 +953,11 @@ def inputport(d, lab=""):
     d += e.Line(l=0.9).right()
     d.pop()
     
-def generator(d, lab="$U_0$"):
+def generator(d, lab="$U_0$",labR="$R_s$"):
     d.push()
     d += e.Dot(open=True)
     d += e.Line(l=0.3).left()
-    d += e.Resistor().left()
+    d += e.Resistor().left().label(labR)
     d += e.SourceSin().down().label(lab)
     d += e.Line(l=3.3).right()
     d += e.Dot(open=True)
