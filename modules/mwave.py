@@ -1394,6 +1394,197 @@ def AmpStubmatching(Gammamatch,plotit=False):
         return len1,len2,0,0
 
 
+############################################################################################
+## Common-Differential Tools
+############################################################################################
+
+
+def impedanceFromS_series(S,Z0=50):
+    '''
+    Find series impadance from 2-Port S-Paramter
+    See Cispr 17 6.3.1.3 for more information
+    
+    S: 2x2  Matrix array S-Matrix
+    Z0: Reference impedance (float)
+    returns: series impedance in Ohms
+    '''
+    R = (S[:,0,0] + S[:,1,1]) / 2
+    T = (S[:,0,1] + S[:,1,0]) / 2
+    Z = Z0 * ((1+R)**2 - T**2) / (2*T) # Reihenschaltung
+    return Z
+
+
+def impedanceFromS_shunt(S,Z0=50):
+    '''
+    Find shunt impadance from 2-Port S-Paramter
+    See Cispr 17 6.3.1.3 for more information
+    
+    S: 2x2  Matrix array S-Matrix
+    Z0: Reference impedance (float)
+    returns: shunt impedance in Ohms
+    '''
+    R = (S[:,0,0] + S[:,1,1]) / 2
+    T = (S[:,0,1] + S[:,1,0]) / 2
+    Zx = Z0 * (2*T) / ((1-R)**2-T**2)  # Shuntschaltung 
+    return Z
+
+
+############################################################################################
+
+
+def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
+    '''
+    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a symmetric network 
+     1 o----|     |---o 2
+            |  S  |
+     3 o----|     |---o 4
+     
+     parameter: 
+     S12_file: filename of first S-parameter Touchstone file measured Port 1 and Port 2
+     S13_file: filename of first S-parameter Touchstone file measured Port 1 and Port 3
+     S14_file: filename of first S-parameter Touchstone file measured Port 1 and Port 4
+     
+     returns: 
+     array (1dim): frequency vector 
+     array (3dim): 4-Port S-Matrix array over frequency
+     
+    '''
+    fm,Ss12 = load_touchstone(S12_file)
+    fm,Ss13 = load_touchstone(S13_file)
+    fm,Ss14 = load_touchstone(S14_file)
+
+    S11 = Ss12[:,0,0]
+    S12 = Ss12[:,0,1]
+    S21 = Ss12[:,1,0]
+    S22 = Ss12[:,1,1]
+
+    S11 = Ss13[:,0,0]
+    S13 = Ss13[:,0,1]
+    S31 = Ss13[:,1,0]
+    S33 = Ss13[:,1,1]
+
+    S22 = Ss13[:,0,0]
+    S24 = Ss13[:,0,1]
+    S42 = Ss13[:,1,0]
+    S44 = Ss13[:,1,1]
+
+    S33 = Ss12[:,0,0]
+    S34 = Ss12[:,0,1]
+    S43 = Ss12[:,1,0]
+    S44 = Ss12[:,1,1]
+
+    S22 = Ss14[:,0,0]
+    S23 = Ss14[:,0,1]
+    S32 = Ss14[:,1,0]
+    S33 = Ss14[:,1,1]
+
+    S11 = Ss14[:,0,0]
+    S14 = Ss14[:,0,1]
+    S41 = Ss14[:,1,0]
+    S44 = Ss14[:,1,1]
+
+
+    S =    array([[S11,S12,S13,S14],
+                  [S21,S22,S23,S24],
+                  [S31,S32,S33,S34],
+                  [S41,S42,S43,S44]]).transpose(2,0,1)
+    return fm,S
+                  
+            
+############################################################################################
+def singleEndedToMixedMode(S):
+    '''
+    converts a single ended S-Parameter File to mixed Mode S-Parameter
+    S: single Ended 4-Port S-PAramter File
+    retruns: 
+    Smixed s. lit. 
+
+    1 o----|     |---o 2
+              S 
+    3 o----|     |---o 4
+    
+    returns: 
+    Scc: common-common S matrix
+    Sdd: diff-diff S matrix
+    Scd: common-diff S matrix
+    Sdc: diff-common S matrix
+    '''
+    
+    if S.ndim ==2:
+        S = array([S])
+    if S.ndim != 3:
+        raise ValueError("Matrix must be n_freq x 4 x 4 here " + str(shape(S)))
+    if not shape(S)[1:3] == (4,4):
+        raise ValueError("Matrix must be n_freq x 4 x 4 here "+str(shape(S)))
+    
+    S11,S12,S13,S14 = S[:,0,0], S[:,0,1], S[:,0,2], S[:,0,3]
+    S21,S22,S23,S24 = S[:,1,0], S[:,1,1], S[:,1,2], S[:,1,3]
+    S31,S32,S33,S34 = S[:,2,0], S[:,2,1], S[:,2,2], S[:,2,3]
+    S41,S42,S43,S44 = S[:,3,0], S[:,3,1], S[:,3,2], S[:,3,3]
+    
+    SDD11=0.5*(S11-S13-S31+S33)
+    SDD22=0.5*(S22-S24-S42+S44)
+    SDD21=0.5*(S21-S23-S41+S43)
+    SDD12=0.5*(S12-S14-S32+S34)
+    SCD11=0.5*(S11-S13+S31-S33)
+    SCD22=0.5*(S22-S24+S42-S44)
+    SCD21=0.5*(S21-S23+S41-S43)
+    SCD12=0.5*(S12-S14+S32-S34)
+    
+    SDC11=0.5*(S11+S13-S31-S33)
+    SDC22=0.5*(S22+S24-S42-S44)
+    SDC21=0.5*(S21+S23-S41-S43)
+    SDC12=0.5*(S12+S14-S32-S34)
+    SCC11=0.5*(S11+S13+S31+S33)
+    SCC22=0.5*(S22+S24+S42+S44)
+    SCC21=0.5*(S21+S23+S41+S43)
+    SCC12=0.5*(S12+S14+S32+S34)
+    
+    Scc = [ [SCC11,SCC12],[ SCC21,SCC22] ] 
+    Sdd = [ [SDD11,SDD12],[ SDD21,SDD22] ]  
+    Scd = [ [SCD11,SCD12],[ SCD21,SCD22] ] 
+    Sdc = [ [SDC11,SDC12],[ SDC21,SDC22] ] 
+    Scc = transpose(Scc,(2,0,1))
+    Sdd = transpose(Sdd,(2,0,1))
+    Sdc = transpose(Sdc,(2,0,1))
+    Scd = transpose(Scd,(2,0,1))
+
+    return squeeze(Scc),squeeze(Sdd),squeeze(Scd),squeeze(Sdc)
+
+
+
+def load_wuerthtouchstone(sparfile):
+    '''
+    Load Wuerth Style 4x4 matrix
+    return:
+    f
+    S
+    '''
+    with open(sparfile) as fi:
+      i = 0
+      f = []
+      S = []
+      while True:
+        line = fi.readline()
+        if ("" == line.rstrip()):
+            print("file finished")
+            break;
+        line += fi.readline()
+        line += fi.readline()
+        line += fi.readline()
+        x =line.replace("\n"," ").split()
+        y = (array(x).astype(float))
+        f.append(y[0])
+        # Combine Real Imag ###
+        _s = array([ y[2*i+1] + 1j*y[2*i+2] for i in range(16)])
+        _S = _s.reshape(4,4)
+        S.append(_S)
+        #if i>=1: break
+        i += 1
+
+    f = array(f)
+    S = array(S)
+    return f, S     
 
 if __name__ == "__main__":
     import doctest
