@@ -755,19 +755,31 @@ def load_touchstone(filename, annotations=False):
     print("Load Touchstone file ",filename)
     f=open(filename,'r', encoding = "ISO-8859-1")
     noise=False
-    if filename[-2] == '1': 
-        Twoport = False
-    elif filename[-2] == '2': 
-        Twoport = True
-    elif filename[-2:] == 'ts': 
-        Twoport = True
-    else:
-        print('Load Touchstone: Neither extension s1p or s2p , Exit')
-        raise NameError('Neither extension s1p or s2p')
+    #if filename[-2] == '1': 
+    #    Twoport = False
+    #elif filename[-2] == '2': 
+    #    Twoport = True
+    #elif filename[-2:] == 'ts': 
+    #    Twoport = True
+    #else:
+    #    print('Load Touchstone: Neither extension s1p or s2p , Exit')
+    #    raise NameError('Neither extension s1p or s2p')
+    
+    try:
+        n_ports = int(filename[-2])
+    except:
+        raise NameError('Not extension sxp or sxp')
     anno = []
     Slist=[];flist=[]
     rad=pi/180.0
-    for line in f:
+    print("Loading ",n_ports,"-Port")
+    with open(filename) as fi:
+      i = 0
+      f = []
+      S = []
+      line = "!!!!!!!!"
+      while len(line)>1:
+        line = fi.readline()
         #print(line.strip())
         if line[0]=='!': 
             anno.append(line)
@@ -795,36 +807,22 @@ def load_touchstone(filename, annotations=False):
         if len(line) <10: continue ## empty line
         if not(noise): ##### Spara Info
             p=line.split()
+            while len(p)-1 < 2*n_ports**2:
+                #print("need more Lines", len(p)-1,2*n_ports**2)
+                line = fi.readline()
+                p.extend(line.split())
             p=[float(x) for x in p]
             #print("f=",p[0],"S11=",p[1], ".....")
             flist.append(float(p[0])*factor)
-            if sform=='MA':
-                S11=p[1]*exp(1j*p[2]*rad)
-                S=S11
-                if Twoport:
-                    S21=p[3]*exp(1j*p[4]*rad)
-                    S12=p[5]*exp(1j*p[6]*rad)
-                    S22=p[7]*exp(1j*p[8]*rad)
-                    S=matrix([[S11,S12],[S21,S22]])
-                Slist.append(S)
-            if sform=='RI':
-                S11=p[1]+p[2]*1j
-                S=S11
-                if Twoport:
-                    S21=p[3]+p[4]*1j
-                    S12=p[5]+p[6]*1j
-                    S22=p[7]+p[8]*1j
-                    S=matrix([[S11,S12],[S21,S22]])
-                Slist.append(S)
-            if sform=='DB':
-                S11=10**(p[1]/20)*exp(1j*p[2]*rad)
-                S=S11
-                if Twoport:
-                    S21=10**(p[3]/20)*exp(1j*p[4]*rad)
-                    S12=10**(p[5]/20)*exp(1j*p[6]*rad)
-                    S22=10**(p[7]/20)*exp(1j*p[8]*rad)
-                    S=matrix([[S11,S12],[S21,S22]])
-                Slist.append(S)
+            # Combine Real Imag ###
+            if sform == 'RI':
+                # Combine Real Imag into complex number ###   
+                _s = array([ p[2*i+1] + 1j*p[2*i+2] for i in range(n_ports**2)])
+            elif sform =='DB':
+                # Combine dB Phase into complex number ### 
+                _s = array([ 10**(p[2*i+1]/20) *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
+            _S = _s.reshape(n_ports,n_ports)
+            Slist.append(_S)
             #print S
         if (noise): ##### Noise Info
             pass
@@ -1552,13 +1550,13 @@ def singleEndedToMixedMode(S):
     return squeeze(Scc),squeeze(Sdd),squeeze(Scd),squeeze(Sdc)
 
 
-
-def load_wuerthtouchstone(sparfile):
+#####################################################################################################
+def load_4PortTouchstone(sparfile, val_in_dB=False):
     '''
     Load Wuerth Style 4x4 matrix
     return:
-    f
-    S
+    f: freq vector (1dim array)
+    S:  list of S-matricess (array of 4x4 matrix) 
     '''
     with open(sparfile) as fi:
       i = 0
@@ -1566,6 +1564,12 @@ def load_wuerthtouchstone(sparfile):
       S = []
       while True:
         line = fi.readline()
+        if "!" in line: continue
+        if "#" in line:
+            print(line)
+            if "dB" in line:
+              valindB = True
+            continue
         if ("" == line.rstrip()):
             print("file finished")
             break;
@@ -1576,7 +1580,10 @@ def load_wuerthtouchstone(sparfile):
         y = (array(x).astype(float))
         f.append(y[0])
         # Combine Real Imag ###
-        _s = array([ y[2*i+1] + 1j*y[2*i+2] for i in range(16)])
+        if val_in_dB:
+            _s = array([ y[2*i+1] + 1j*y[2*i+2] for i in range(16)])
+        else:
+            _s = array([ 10**(y[2*i+1]/20) *  exp(1j*2*pi/180*y[2*i+2]) for i in range(16)])
         _S = _s.reshape(4,4)
         S.append(_S)
         #if i>=1: break
