@@ -1,10 +1,10 @@
 # py-microwave
 A microwave toolbox written in Python3
 
-The repository includes three moules:
+The repository includes three modules:
 
 * **Microwave Engineering Tools** mwave.py
-* **Smitch Chart** Creation in Python smith.py
+* **Smith Chart** Creation in Python smith.py
 * **Filter Synthesis** in Python filter.py
 
 ### mwave.py
