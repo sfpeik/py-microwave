@@ -778,8 +778,9 @@ def load_touchstone(filename, annotations=False):
       f = []
       S = []
       line = "!!!!!!!!"
-      while len(line)>1:
+      while len(line)>0:
         line = fi.readline()
+        if len(line)<3: continue
         #print(line.strip())
         if line[0]=='!': 
             anno.append(line)
