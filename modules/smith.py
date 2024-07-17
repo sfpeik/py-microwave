@@ -10,8 +10,7 @@ __docformat__ = 'reStructuredText'
 from itertools import count
 
 import matplotlib.pyplot as plt
-from numpy import real, imag, logspace, linspace, log10, exp, pi, angle, arange, tan, cos, sin, around, array, NAN, sqrt, conj, \
-    argmin
+from numpy import real, imag, logspace, linspace, log10, exp, pi, angle, arange, tan, cos, sin, around, array, nan, sqrt, conj, argmin
 
 import schemdraw as schem
 import schemdraw.elements as e
@@ -78,7 +77,7 @@ def hidesolution(status= True):
 class Element:
     _ids = count(0)
 
-    def __init__(self, elementtype, connection, value, Zin=NAN, attributes=None):
+    def __init__(self, elementtype, connection, value, Zin=nan, attributes=None):
         if attributes is None:
             attributes = {}
         self.type = elementtype

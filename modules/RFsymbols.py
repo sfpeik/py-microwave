@@ -22,7 +22,11 @@ class Circulator(elm.Element):
         self.segments.append(Segment([(-off, off), (-off2, off2)]))
         self.segments.append(Segment([(off, off), (off2, off2)]))
         self.segments.append(Segment([(0, -radius), (0, -radius*leadextendfactor)]))
-        self.segments.append(SegmentArc((0,0), 2*radius*0.5, 2*radius*0.5, lw = 4*radius, arrow=direction, theta1= 25, theta2=220))
+        self.segments.append(SegmentArc((0,0), radius, radius, lw = 4*radius, theta1= -10, theta2=220))
+        if direction == 'cw':
+               self.segments.append(Segment([(radius*0.369,-0.15), (radius*0.369-0.07,-0.25)], arrow = '->'))
+        if direction == 'ccw':
+               self.segments.append(Segment([(-radius*0.369,-0.15), (-radius*0.369+0.07,-0.25)], arrow = '->'))
         self.anchors['p1'] = (-off2,off2)
         self.anchors['p2'] = (off2,off2)
         self.anchors['p3'] = (0, -radius*leadextendfactor)
