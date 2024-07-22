@@ -81,7 +81,7 @@ def lineinputimpedance(Z0,Zl,betal):
 
 ###########################################################################
 def msimpedance(w,h,er):
-  '''
+  r'''
     Calculates microstrip line impedance :math:`Z_0` and :math:`\epsilon_{eff}` from Wheeler formula 
     
     Parameters
@@ -830,10 +830,9 @@ def load_touchstone(filename, annotations=False):
     flist = array(flist)
     Slist = array(Slist)
     if annotations:
-        return flist,Slist,anno
+        return flist,squeeze(Slist),anno
     else:
-        return flist,Slist
-
+        return flist,squeeze(Slist)
 
 
 #
@@ -857,7 +856,7 @@ def mdifbiaslist(filename):
         if 'VAR Vc' in line[i]:
             if not 'Ic' in line[i+1]: 
                 raise valueerror('No Vc,Ic VAR defined in mdif')
-            valueV = re.findall("\d+\.\d+", line[i])[0]
+            valueV = re.findall(r"\d+\.\d+", line[i])[0]
             valueI = line[i+1].rstrip().rstrip("mA").lstrip("VAR Ic=")
             biaslist.append((float(valueV),float(valueI)))
             i += 1   
@@ -874,13 +873,13 @@ def mdifsparlist(filename,Vc,Ic):
     while i< len(line):
         if 'VAR Vc' in line[i]:
             try:
-                valueV = float(re.findall("\d+\.\d+", line[i])[0])
+                valueV = float(re.findall(r"\d+\.\d+", line[i])[0])
             except:
-                valueV = float(re.findall("\d+\\d+", line[i])[0])
+                valueV = float(re.findall(r"\d+\\d+", line[i])[0])
             try:
-                valueI = float(re.findall("\d+\.\d+", line[i+1])[0])
+                valueI = float(re.findall(r"\d+\.\d+", line[i+1])[0])
             except: 
-                valueI = float(re.findall("\d+\\d+", line[i+1])[0])
+                valueI = float(re.findall(r"\d+\\d+", line[i+1])[0])
             if float(valueV) == float(Vc) and float(valueI) == float(Ic):
                 #print("Biaspoint found", valueV, valueI)
                 if not ('BEGIN ACDATA' in line[i+2]): raise ValueError('MDIF Wrong Format no BEGIN ACDATA found ')
@@ -942,7 +941,7 @@ def mdifnoiselist(filename,Vc,Ic):
     biaslist = []
     while i< len(line):
         if 'VAR Vc' in line[i]:
-            valueV = float(re.findall("\d+\.\d+", line[i])[0])
+            valueV = float(re.findall(r"\d+\.\d+", line[i])[0])
             valueI = line[i + 1].rstrip().rstrip("mA").lstrip("VAR Ic=")
 
             if float(valueV) == float(Vc) and float(valueI) == float(Ic):
@@ -1225,7 +1224,7 @@ def transducerGain(S, Gams, Gaml):
 
 ####### Bilateral Max. Gain Design
 def AmpMaxgain(S, verbose = False):
-    u'''
+    r'''
     Calculates Maximum Gain input and output loads
     
     Parameters
@@ -1336,7 +1335,7 @@ def LMatching(Zl,Z0=50, equaltype=False):
 
 
 def AmpStubmatching(Gammamatch,plotit=False):
-    '''
+    r'''
     Performs a complete open stub - line matching for a given desired input :math:`\Gamma`
     
     Plots the smith chart with the constructed matching network 
@@ -1552,47 +1551,7 @@ def singleEndedToMixedMode(S):
 
 
 #####################################################################################################
-def load_4PortTouchstone(sparfile, val_in_dB=False):
-    '''
-    Load Wuerth Style 4x4 matrix
-    return:
-    f: freq vector (1dim array)
-    S:  list of S-matricess (array of 4x4 matrix) 
-    '''
-    with open(sparfile) as fi:
-      i = 0
-      f = []
-      S = []
-      while True:
-        line = fi.readline()
-        if "!" in line: continue
-        if "#" in line:
-            print(line)
-            if "dB" in line:
-              valindB = True
-            continue
-        if ("" == line.rstrip()):
-            print("file finished")
-            break;
-        line += fi.readline()
-        line += fi.readline()
-        line += fi.readline()
-        x =line.replace("\n"," ").split()
-        y = (array(x).astype(float))
-        f.append(y[0])
-        # Combine Real Imag ###
-        if val_in_dB:
-            _s = array([ y[2*i+1] + 1j*y[2*i+2] for i in range(16)])
-        else:
-            _s = array([ 10**(y[2*i+1]/20) *  exp(1j*2*pi/180*y[2*i+2]) for i in range(16)])
-        _S = _s.reshape(4,4)
-        S.append(_S)
-        #if i>=1: break
-        i += 1
 
-    f = array(f)
-    S = array(S)
-    return f, S     
 
 if __name__ == "__main__":
     import doctest
