@@ -21,7 +21,7 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
-    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin, concatenate
 import matplotlib.pyplot as plt
 import sys
 
@@ -1063,10 +1063,32 @@ def scombine(s11,s12,s21,s22):
         S[ii] = array([[s11[ii],s21[ii]],[s21[ii],s22[ii]]])  
     return S
 
+## Smooth data by averaging ########################################################
+def smoothTriangle(data, degree):
+    triangle=concatenate((arange(degree + 1), arange(degree)[::-1])) # up then down
+    smoothed=[]
+
+    for i in range(degree, len(data) - degree * 2):
+        point=data[i:i + len(triangle)] * triangle
+        smoothed.append(sum(point)/sum(triangle))
+    # Handle boundaries
+    smoothed=[smoothed[0]]*int(degree + degree/2) + smoothed
+    while len(smoothed) < len(data):
+        smoothed.append(smoothed[-1])
+    return smoothed
+    
+    
 ### Plot S-Parameter in Cart Plot
-def plotspar(flist,Slist=array([0]),funit="Hz"):
-    fig,ax = plt.subplots(figsize=(10,6))
+def plotspar(flist,Slist=array([0]),funit="Hz",phase= False, asSmith=False, split = False, smoothing = 1):
+    '''
+    plot the S-Paramter response quickly 
+    asSmith: plot the return losses as smith chart
+    smoothing: degree of data smoothing, default 1 no smoothing
+    split: split into separate graphs (not implemented)
+    '''
+    
     flist=array(flist)
+    n_ports = Slist.shape[1]
     if funit == 'Hz':
         factor = 1.0
     elif funit == 'MHz':
@@ -1077,27 +1099,33 @@ def plotspar(flist,Slist=array([0]),funit="Hz"):
         factor = 1.0
     else:
         raise ValueError("funit must be one of Hz MHz GHz or 1/s")
-    if len(Slist) > 1:
-        S11list=array([Slist[i][0,0] for i in range(len(Slist))])
-        S12list=array([Slist[i][0,1] for i in range(len(Slist))])
-        S21list=array([Slist[i][1,0] for i in range(len(Slist))])
-        S22list=array([Slist[i][1,1] for i in range(len(Slist))])
-        ax.plot(flist/factor,20*log10(abs(S11list)),label='$S_{11}$')
-        ax.plot(flist/factor,20*log10(abs(S21list)),label='$S_{21}$')
-        ax.plot(flist/factor,20*log10(abs(S12list)),label='$S_{12}$')
-        ax.plot(flist/factor,20*log10(abs(S22list)),label='$S_{22}$')
+    
+    fig,ax = plt.subplots(figsize=(6,6))
+    if asSmith:
+        mysmith = smi.Smith(ax,color='gray')    
+        for j in range(n_ports):  # Step thru all S port variations 
+            Spar=array([Slist[i][j,j] for i in range(len(Slist))])
+            Spar = smoothTriangle(Spar,smoothing)
+            ax.plot(real(Spar),imag(Spar),label=f'$S_{{{j+1:}{j+1:}}}$')
         plt.legend(loc=4)
-    else:
-        print("Create empty Chart")
-    plt.xlabel('Freq in '+funit)
-    plt.ylabel('S in dB')
-    plt.grid()
-    plt.ylim(-50,5)
-    plt.title("S-Parameter Response")
+        
+    else:  # Cartesian Diagram 
+        for j in range(n_ports):  # Step thru all S port variations 
+            for k in range(n_ports):
+                Spar=array([Slist[i][j,k] for i in range(len(Slist))])
+                Spar = smoothTriangle(Spar,smoothing)
+                if not phase: 
+                    ax.plot(flist/factor,20*log10(abs(Spar)),label=f'$S_{{{j+1:}{k+1:}}}$')
+                    ax.set_ylabel("dB")
+                else:
+                    ax.plot(flist/factor,angle(Spar)*180/3.1415,label=f'$\\angle S_{{{j+1:}{k+1:}}}$')
+                    ax.set_ylabel("Phase in °")
+        plt.legend(loc=4)
+        plt.grid()
+        ax.set_xlabel("Freq. in "+funit)
     plt.tight_layout()
     return fig,ax
     
-
 
 def mufactor(S):
     '''
