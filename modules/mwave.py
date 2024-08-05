@@ -21,7 +21,7 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
-    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin
 import matplotlib.pyplot as plt
 import sys
 
@@ -50,6 +50,18 @@ def hello():
 ########################################################################
 def coth(x):
     return 1/tanh(x)
+    
+    
+def find_nearest(arr, value):
+    '''
+    find the index of a nearest value in an array
+    '''
+    arr = asarray(arr)
+    idx = (abs(arr - value)).argmin()
+    return idx
+    
+    
+        
     
 ########################################################################    
 def lineinputimpedance(Z0,Zl,betal):
