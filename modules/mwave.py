@@ -1079,7 +1079,7 @@ def smoothTriangle(data, degree):
     
     
 ### Plot S-Parameter in Cart Plot
-def plotspar(flist,Slist=array([0]),funit="Hz",phase= False, asSmith=False, split = False, smoothing = 1):
+def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=False, asSmith=False, split = False, smoothing = 1):
     '''
     plot the S-Paramter response quickly 
     asSmith: plot the return losses as smith chart
@@ -1100,16 +1100,44 @@ def plotspar(flist,Slist=array([0]),funit="Hz",phase= False, asSmith=False, spli
     else:
         raise ValueError("funit must be one of Hz MHz GHz or 1/s")
     
-    fig,ax = plt.subplots(figsize=(6,6))
-    if asSmith:
+    ## reduce to selected freq range ####################################
+    try:
+        if frange is not None:
+            idx_min = find_nearest(flist, frange[0])
+            idx_max = find_nearest(flist, frange[1])
+            flist = flist[idx_min:idx_max] 
+            Slist = Slist[idx_min:idx_max]
+    except:
+        raise ValueError("Invalid Frequency Range selected")
+        
+    ## Plot as Smith Charts #############################################
+    if asSmith and not grid:
+        fig,ax = plt.subplots(figsize=(6,6))
         mysmith = smi.Smith(ax,color='gray')    
         for j in range(n_ports):  # Step thru all S port variations 
             Spar=array([Slist[i][j,j] for i in range(len(Slist))])
             Spar = smoothTriangle(Spar,smoothing)
             ax.plot(real(Spar),imag(Spar),label=f'$S_{{{j+1:}{j+1:}}}$')
         plt.legend(loc=4)
-        
+    ## Plot as Grid #####################################################    
+    elif grid:
+        fig,ax = plt.subplots(n_ports,n_ports,figsize=(10,10))
+        for j in range(n_ports):
+            for k in range(n_ports):
+                ax[j,k].set_title("S"+str(k+1)+str(j+1))
+                Spar=array([Slist[i][j,k] for i in range(len(Slist))])
+                Spar = smoothTriangle(Spar,smoothing)
+                if k != j or (not asSmith):
+                    ax[j,k].plot(flist/factor,20*log10(abs(Spar)),color="r")
+                    ax[j,k].set_ylim(-15,0)
+                    ax[j,k].grid()
+                else: 
+                    sm = smi.smith(ax[j,k],color="gray")
+                    ax[j,k].plot(real(Spar),imag(Spar),color="r")
+        plt.tight_layout()
+    ## Plot as Cartesian Diagram #######################################    
     else:  # Cartesian Diagram 
+        fig,ax = plt.subplots(figsize=(6,6))
         for j in range(n_ports):  # Step thru all S port variations 
             for k in range(n_ports):
                 Spar=array([Slist[i][j,k] for i in range(len(Slist))])
@@ -1472,7 +1500,7 @@ def impedanceFromS_shunt(S,Z0=50):
 
 def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
     '''
-    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a symmetric network 
+    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a **symmetric** network 
      1 o----|     |---o 2
             |  S  |
      3 o----|     |---o 4
@@ -1484,7 +1512,7 @@ def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
      
      returns: 
      array (1dim): frequency vector 
-     array (3dim): 4-Port S-Matrix array over frequency
+     array (4dim): 4-Port S-Matrix array over frequency
      
     '''
     fm,Ss12 = load_touchstone(S12_file)
@@ -1529,6 +1557,49 @@ def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
     return fm,S
                   
             
+
+def threePortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S23_file):
+    '''
+    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a symmetric network 
+            |     |---o 2
+     1 o----|  S  |
+            |     |---o 3
+     
+     parameter: 
+     S12_file: filename of first S-parameter Touchstone file measured Port 1 and Port 2
+     S13_file: filename of first S-parameter Touchstone file measured Port 1 and Port 3
+     S23_file: filename of first S-parameter Touchstone file measured Port 2 and Port 3
+     returns: 
+     array (1dim): frequency vector 
+     array (4dim): 3-Port S-Matrix array over frequency
+     
+    '''
+    fm,Ss12 = load_touchstone(S12_file)
+    fm,Ss13 = load_touchstone(S13_file)
+    fm,Ss23 = load_touchstone(S23_file)
+
+    S11 = Ss12[:,0,0]
+    S12 = Ss12[:,0,1]
+    S21 = Ss12[:,1,0]
+    S22 = Ss12[:,1,1]
+
+    #S11 = Ss13[:,0,0]
+    S13 = Ss13[:,0,1]
+    S31 = Ss13[:,1,0]
+    S33 = Ss13[:,1,1]
+
+    #S22 = Ss23[:,0,0]
+    S23 = Ss23[:,0,1]
+    S32 = Ss23[:,1,0]
+    #S33 = Ss23[:,1,1]
+    # In comments redundant measurements
+   
+
+    S =    array([[S11,S12,S13],
+                  [S21,S22,S23],
+                  [S31,S32,S33]]).transpose(2,0,1)
+    return fm,S
+                
 ############################################################################################
 def singleEndedToMixedMode(S):
     '''
