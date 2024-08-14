@@ -21,7 +21,7 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
-    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin, concatenate
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin, concatenate, newaxis
 import matplotlib.pyplot as plt
 import sys
 
@@ -1088,7 +1088,13 @@ def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=
     '''
     
     flist=array(flist)
-    n_ports = Slist.shape[1]
+    print(Slist.ndim)
+    if Slist.ndim == 1:  ### Oneport
+        Slist = Slist[:,newaxis,newaxis]
+        n_ports = 1
+    else:
+        n_ports = Slist.shape[1]
+    print("# of Ports",n_ports)
     if funit == 'Hz':
         factor = 1.0
     elif funit == 'MHz':
@@ -1109,7 +1115,7 @@ def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=
             Slist = Slist[idx_min:idx_max]
     except:
         raise ValueError("Invalid Frequency Range selected")
-        
+
     ## Plot as Smith Charts #############################################
     if asSmith and not grid:
         fig,ax = plt.subplots(figsize=(6,6))
