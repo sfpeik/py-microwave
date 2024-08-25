@@ -21,7 +21,8 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
-    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin
+
 import matplotlib.pyplot as plt
 import sys
 
@@ -50,7 +51,13 @@ def hello():
 ########################################################################
 def coth(x):
     return 1/tanh(x)
-    
+
+def find_nearest(array, value):
+    array = asarray(array)
+    idx = (abs(array - value)).argmin()
+    return idx
+
+
 ########################################################################    
 def lineinputimpedance(Z0,Zl,betal):
     r'''Calculates input impedance of a terminated line
@@ -1399,7 +1406,7 @@ def AmpStubmatching(Gammamatch,plotit=False):
 
 def impedanceFromS_series(S,Z0=50):
     '''
-    Find series impadance from 2-Port S-Paramter
+    Find series impedance from 2-Port S-Paramter
     See Cispr 17 6.3.1.3 for more information
     
     S: 2x2  Matrix array S-Matrix
@@ -1414,7 +1421,7 @@ def impedanceFromS_series(S,Z0=50):
 
 def impedanceFromS_shunt(S,Z0=50):
     '''
-    Find shunt impadance from 2-Port S-Paramter
+    Find shunt impedance from 2-Port S-Paramter
     See Cispr 17 6.3.1.3 for more information
     
     S: 2x2  Matrix array S-Matrix
@@ -1489,11 +1496,12 @@ def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
     return fm,S
                   
             
+            
 ############################################################################################
 def singleEndedToMixedMode(S):
     '''
     converts a single ended S-Parameter File to mixed Mode S-Parameter
-    S: single Ended 4-Port S-PAramter File
+    S: single Ended 4-Port S-Parameter File
     retruns: 
     Smixed s. lit. 
 
@@ -1506,6 +1514,8 @@ def singleEndedToMixedMode(S):
     Sdd: diff-diff S matrix
     Scd: common-diff S matrix
     Sdc: diff-common S matrix
+    
+    see also https://coppermountaintech.com/wp-content/uploads/2022/06/BalancedMeas.pdf
     '''
     
     if S.ndim ==2:
