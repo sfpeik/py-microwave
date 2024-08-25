@@ -21,8 +21,12 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
+<<<<<<< HEAD
     broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin
 
+=======
+    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin, concatenate, newaxis
+>>>>>>> 04c8015a9e3d0c076ca96af230b76ba1e3a8ab26
 import matplotlib.pyplot as plt
 import sys
 
@@ -51,6 +55,7 @@ def hello():
 ########################################################################
 def coth(x):
     return 1/tanh(x)
+<<<<<<< HEAD
 
 def find_nearest(array, value):
     array = asarray(array)
@@ -58,6 +63,21 @@ def find_nearest(array, value):
     return idx
 
 
+=======
+    
+    
+def find_nearest(arr, value):
+    '''
+    find the index of a nearest value in an array
+    '''
+    arr = asarray(arr)
+    idx = (abs(arr - value)).argmin()
+    return idx
+    
+    
+        
+    
+>>>>>>> 04c8015a9e3d0c076ca96af230b76ba1e3a8ab26
 ########################################################################    
 def lineinputimpedance(Z0,Zl,betal):
     r'''Calculates input impedance of a terminated line
@@ -1058,10 +1078,38 @@ def scombine(s11,s12,s21,s22):
         S[ii] = array([[s11[ii],s21[ii]],[s21[ii],s22[ii]]])  
     return S
 
+## Smooth data by averaging ########################################################
+def smoothTriangle(data, degree):
+    triangle=concatenate((arange(degree + 1), arange(degree)[::-1])) # up then down
+    smoothed=[]
+
+    for i in range(degree, len(data) - degree * 2):
+        point=data[i:i + len(triangle)] * triangle
+        smoothed.append(sum(point)/sum(triangle))
+    # Handle boundaries
+    smoothed=[smoothed[0]]*int(degree + degree/2) + smoothed
+    while len(smoothed) < len(data):
+        smoothed.append(smoothed[-1])
+    return smoothed
+    
+    
 ### Plot S-Parameter in Cart Plot
-def plotspar(flist,Slist=array([0]),funit="Hz"):
-    fig,ax = plt.subplots(figsize=(10,6))
+def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=False, asSmith=False, split = False, smoothing = 1):
+    '''
+    plot the S-Paramter response quickly 
+    asSmith: plot the return losses as smith chart
+    smoothing: degree of data smoothing, default 1 no smoothing
+    split: split into separate graphs (not implemented)
+    '''
+    
     flist=array(flist)
+    print(Slist.ndim)
+    if Slist.ndim == 1:  ### Oneport
+        Slist = Slist[:,newaxis,newaxis]
+        n_ports = 1
+    else:
+        n_ports = Slist.shape[1]
+    print("# of Ports",n_ports)
     if funit == 'Hz':
         factor = 1.0
     elif funit == 'MHz':
@@ -1072,27 +1120,61 @@ def plotspar(flist,Slist=array([0]),funit="Hz"):
         factor = 1.0
     else:
         raise ValueError("funit must be one of Hz MHz GHz or 1/s")
-    if len(Slist) > 1:
-        S11list=array([Slist[i][0,0] for i in range(len(Slist))])
-        S12list=array([Slist[i][0,1] for i in range(len(Slist))])
-        S21list=array([Slist[i][1,0] for i in range(len(Slist))])
-        S22list=array([Slist[i][1,1] for i in range(len(Slist))])
-        ax.plot(flist/factor,20*log10(abs(S11list)),label='$S_{11}$')
-        ax.plot(flist/factor,20*log10(abs(S21list)),label='$S_{21}$')
-        ax.plot(flist/factor,20*log10(abs(S12list)),label='$S_{12}$')
-        ax.plot(flist/factor,20*log10(abs(S22list)),label='$S_{22}$')
+    
+    ## reduce to selected freq range ####################################
+    try:
+        if frange is not None:
+            idx_min = find_nearest(flist, frange[0])
+            idx_max = find_nearest(flist, frange[1])
+            flist = flist[idx_min:idx_max] 
+            Slist = Slist[idx_min:idx_max]
+    except:
+        raise ValueError("Invalid Frequency Range selected")
+
+    ## Plot as Smith Charts #############################################
+    if asSmith and not grid:
+        fig,ax = plt.subplots(figsize=(6,6))
+        mysmith = smi.Smith(ax,color='gray')    
+        for j in range(n_ports):  # Step thru all S port variations 
+            Spar=array([Slist[i][j,j] for i in range(len(Slist))])
+            Spar = smoothTriangle(Spar,smoothing)
+            ax.plot(real(Spar),imag(Spar),label=f'$S_{{{j+1:}{j+1:}}}$')
         plt.legend(loc=4)
-    else:
-        print("Create empty Chart")
-    plt.xlabel('Freq in '+funit)
-    plt.ylabel('S in dB')
-    plt.grid()
-    plt.ylim(-50,5)
-    plt.title("S-Parameter Response")
+    ## Plot as Grid #####################################################    
+    elif grid:
+        fig,ax = plt.subplots(n_ports,n_ports,figsize=(10,10))
+        for j in range(n_ports):
+            for k in range(n_ports):
+                ax[j,k].set_title("S"+str(k+1)+str(j+1))
+                Spar=array([Slist[i][j,k] for i in range(len(Slist))])
+                Spar = smoothTriangle(Spar,smoothing)
+                if k != j or (not asSmith):
+                    ax[j,k].plot(flist/factor,20*log10(abs(Spar)),color="r")
+                    ax[j,k].set_ylim(-15,0)
+                    ax[j,k].grid()
+                else: 
+                    sm = smi.smith(ax[j,k],color="gray")
+                    ax[j,k].plot(real(Spar),imag(Spar),color="r")
+        plt.tight_layout()
+    ## Plot as Cartesian Diagram #######################################    
+    else:  # Cartesian Diagram 
+        fig,ax = plt.subplots(figsize=(6,6))
+        for j in range(n_ports):  # Step thru all S port variations 
+            for k in range(n_ports):
+                Spar=array([Slist[i][j,k] for i in range(len(Slist))])
+                Spar = smoothTriangle(Spar,smoothing)
+                if not phase: 
+                    ax.plot(flist/factor,20*log10(abs(Spar)),label=f'$S_{{{j+1:}{k+1:}}}$')
+                    ax.set_ylabel("dB")
+                else:
+                    ax.plot(flist/factor,angle(Spar)*180/3.1415,label=f'$\\angle S_{{{j+1:}{k+1:}}}$')
+                    ax.set_ylabel("Phase in °")
+        plt.legend(loc=4)
+        plt.grid()
+        ax.set_xlabel("Freq. in "+funit)
     plt.tight_layout()
     return fig,ax
     
-
 
 def mufactor(S):
     '''
@@ -1439,7 +1521,7 @@ def impedanceFromS_shunt(S,Z0=50):
 
 def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
     '''
-    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a symmetric network 
+    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a **symmetric** network 
      1 o----|     |---o 2
             |  S  |
      3 o----|     |---o 4
@@ -1451,7 +1533,7 @@ def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
      
      returns: 
      array (1dim): frequency vector 
-     array (3dim): 4-Port S-Matrix array over frequency
+     array (4dim): 4-Port S-Matrix array over frequency
      
     '''
     fm,Ss12 = load_touchstone(S12_file)
@@ -1495,8 +1577,52 @@ def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
                   [S41,S42,S43,S44]]).transpose(2,0,1)
     return fm,S
                   
-            
-            
+
+
+def threePortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S23_file):
+    '''
+    assemble a 4-Port S-Matrix from three seperate 2-Port S-Matrices from a symmetric network 
+            |     |---o 2
+     1 o----|  S  |
+            |     |---o 3
+     
+     parameter: 
+     S12_file: filename of first S-parameter Touchstone file measured Port 1 and Port 2
+     S13_file: filename of first S-parameter Touchstone file measured Port 1 and Port 3
+     S23_file: filename of first S-parameter Touchstone file measured Port 2 and Port 3
+     returns: 
+     array (1dim): frequency vector 
+     array (4dim): 3-Port S-Matrix array over frequency
+     
+    '''
+    fm,Ss12 = load_touchstone(S12_file)
+    fm,Ss13 = load_touchstone(S13_file)
+    fm,Ss23 = load_touchstone(S23_file)
+
+    S11 = Ss12[:,0,0]
+    S12 = Ss12[:,0,1]
+    S21 = Ss12[:,1,0]
+    S22 = Ss12[:,1,1]
+
+    #S11 = Ss13[:,0,0]
+    S13 = Ss13[:,0,1]
+    S31 = Ss13[:,1,0]
+    S33 = Ss13[:,1,1]
+
+    #S22 = Ss23[:,0,0]
+    S23 = Ss23[:,0,1]
+    S32 = Ss23[:,1,0]
+    #S33 = Ss23[:,1,1]
+    # In comments redundant measurements
+   
+
+    S =    array([[S11,S12,S13],
+                  [S21,S22,S23],
+                  [S31,S32,S33]]).transpose(2,0,1)
+    return fm,S
+                
+
+
 ############################################################################################
 def singleEndedToMixedMode(S):
     '''

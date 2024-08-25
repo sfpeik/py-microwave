@@ -160,5 +160,27 @@ def dipole_radiation_resistance(kl,a_to_l=0.0001):
     Rin, Xin = dipole_input_impedance(kl,a_to_l)
     Rr = Rin * (sin(kl/2))**2
     return Rr
+    
+    
+    
+def dipole_mutual_impedance_side_by_side(k,l,d):
+    '''
+    calculates the complex mutual impedance of a wire antenna
+    see Balanis eqn 8.71 ff
+    k: wave number 2pi/lam
+    l: laenge   
+    d: distance
+    '''
+    eta0 = 377.0
+    u0 = k*d
+    u1 = k*(sqrt(d**2+l**2)+l) 
+    u2 = k*(sqrt(d**2+l**2)-l) 
+    R21 =  eta0/4/pi*( 2*Ci(u0) - Ci(u1) - Ci(u2))
+    X21 = -eta0/4/pi*( 2*Si(u0) - Si(u1) - Si(u2))
+    
+    return R21, X21
+    
+    
+    
 
 
