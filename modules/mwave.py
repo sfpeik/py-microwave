@@ -787,6 +787,7 @@ def load_touchstone(filename, annotations=False):
                 noise=True
                 #print("----- Here Noise Data start ------>")
             continue
+        factor = 1.0    
         if line[0]=='#':
             #print("Format is ",line)
             if 'HZ' in line.upper(): factor=1e0
