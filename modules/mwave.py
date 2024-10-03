@@ -30,7 +30,7 @@ try:
 except:
     print("Smith Module not found, doing without")
 
-from scipy.optimize import fsolve, brentq
+from scipy.optimize import fsolve, brentq, brenth, brent
 
 #### some constants
 
@@ -50,17 +50,7 @@ def hello():
 ########################################################################
 def coth(x):
     return 1/tanh(x)
-<<<<<<< HEAD
 
-def find_nearest(array, value):
-    array = asarray(array)
-    idx = (abs(array - value)).argmin()
-    return idx
-
-
-=======
-    
-    
 def find_nearest(arr, value):
     '''
     find the index of a nearest value in an array
@@ -68,11 +58,7 @@ def find_nearest(arr, value):
     arr = asarray(arr)
     idx = (abs(arr - value)).argmin()
     return idx
-    
-    
-        
-    
->>>>>>> 04c8015a9e3d0c076ca96af230b76ba1e3a8ab26
+
 ########################################################################    
 def lineinputimpedance(Z0,Zl,betal):
     r'''Calculates input impedance of a terminated line
@@ -129,6 +115,7 @@ def msimpedance(w,h,er):
     (51.129452787061204, 2.773818757727919)
   '''
 
+  if w ==0: w=1e-12
   eta0=377
   if(w/h<=1):
       F=1/sqrt(1+12*h/w)+0.004*(1-w/h)**2
@@ -188,10 +175,10 @@ def msdimension(Z0wanted,elen,f,h,epsr):
     lam0=3e8/f
     imp= lambda w:  msimpedance(w,h,epsr)[0]-Z0wanted
     try:
-        result = brentq(imp,0.002*h,20.0*h) 
+        result = brentq(imp,0.1*h,20.0*h)
     except:
         raise ValueError('could not find solution in msdimension for %f Ohms' % (Z0wanted))
-    w=round(result,4)
+    w=round(result,8)
     Z0,epseff=msimpedance(w,h,epsr)
     lamms=lam0/sqrt(epseff)
     l = elen * lamms
