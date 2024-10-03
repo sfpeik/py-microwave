@@ -21,12 +21,7 @@ __version__ = "1.0.1"
 
 from numpy import  array,sqrt,pi,log,matrix, conj, angle, zeros, exp, abs, ndim, log10, arange, around, \
     shape, ones, tan, isnan, nan, cosh, sinh, atleast_1d, transpose, squeeze, zeros_like, ones_like, \
-<<<<<<< HEAD
-    broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin
-
-=======
     broadcast_to, identity, matrix, real, imag, tanh, interp, set_printoptions, asarray, argmin, concatenate, newaxis
->>>>>>> 04c8015a9e3d0c076ca96af230b76ba1e3a8ab26
 import matplotlib.pyplot as plt
 import sys
 
