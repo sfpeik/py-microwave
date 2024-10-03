@@ -689,6 +689,226 @@ def drawcouplingdiagram(M,respos,ntype):
                 m.add_label(str(round(M[i,j],3)),size=14)
     return d
 
+
+def find_nearest(array, value, verbose = True):
+    '''
+    Finde nächstliegenden Wert in einem array und gebe diesen zurück
+    '''
+    array = asarray(array)
+    ex = int(log10(value))
+    if value <1:
+        ex = ex-1
+    idx = (abs(array - value/10**ex)).argmin()
+    x = array[idx]
+    if verbose: display(f":  {value:.3e} ---> {x*10**ex:.3e}")
+    return x*10**ex
+
+def engNum(x):
+    prefix = {0: '', 3:'k', 6: 'M', 9:'G', 12: 'T', 15: 'P', -3: 'm', -6:'u', -9:'n', -12:'p',-15:'f', -18: 'a'}
+    m = np.floor(np.log10(x)/3) * 3
+    return f"{x/10**m:6.2f} {prefix[m]:}"
+
+
+def e_series(n):
+    '''
+    Erzeuge eine E-Serie von Komponentenwerten
+    n: Seriennummer, z.B. 24 für E24
+    '''
+    if n<=24:
+        rou=1
+    else:
+        rou=2
+    m = arange(0,n,1)
+    k = around((10**(1/n))**m,rou)
+    return k
+
+
+#######################################################################################
+#######################################################################################
+#######################################################################################
+
+import mwave as mw
+import schemdraw 
+import schemdraw.elements as elm
+elm.style(elm.STYLE_IEC)
+
+
+class ladderFilter:
+    """
+    Ladder Filter Object 
+
+    self.order = order of filter (int)
+    self.pat = checker pattern of series (list) 1,-1,1,...
+    self.Rs
+    self.Rl
+    """
+    def __init__(self, elements, Rs=1, Rl = 1, startwithseries = True):
+        self.order = len(elements)
+        self.elements = np.array(elements)
+        self.Rs = Rs
+        self.Rl = Rl
+        self.startwithseries = startwithseries
+        self.g  = np.zeros(self.order+2)
+        self.g[0] = Rs
+        self.g[-1] = Rl
+        self.g[1:self.order+1] = elements
+        self.pat = (-1)**np.arange(self.order)
+        if startwithseries: self.pat *= -1
+        self.schem = self.createSchematic()
+        print(self.g)
+
+    def createSchematic(self,showloads=True, fontsize=11,color1="gray"):
+        with schemdraw.Drawing(show=False) as d:  
+            if showloads:
+                d += elm.Ground(color=color1)
+                d += elm.SourceSin(l=2,color=color1).up()
+                d += elm.Resistor(color=color1).right().label(str(self.Rs)+"$\Omega$",fontsize=fontsize)
+            d += (dd1:=elm.Dot(open=True))
+            if not self.startwithseries:
+                d += (ll1:=elm.Line(l=2).right())
+            for i in range(1,self.order+1):
+                value = engNum(self.g[i])    #   f"{self.g[i]:.3E}" 
+                if self.pat[i-1] == 1:
+                    d += elm.Dot()
+                    d.push()
+                    d += elm.Capacitor(l=2).down().label(value+"F",fontsize=fontsize,rotate=90)
+                    d += elm.Ground()
+                    d.pop()
+                else:
+                    d += elm.Inductor(l=3).right().label(value+"H",fontsize=fontsize)
+            if self.pat[i-1] ==1:
+                d += elm.Line(l=2).right()
+            d += (dd2:=elm.Dot(open=True))
+            if showloads:
+                d += elm.Line(l=1,color=color1).right()
+                d += elm.Resistor(l=2,color=color1).down().label(str(self.Rl)+"$\Omega$",fontsize=fontsize)
+                d += elm.Ground(color=color1) 
+            self.schem = d
+            return self.schem
+
+    def response(self,f):
+        """
+        Filter response over frequency in S-parameter
+        f: freq vector (numy array)
+        return S: S parameter matrix array
+        """
+        self.f = f
+        ABCDlist = []
+        w = 2*np.pi*f
+        for i in range(1,self.order+1):
+            if self.pat[i-1] == 1:
+                ABCDlist.append( mw.ABCDshunt(1j*w*self.g[i]) )
+            else:
+                ABCDlist.append( mw.ABCDseries(1j*w*self.g[i])  )
+            ABCD = mw.cascade(ABCDlist)
+            S = mw.ABCDtoS(ABCD,Z0=self.Rs)
+        self.S = S
+        self.ABCD = ABCD
+        return S
+
+    def responseIL(self,f):
+        """
+        Voltage Transferfunction V2/V1
+        """
+        self.response(f)
+        A = self.ABCD[:,0,0]
+        B = self.ABCD[:,0,1]
+        C = self.ABCD[:,1,0]
+        D = self.ABCD[:,1,1]
+        self.Zin = (A*self.Rl + B) / (C*self.Rl + D)
+        U0 = 1.0
+        U1 = self.Zin/(self.Zin+self.Rs) * U0# Transferfunction U2 to U1
+        I1 = U1/self.Zin
+        I2 = U1/(A*self.Rl + B)
+        U2 = self.Rl * I2
+        self.H = U2 / U1
+        U2direct = self.Rl/(self.Rl+self.Rs) * U0 
+        self.IL = U2/U2direct
+        return self.IL
+        
+    def __str__(self):
+        for i in range(1,self.order+1):
+                text = "Filter with order "+ self.order + "\n"
+                value = f"{self.g[i]:6.3f}" 
+                if self.pat[i-1] == 1:
+                    text += " shunt :"+value+"\n"
+                else:
+                    text += " series:"+value+"\n"
+        return text
+
+
+#######################################################################################
+#######################################################################################
+#######################################################################################
+
+from numpy.polynomial import polynomial as P
+np.polynomial.set_default_printstyle('unicode')
+
+class RationalPolynom:
+
+    def __init__(self,numerator,denominator):
+        """
+        numerator: numerator polynomial array, with highest power last
+        denominator: denominator polynomial array, with highest power last
+        """
+        
+        self.N = P.Polynomial(numerator,symbol="s")
+        self.D = P.Polynomial(denominator,symbol="s")
+        self.elements = []  # array holding the extracted elements of ladder network series Z -- shunt Y -- ....
+        self.maxdeg = max(self.N.degree(),self.D.degree())
+        self.evenOdd() 
+    
+    def evenOdd(self):
+        ## create even and odd polynomials 
+        self.Deven = list(self.D.coef)  # only even powers of D  
+        self.Dodd =  list(self.D.coef)  # only even powers of D  
+        self.Neven = list(self.N.coef)  # only even powers of D  
+        self.Nodd =  list(self.N.coef)  # only even powers of D  
+        
+        self.Deven[1::2] = [0]*len(self.Deven[1::2])
+        self.Dodd[0::2] = [0]*len(self.Dodd[0::2])
+        self.Neven[1::2] = [0]*len(self.Neven[1::2])
+        self.Nodd[0::2] = [0]*len(self.Nodd[0::2])
+        
+        
+    def __str__(self):
+        line = "-"*max(len(str(self.N)),len(str(self.D)))
+        return (str(self.N) + "\n"+line+"\n" + str(self.D))
+
+    def __repr__(self):
+        line = "-"*max(len(str(self.N)),len(str(self.D)))
+        return (str(self.N) + "\n"+line+"\n" + str(self.D))
+
+    def continuedFractionExpansion(self,startwithseries=True):
+        self.startwithseries = startwithseries
+        series = startwithseries
+        self.elements = []
+        _N = self.N
+        _D = self.D
+        self.pat = []
+        for i in range(self.N.degree()):
+            res,rem = divmod(_N,_D)
+            display(res,rem)
+            x = res.coef[1]
+            if series: 
+                print("Series inductor with Z=",x)
+                self.pat.append(1)
+            else:
+                print("Shunt Capacitor with Y=",x)
+                self.pat.append(-1)
+            self.elements.append(x)
+            print("------------")
+            _N = _D
+            _D = rem 
+            series = not series
+            print(self.pat)
+        self.pat = np.array(self.pat)
+        return(np.array(self.elements))
+
+#######################################################################################
+#######################################################################################
+#######################################################################################
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
