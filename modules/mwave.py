@@ -178,7 +178,7 @@ def msdimension(Z0wanted,elen,f,h,epsr):
     lam0=3e8/f
     imp= lambda w:  msimpedance(w,h,epsr)[0]-Z0wanted
     try:
-        result = brentq(imp,0.002*h,20.0*h) 
+        result = brentq(imp,0.002*h,20.0*h, xtol=1e-15) 
     except:
         raise ValueError('could not find solution in msdimension for %f Ohms' % (Z0wanted))
     w=round(result,4)
