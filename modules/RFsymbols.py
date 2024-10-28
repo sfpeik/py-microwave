@@ -50,6 +50,16 @@ class Isolator(elm.Element):
         self.params['drop'] = (1, 0)
 
 class Port(elm.Element):
+    '''
+    RF Port Definition 
+    
+    '''
+    _element_defaults = {
+	'lead': True,
+	'drop': (0, 0),
+	'theta': 0,
+	'lblloc': 'right'
+    }
     def __init__(self, direction='left', *d, **kwargs):
         '''
         direction: 'left' or 'right'
@@ -60,13 +70,16 @@ class Port(elm.Element):
         super().__init__(*d, **kwargs)
         size = 0.4
         dir = 1
-        if direction =='right': dir = -1
+        if  (direction =='left'):
+            dir = 1
+        else:
+            dir = -1 
         self.segments.append(Segment([(0, 0), (-size*dir, -size*0.7),(-size*dir, size*0.7),(0,0)]))
         self.anchors['p'] = (0,0)
-        if direction == 'left':
-            self.params['lblloc'] = 'lft'
-        if direction == 'right':
-            self.params['lblloc'] = 'rgt'
+        if dir==1:
+            self.anchors['label'] = (-size * dir, 0)
+        else:
+            self.anchors['label'] = (0, 0)
 
 class Splitter(elm.Element):
     def __init__(self, showbox = True, size=1 , couplabel="-3dB", *d, **kwargs):
