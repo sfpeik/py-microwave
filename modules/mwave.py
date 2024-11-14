@@ -832,6 +832,9 @@ def load_touchstone(filename, annotations=False):
             elif sform =='DB':
                 # Combine dB Phase into complex number ### 
                 _s = array([ 10**(p[2*i+1]/20) *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
+            elif sform =='MA':
+                # Combine dB Phase into complex number ### 
+                _s = array([ p[2*i+1] *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
             _S = _s.reshape(n_ports,n_ports)
             Slist.append(_S)
             #print S
