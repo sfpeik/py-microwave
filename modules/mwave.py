@@ -30,7 +30,7 @@ try:
 except:
     print("Smith Module not found, doing without")
 
-from scipy.optimize import fsolve, brentq
+from scipy.optimize import fsolve, brentq, brenth, brent
 
 #### some constants
 
@@ -50,8 +50,7 @@ def hello():
 ########################################################################
 def coth(x):
     return 1/tanh(x)
-    
-    
+
 def find_nearest(arr, value):
     '''
     find the index of a nearest value in an array
@@ -59,10 +58,7 @@ def find_nearest(arr, value):
     arr = asarray(arr)
     idx = (abs(arr - value)).argmin()
     return idx
-    
-    
-        
-    
+
 ########################################################################    
 def lineinputimpedance(Z0,Zl,betal):
     r'''Calculates input impedance of a terminated line
@@ -119,6 +115,7 @@ def msimpedance(w,h,er):
     (51.129452787061204, 2.773818757727919)
   '''
 
+  if w ==0: w=1e-12
   eta0=377
   if(w/h<=1):
       F=1/sqrt(1+12*h/w)+0.004*(1-w/h)**2
@@ -178,10 +175,10 @@ def msdimension(Z0wanted,elen,f,h,epsr):
     lam0=3e8/f
     imp= lambda w:  msimpedance(w,h,epsr)[0]-Z0wanted
     try:
-        result = brentq(imp,0.002*h,20.0*h) 
+        result = brentq(imp,0.002*h,20.0*h, xtol=1e-15) 
     except:
         raise ValueError('could not find solution in msdimension for %f Ohms' % (Z0wanted))
-    w=round(result,4)
+    w=round(result,8)
     Z0,epseff=msimpedance(w,h,epsr)
     lamms=lam0/sqrt(epseff)
     l = elen * lamms
@@ -835,6 +832,9 @@ def load_touchstone(filename, annotations=False):
             elif sform =='DB':
                 # Combine dB Phase into complex number ### 
                 _s = array([ 10**(p[2*i+1]/20) *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
+            elif sform =='MA':
+                # Combine dB Phase into complex number ### 
+                _s = array([ p[2*i+1] *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
             _S = _s.reshape(n_ports,n_ports)
             Slist.append(_S)
             #print S
@@ -1474,7 +1474,7 @@ def AmpStubmatching(Gammamatch,plotit=False):
 
 def impedanceFromS_series(S,Z0=50):
     '''
-    Find series impadance from 2-Port S-Paramter
+    Find series impedance from 2-Port S-Paramter
     See Cispr 17 6.3.1.3 for more information
     
     S: 2x2  Matrix array S-Matrix
@@ -1489,7 +1489,7 @@ def impedanceFromS_series(S,Z0=50):
 
 def impedanceFromS_shunt(S,Z0=50):
     '''
-    Find shunt impadance from 2-Port S-Paramter
+    Find shunt impedance from 2-Port S-Paramter
     See Cispr 17 6.3.1.3 for more information
     
     S: 2x2  Matrix array S-Matrix
@@ -1563,7 +1563,7 @@ def fourPortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S14_file):
                   [S41,S42,S43,S44]]).transpose(2,0,1)
     return fm,S
                   
-            
+
 
 def threePortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S23_file):
     '''
@@ -1607,11 +1607,13 @@ def threePortS_Matrix_from_TwoPortMatrix(S12_file,S13_file,S23_file):
                   [S31,S32,S33]]).transpose(2,0,1)
     return fm,S
                 
+
+
 ############################################################################################
 def singleEndedToMixedMode(S):
     '''
     converts a single ended S-Parameter File to mixed Mode S-Parameter
-    S: single Ended 4-Port S-PAramter File
+    S: single Ended 4-Port S-Parameter File
     retruns: 
     Smixed s. lit. 
 
@@ -1624,6 +1626,8 @@ def singleEndedToMixedMode(S):
     Sdd: diff-diff S matrix
     Scd: common-diff S matrix
     Sdc: diff-common S matrix
+    
+    see also https://coppermountaintech.com/wp-content/uploads/2022/06/BalancedMeas.pdf
     '''
     
     if S.ndim ==2:
