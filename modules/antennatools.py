@@ -4,7 +4,7 @@
   :Author: S.F. Peik
 
 '''
-
+import matplotlib.pyplot as plt
 from numpy import *
 
 eta0 = 376.730
@@ -179,8 +179,84 @@ def dipole_mutual_impedance_side_by_side(k,l,d):
     X21 = -eta0/4/pi*( 2*Si(u0) - Si(u1) - Si(u2))
     
     return R21, X21
+
+
+def AF_linear_array(theta, N, d = 0.5, delta_phase= 0 , AmpTaper = None):
+    '''
+    Array Factor of a linear array of N isotropic point sources, separated by distance d in lambda's  and
+    all fed with constant magnitude and a constant phase increment psi
+    --> Amplitude Taper not included yet!!
+    :param theta: anglelist in degrees
+    :param N: number of elements
+    :param d: distance od elements in lambda's
+    :param delta_phase: constant Phase difference between elements in degrees
+    :param AmpTaper:
+    :return:
+    '''
+    th = theta * pi/180
+    lam = 1.0
+    k = 2*pi/lam
+    zeta = delta_phase * pi/180
+    psi =  zeta + k*d * cos(th+pi/2) # hartnagel page 508
+    Gele = cos(th/2)
+    AF = abs(1/N * sin(N*psi/2) / sin(psi/2)) + 1e-6 # hartnagel page 508
+    return AF
+
     
-    
-    
+def polarPlotdB(theta,GdB,dBmin= -60, dBmax = 0, dBgrid = 10, minorGrid=True, angleSteps = 15, **kwargs):
+    '''
+    :param theta: angle in degrees
+    :param GdB: Gain or similar in dB values
+    :param dBmin: minimum dB shown in center of plot
+    :param dBmax: maximum dB shown on rim of plot
+    :param dBgrid: grid of dB values
+    :param minorGrid: show grid minor grid rings
+    :param angleSteps: ticmarks at every angleStep degrees
+    :return: fig,ax
+    '''
+    dBmin = int(dBmin)
+    dBmax = int(dBmax)
+    fig, ax = plt.subplots(subplot_kw=dict(projection='polar'))
+    thetarad = deg2rad(theta)
+    ## The dBmin must be subtracted from all r values, as no neg. r values possible for polar plot
+
+    ax.set_xlim(-pi, pi)
+    ax.set_xticks(arange(-pi, pi, angleSteps * pi / 180))
+    ## minor rings befor plot, such that it appears behind plot
+    phi = arange(0, 2 * pi + pi / 100, pi / 100)
+    for R in range(dBmin, dBmax, 2):
+        rr = ones_like(phi) * R - dBmin
+        ax.plot(phi, rr, "lightgray", lw=0.4)
+    ## Plot now
+    ax.plot(thetarad, GdB - dBmin, *kwargs.values())
+    ## Set all adjustments
+    ax.set_rmin(0.0)
+    ax.set_rmax(-dBmin + dBmax)
+    ax.set_rlabel_position(0)
+    ## redefine for using nautical compass system ######
+    ax.set_theta_zero_location('N')
+    ax.set_theta_direction(-1)
+    ## Setting ticks ###################################
+    ax.set_rticks(range(0, -dBmin + dBmax  + 1, dBgrid))  # Define the yticks
+    labels = map(str, arange(dBmin, dBmax  + 1, dBgrid))
+    dBlabels = [xxx + "dB" for xxx in labels]
+    ax.set_yticklabels(dBlabels, fontsize='small')  # Change the labels
+    ax.grid(True)
+    return fig,ax
+		    
+
+if __name__ == '__main__':
+    theta = arange(0,361,1.0)
+    AF = AF_linear_array(theta,N=8, d=0.3)
+    #G = sin(theta*pi/180)**2
+    G = AF**2
+    GdB = 10*log10(G+1e-10)
+    fig, ax = polarPlotdB(theta,GdB,dBmin=-40,dBmax = 3, angleSteps=15, color="r")
+    ## Select a sector of the graph
+    ax.set_xlim(-pi/2,pi/2)
+    ax.set_title("\n\nGain  $G(\\Theta)$")
+    plt.show()
+    plt.tight_layout()
+
 
 
