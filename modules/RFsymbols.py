@@ -202,10 +202,10 @@ class Reflection(elm.Element):
         Anchors:
         '''
         super().__init__(*d, **kwargs)
-        size = 0.5 * size
+        size = 0.8 * size
         radius = 1
-        self.segments.append(Segment([(-0.5, 0), (-0.5, -1)], capstyle="butt", lw=3))
-        self.segments.append(SegmentArc((0,0), radius, radius, lw = 3, theta1= 0, theta2=180, arrow = '<-'))
+        self.segments.append(Segment([(-0.5*size, 0), (-0.5*size, -0.5*size)], capstyle="butt", lw=2))
+        self.segments.append(SegmentArc((0,0), radius*size, radius*size, lw = 2, theta1= 0, theta2=180, arrow = '<-'))
         
 
 
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     d += elm.Line(l=4)
     d += elm.Resistor().down()
     d += elm.Ground()
-    d += Reflection().at((1,-1))
+    d += Reflection(color="r").at((2,-1)).label(r"$\Gamma_2$",fontsize=22)
     d.draw()
     exit(0)
     
