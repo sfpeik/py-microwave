@@ -194,14 +194,34 @@ class Hybrid(elm.Element):
         self.params['drop'] = (size * 3, 0)
         self.params['pick'] = (size * 3, 0)
         
+
+class Reflection(elm.Element):
+    
+    def __init__(self, showbox = True, size= 1, *d, **kwargs):
+        '''
+        Anchors:
+        '''
+        super().__init__(*d, **kwargs)
+        size = 0.5 * size
+        radius = 1
+        self.segments.append(Segment([(-0.5, 0), (-0.5, -1)], capstyle="butt", lw=3))
+        self.segments.append(SegmentArc((0,0), radius, radius, lw = 3, theta1= 0, theta2=180, arrow = '<-'))
         
- 
+
+
+        
 if __name__ == "__main__":
     import schemdraw as schem
     import schemdraw.dsp as dsp
     d = schem.Drawing()
-    d += Isolator()
+    d += Port()
+    d += elm.Line(l=4)
+    d += elm.Resistor().down()
+    d += elm.Ground()
+    d += Reflection().at((1,-1))
+    d.draw()
     exit(0)
+    
     #d += (rat :=Ratrace().anchor('sum'))
     #d += Port().label("In1",'right').fill('skyblue').at(rat.in1).down()
     #d += Port(theta=30).label("In2").fill('skyblue').at(rat.in2)
