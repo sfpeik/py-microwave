@@ -197,18 +197,16 @@ class Hybrid(elm.Element):
 
 class Reflection(elm.Element):
     
-    def __init__(self, showbox = True, size= 1, *d, **kwargs):
+    def __init__(self, dx = 0, dy = 0 ,size= 1, *d, **kwargs):
         '''
         Anchors:
         '''
         super().__init__(*d, **kwargs)
         size = 0.8 * size
         radius = 1
-        self.segments.append(Segment([(-0.5*size, 0), (-0.5*size, -0.5*size)], capstyle="butt", lw=2))
-        self.segments.append(SegmentArc((0,0), radius*size, radius*size, lw = 2, theta1= 0, theta2=180, arrow = '<-'))
+        self.segments.append(Segment([(-0.5*size+dy, dx), (-0.5*size+dy, -0.5*size+dx)], capstyle="butt", lw=2))
+        self.segments.append(SegmentArc((dy,dx), radius*size, radius*size, lw = 2, theta1= 0, theta2=180, arrow = '<-'))
         
-
-
         
 if __name__ == "__main__":
     import schemdraw as schem
@@ -218,7 +216,7 @@ if __name__ == "__main__":
     d += elm.Line(l=4)
     d += elm.Resistor().down()
     d += elm.Ground()
-    d += Reflection(color="r").at((2,-1)).label(r"$\Gamma_2$",fontsize=22)
+    d += Reflection(color="r",dx= -1,dy=-1.5).label(r"$\Gamma_2$",fontsize=22)
     d.draw()
     exit(0)
     
