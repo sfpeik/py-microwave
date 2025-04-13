@@ -742,11 +742,17 @@ class ladderFilter:
     self.Rs
     self.Rl
     """
-    def __init__(self, elements, Rs=1, Rl = 1, startwithseries = True):
+    def __init__(self, elements, Rs=1, Rl = 1, startwithseries = True, highpass = False):
+        '''
+        elements: elementvalues as list start with first reactive element, no source/load 
+        Rs: source impedance
+        Rl: load impedance 
+        '''
         self.order = len(elements)
         self.elements = np.array(elements)
         self.Rs = Rs
         self.Rl = Rl
+        self.highpass = highpass
         self.startwithseries = startwithseries
         self.g  = np.zeros(self.order+2)
         self.g[0] = Rs
@@ -755,14 +761,14 @@ class ladderFilter:
         self.pat = (-1)**np.arange(self.order)
         if startwithseries: self.pat *= -1
         self.schem = self.createSchematic()
-        print(self.g)
+      
 
     def createSchematic(self,showloads=True, fontsize=11,color1="gray"):
         with schemdraw.Drawing(show=False) as d:  
             if showloads:
                 d += elm.Ground(color=color1)
                 d += elm.SourceSin(l=2,color=color1).up()
-                d += elm.Resistor(color=color1).right().label(str(self.Rs)+"$\Omega$",fontsize=fontsize)
+                d += elm.Resistor(color=color1).right().label(str(self.Rs)+r"$\Omega$",fontsize=fontsize)
             d += (dd1:=elm.Dot(open=True))
             if not self.startwithseries:
                 d += (ll1:=elm.Line(l=2).right())
@@ -771,17 +777,23 @@ class ladderFilter:
                 if self.pat[i-1] == 1:
                     d += elm.Dot()
                     d.push()
-                    d += elm.Capacitor(l=2).down().label(value+"F",fontsize=fontsize,rotate=90)
+                    if not self.highpass:
+                        d += elm.Capacitor(l=2).down().label(value+"F",fontsize=fontsize,rotate=90)
+                    else: 
+                        d += elm.Inductor(l=2).down().label(value+"H",fontsize=fontsize,rotate=90)
                     d += elm.Ground()
                     d.pop()
                 else:
-                    d += elm.Inductor(l=3).right().label(value+"H",fontsize=fontsize)
+                    if not self.highpass:
+                        d += elm.Inductor(l=3).right().label(value+"H",fontsize=fontsize)
+                    else:
+                        d += elm.Capacitor(l=3).right().label(value+"F",fontsize=fontsize)
             if self.pat[i-1] ==1:
                 d += elm.Line(l=2).right()
             d += (dd2:=elm.Dot(open=True))
             if showloads:
                 d += elm.Line(l=1,color=color1).right()
-                d += elm.Resistor(l=2,color=color1).down().label(str(self.Rl)+"$\Omega$",fontsize=fontsize)
+                d += elm.Resistor(l=2,color=color1).down().label(str(self.Rl)+r"$\Omega$",fontsize=fontsize)
                 d += elm.Ground(color=color1) 
             self.schem = d
             return self.schem
@@ -797,9 +809,15 @@ class ladderFilter:
         w = 2*np.pi*f
         for i in range(1,self.order+1):
             if self.pat[i-1] == 1:
-                ABCDlist.append( mw.ABCDshunt(1j*w*self.g[i]) )
+                if self.highpass: 
+                    ABCDlist.append( mw.ABCDshunt(1/(1j*w*self.g[i])) )
+                else:
+                    ABCDlist.append( mw.ABCDshunt(1j*w*self.g[i]) )
             else:
-                ABCDlist.append( mw.ABCDseries(1j*w*self.g[i])  )
+                if self.highpass:
+                    ABCDlist.append( mw.ABCDseries(1/(1j*w*self.g[i]))  )
+                else:
+                    ABCDlist.append( mw.ABCDseries(1j*w*self.g[i]) )
             ABCD = mw.cascade(ABCDlist)
             S = mw.ABCDtoS(ABCD,Z0=self.Rs)
         self.S = S

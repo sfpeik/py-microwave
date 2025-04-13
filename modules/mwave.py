@@ -175,7 +175,7 @@ def msdimension(Z0wanted,elen,f,h,epsr):
     lam0=3e8/f
     imp= lambda w:  msimpedance(w,h,epsr)[0]-Z0wanted
     try:
-        result = brentq(imp,0.1*h,20.0*h)
+        result = brentq(imp,0.002*h,20.0*h, xtol=1e-15) 
     except:
         raise ValueError('could not find solution in msdimension for %f Ohms' % (Z0wanted))
     w=round(result,8)
@@ -761,7 +761,7 @@ def load_touchstone(filename, annotations=False):
     currently works with 2x2 matrices only
     '''
     
-    print("Load Touchstone file ",filename)
+    #print("Load Touchstone file ",filename)
     f=open(filename,'r', encoding = "ISO-8859-1")
     noise=False
     #if filename[-2] == '1': 
@@ -781,7 +781,7 @@ def load_touchstone(filename, annotations=False):
     anno = []
     Slist=[];flist=[]
     rad=pi/180.0
-    print("Loading ",n_ports,"-Port")
+    #print("Loading ",n_ports,"-Port")
     with open(filename) as fi:
       i = 0
       f = []
@@ -832,6 +832,9 @@ def load_touchstone(filename, annotations=False):
             elif sform =='DB':
                 # Combine dB Phase into complex number ### 
                 _s = array([ 10**(p[2*i+1]/20) *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
+            elif sform =='MA':
+                # Combine dB Phase into complex number ### 
+                _s = array([ p[2*i+1] *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
             _S = _s.reshape(n_ports,n_ports)
             Slist.append(_S)
             #print S
@@ -1086,13 +1089,13 @@ def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=
     '''
     
     flist=array(flist)
-    print(Slist.ndim)
+    #print(Slist.ndim)
     if Slist.ndim == 1:  ### Oneport
         Slist = Slist[:,newaxis,newaxis]
         n_ports = 1
     else:
         n_ports = Slist.shape[1]
-    print("# of Ports",n_ports)
+    #print("# of Ports",n_ports)
     if funit == 'Hz':
         factor = 1.0
     elif funit == 'MHz':
