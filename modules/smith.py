@@ -10,13 +10,17 @@ __docformat__ = 'reStructuredText'
 from itertools import count
 
 import matplotlib.pyplot as plt
-from numpy import real, imag, logspace, linspace, log10, exp, pi, angle, arange, tan, cos, sin, around, array, nan, sqrt, conj, argmin
+from matplotlib import patches
+from numpy import (real, imag, logspace, linspace, log10, exp, pi, angle, arange, tan,
+                   cos, arccos, arcsin, arctan2, sin, around, array, nan, sqrt, conj, argmin, concatenate)
 
 import schemdraw as schem
 import schemdraw.elements as e
 
 import os
 import svgutils.compose as sc
+from yt_dlp.utils import find_xpath_attr
+
 
 ### convert mag, phase into complex number
 ### phase is given in degrees
@@ -45,7 +49,7 @@ def magphasetex(c):  # alternative without underscore
 
 
 def reflcoeff(Z, Z0=50):
-    """
+    r"""
     Return the reflection coefficient for a given load impedance Z and line impedance Z0
 
     Returns:
@@ -116,7 +120,8 @@ def superimposeChart(fig, svgfile='smith_paper.svg'):
 
 ########################################################################################################################
 ########################################################################################################################
-########################################################################################################################
+
+
 class Smith:
     def __init__(self, ax, typ='smith', Z0=1, fontscale=None, trans= None, fineness=1, **kwargs):
         
@@ -354,7 +359,7 @@ class Smith:
             x = 1.1 * cos(ang)
             y = 1.1 * sin(ang)
             self.ax.plot((0.95 * x, 1.05 * x), (0.95 * y, 1.05 * y), **kwargs)
-            lab = str(lam) + '$\lambda$'
+            lab = str(lam) + r'$\lambda$'
             self.ax.text(x*0.985 , y*0.985 , lab, ha='left', va='bottom',rotation_mode='anchor', rotation=ang * 180.0 / pi,
                          fontsize=10 * self.fontscale, color = kwargs['color'], alpha = kwargs['alpha']   )
         for lam in arange(0.0, 0.5, 0.002):  # minor tics
@@ -383,7 +388,7 @@ class Smith:
         mfs = 7
         #### Gamma Values #####
         yl = -1.6
-        self.ax.text(0.04, yl - 0.05, "Refl Coeff $\Gamma$", color='k', ha='left', va='center',
+        self.ax.text(0.04, yl - 0.05, "Refl Coeff $\\Gamma$", color='k', ha='left', va='center',
                      fontsize=10 * self.fontscale, *args, **kwargs)
         self.ax.plot((-1, 0), (yl, yl), 'k', linewidth=1, *args, **kwargs)
         for xl in arange(0, 1.1, 0.1):
@@ -403,7 +408,7 @@ class Smith:
             xl = 10 ** (-dB / 20)
             self.ax.plot((-xl, -xl), (yl, yl - 0.02), 'k', linewidth=1)
             lab = "{:1.0f}".format(dB)
-            if dB > 1e10: lab = "$\infty$"
+            if dB > 1e10: lab = "$\\infty$"
             self.ax.text(-xl, yl - 0.05, lab, color='k', ha='center', va='center', fontsize=mfs * self.fontscale)
 
         #### VSWR Values ######
@@ -414,7 +419,7 @@ class Smith:
             xl = (VSWR - 1) / (VSWR + 1)
             self.ax.plot((-xl, -xl), (yl, yl - 0.02), 'k', linewidth=1)
             lab = "{:1.1f}".format(VSWR)
-            if VSWR > 1e10: lab = "$\infty$"
+            if VSWR > 1e10: lab = r"$\infty$"
             self.ax.text(-xl, yl - 0.05, lab, color='k', ha='center', va='center', fontsize=mfs * self.fontscale)
 
         plt.tight_layout(pad=.0)
@@ -522,9 +527,9 @@ class Smith:
         self.ax.add_patch(patch)
         Z = around(real(Z), 3) + 1j * around(imag(Z), 3)  # fix small non-zero values
         if abs(Z) < 1e-10:  # short
-            lab = '%s = 0 \n $Y$ = $\infty$' % label
+            lab = '%s = 0 \n $Y$ = $\\infty$' % label
         elif abs(Z) > 1e20:  # open
-            lab = '%s = $\infty$ \n $Y$ = 0 ' % label
+            lab = '%s = $\\infty$ \n $Y$ = 0 ' % label
         else:
             Y = 1 / Z
             lab = '%s = %4.2f%+4.2fj \n $Y$ =  %4.2g%+4.2fj' % (
@@ -645,7 +650,7 @@ class Smith:
         xl = 1.25 * cos(ang + 0.025 * self.fontscale)
         yl = 1.25 * sin(ang + 0.025 * self.fontscale)
         self.ax.plot((0, x), (0, y), 'k', linewidth=1)
-        lab = str(lam) + '$\lambda$'
+        lab = str(lam) + r'$\lambda$'
         bbox_props = dict(boxstyle="round4", fc=(0.95, 0.95, 0.8), ec="0.1", alpha=1)
         self.ax.text(xl, yl, lab, color='k', ha='center', va='center', rotation=ang * 180.0 / pi,
                      bbox=bbox_props, fontsize=12 * self.fontscale)
@@ -693,7 +698,7 @@ class Smith:
         if self.isnorm:
             unit = ''
         else:
-            unit = '\Omega'
+            unit = r'\Omega'
             # plt.ioff()
         d = schem.Drawing(fontsize=fontsize)
 
@@ -731,7 +736,7 @@ class Smith:
             if typus == "Line":
                 lamlen = ele.attr['length']
                 impedance = ele.value
-                lamstr = str(round(ele.attr['length'],3)) + '\lambda'
+                lamstr = str(round(ele.attr['length'],3)) + r'\lambda'
                 if abs(lamlen - 1. / 8) < 0.001:
                     lamstr = r'\lambda/8'
                 if abs(lamlen - 1. / 4) < 0.001:
@@ -740,10 +745,10 @@ class Smith:
                     lamstr = r'\lambda/3'
                 if abs(lamlen - 1. / 6) < 0.001:
                     lamstr = r'\lambda/6'
-                tline(d, '$Z_0=' + str(impedance) + unit + ',\, ' + lamstr + '$')
+                tline(d, '$Z_0=' + str(impedance) + unit + r',\, ' + lamstr + '$')
             if typus == "Open Stub":
                 lamlen = ele.attr['length']
-                lamstr = str(round(lamlen,3)) + '\lambda'
+                lamstr = str(round(lamlen,3)) + r'\lambda'
                 if abs(lamlen - 1. / 8) < 0.001:
                     lamstr = r'\lambda/8'
                 if abs(lamlen - 1. / 4) < 0.001:
@@ -756,6 +761,298 @@ class Smith:
             if self.showArrows:
                 intermediateImpedanceLabel(d, "$Z_"+str(ele.id)+"$")
         return d
+
+
+
+########################################################################################################################
+class Smithpaper(Smith):
+
+    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 0.4, fineness=1, **kwargs):
+        self.f = 0
+        self.ax = ax
+        self.Z0 = Z0
+        self.kwargs = kwargs
+        self.linefactor = 1
+        self.elements = []
+        self.impedances = []
+        self.elementvalues = []
+        self.elementvaluesunit = []
+        self.circuittypes = []
+        self.circuit = []
+        self.Zinlist = []
+        self.isnorm = False
+        self.paper = False
+        self.showArrows = False
+        self.linewidth = 1.0
+        self.fontscale = fontscale
+        self.resolution = 300
+        self.fatfactor = 2.2
+        self.show_neg_numbers = True
+        e.style(e.STYLE_IEC)
+        self.alpha = alpha
+        #self.addadmittancegrid(color="blue", alpha = alpha)
+        self.addimpedancegrid(color="black", alpha = alpha)
+        #self.addGammaAngleRing()
+        #self.addLambdaRing()
+        #self.addLambdaRing2()
+        #self.addOuterRing()
+
+
+
+    def addimpedancegrid(self, inverted=False, **kwargs):
+        '''
+        :param inverted: plots an inverted chart, aka Admittance Chart
+        :param kwargs: plot arguments, e.g. color, lw, ...
+        :return:
+        '''
+        color = "gray"
+        if self.show_neg_numbers:
+            labfront = "-"
+        else:
+            labfront = ""
+        # if not kwargs:
+        #     kwargs = self.kwargs
+        # if 'color' in self.kwargs:
+        #     color = self.kwargs['color']
+        # else:
+        #     self.kwargs['color'] = color
+        # if 'alpha' in self.kwargs: alpha = self.kwargs['alpha']
+
+        ## Cirlces ###########
+        clist = []
+        ## a group of circles consist fo the real part value, start imag, end imag and Fat line yes/no
+        an  = [0, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200]
+        res = [0.01, 0.02, 0.05, 0.1, 0.2, 1, 2, 25, 100, 200]
+        labelmarker = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6, 1.8, 2, 3, 4, 5, 10, 20, 50]
+        maxi = 9
+        for i in range(maxi):
+            for ii in range(i,i+4):
+                if ii >=maxi:break
+                start = an[ii]
+                if ii == i: start = 0
+                cc = (arange(an[i],an[i+1],res[ii]),start, an[ii+1], False)
+                clist.append(cc)
+        llw = [0.4 * self.linefactor, 0.4 * self.linefactor * self.fatfactor]
+
+        ## Outer Circle
+        e1 = patches.Circle((0, 0), 1,linewidth=llw[1], fill=False)
+        self.ax.add_patch(e1)
+
+        ### Constant real part circles #################################################################################
+        for group in clist:
+            cval, cstart, cend, fat = group
+            print(group)
+            for zreal in cval:
+                ## Find Center and radius of circles
+                ## see https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+                radius = 1 / (zreal + 1)
+                center = zreal / (zreal + 1)
+                Zend =  cend * 1j
+                endpoint = (Zend -1)/(Zend+1) - center
+                angle2 = arctan2(imag(endpoint)/radius, real(endpoint)/radius) * 180/pi
+                print(endpoint, angle2)
+                Zstart = cstart * 1j
+                startpoint = (Zstart - 1) / (Zstart + 1) - center
+                angle1 = arctan2(imag(startpoint) / radius, real(startpoint) / radius) * 180 / pi
+                try:
+                    e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1 = angle2,
+                                     theta2 = angle1)
+                    self.ax.add_patch(e1)
+                    e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1=-angle1,
+                                     theta2=-angle2)
+                    self.ax.add_patch(e1)
+                except:
+                    print("ERR")
+
+
+                #if inverted:
+                #    gamma = - gamma
+                #self.ax.plot(real(gamma), imag(gamma), linewidth=llw[0], **kwargs)
+                #self.ax.plot(real(gamma), -imag(gamma), linewidth=llw[0], **kwargs)
+
+
+        ### Labels ##################
+        for ll in labelmarker:
+            zreal = ll
+            gamlabel = (zreal - 1.0) / (zreal + 1.0)
+            orient = 1
+            labeloffsets = [0.006,1.01,0.99]
+            if inverted:
+                 gamlabel = -gamlabel
+                 orient = -1
+                 labeloffsets = [-0.006,0.99,1.013]
+
+            self.ax.text(gamlabel, labeloffsets[0], str(ll), rotation_mode='anchor', ha='left', va='bottom',
+                          rotation=90 * orient, fontsize=6 * self.fontscale, **kwargs)
+            ## Fat Line
+            # cend = 1
+            # if ll > 0.5:  cend = 2
+            # if ll > 2:  cend = 10
+            #
+            # zimag = logspace(log10(1e-5), log10(cend), self.resolution)
+            # z = zreal + 1j * zimag
+            # gamma = (z - 1) / (z + 1)
+            # if inverted:
+            #     gamma = - gamma
+            # self.ax.plot(real(gamma), imag(gamma), linewidth=llw[1], **kwargs)
+            # self.ax.plot(real(gamma), -imag(gamma), linewidth=llw[1], **kwargs)
+
+            ### Rotated Labels ###
+            if ll<= 1 and not round(ll*10) % 2:
+                gamlabel = (zreal + labeloffsets[1]*1j - 1) / (zreal + labeloffsets[1]*1j + 1)
+                anglabel = 180 + angle(gamlabel - 1 - 1j) * 180 / pi
+                if inverted: gamlabel = -gamlabel
+                self.ax.text(real(gamlabel), imag(gamlabel), str(ll), rotation_mode='anchor', ha='left',
+                              va='bottom',
+                              rotation=anglabel, fontsize=6 * self.fontscale,  **kwargs)
+                gamlabel = (zreal + labeloffsets[2]*1j - 1) / (zreal + labeloffsets[2]*1j + 1)
+                anglabel = 180 + angle(gamlabel - 1 - 1j) * 180 / pi
+                if inverted: gamlabel = -gamlabel
+                self.ax.text(real(gamlabel), imag(-gamlabel), str(ll), rotation_mode='anchor', ha='left',
+                              va='bottom',
+                              rotation=180 - anglabel, fontsize=6 * self.fontscale, **kwargs)
+
+        self.ax.set_xlim(-1.2, 1.2)
+        self.ax.set_ylim(-1.2, 1.2)
+        self.ax.axis('off')
+        self.ax.axis('equal')
+
+        ## Constant imag Part Bends ####################################################################################
+        self.ax.plot([-1,1], [0,0], linewidth=llw[1], **kwargs)
+        for group in clist:
+            cval, cstart, cend, fat = group
+            for zimag in cval:
+                radius = 1 / zimag
+                center = 1 / zimag
+                Zend = cend * 1j
+                endpoint = (Zend - 1) / (Zend + 1) - center*1j
+                angle2 = arctan2(imag(endpoint) / radius, real(endpoint) / radius) * 180 / pi
+                Zstart = cstart * 1j
+                startpoint = (Zstart - 1) / (Zstart + 1) - center*1j
+                angle1 = arctan2(imag(startpoint) / radius, real(startpoint) / radius) * 180 / pi
+                #angle2 = 270
+                print(endpoint, angle1, angle2)
+                try:
+                    e1 = patches.Arc((1, center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=angle1,
+                                     theta2=angle2)
+                    self.ax.add_patch(e1)
+                except:
+                    print("ERR")
+            break
+
+        ### Labels imag part ##################
+        for ll in labelmarker:
+            gg = (1j * ll - 1) / (1j * ll + 1)
+            if inverted: gg = -gg
+            rad = 0.994
+            x,y = rad * real(gg), rad * imag(gg)
+            ang = angle(gg) * 180.0 / pi
+            self.ax.text(x, y, str(ll), ha='right', va='bottom', rotation_mode='anchor', rotation=ang,
+                              fontsize=6 * self.fontscale,  **kwargs)
+            self.ax.text(x, -y, labfront + str(ll), ha='left', va='bottom', rotation_mode='anchor', rotation=180 - ang,
+                              fontsize=6 * self.fontscale,  **kwargs)
+
+            ## Fat Line
+            # cend = 1
+            # if ll > 0.5:  cend = 2
+            # if ll > 2:  cend = 10
+            # zreal = logspace(log10(1e-6), log10(cend), self.resolution)
+            # z = zreal + 1j * ll
+            # gamma = (z - 1) / (z + 1)
+            # if inverted:
+            #     gamma = - gamma
+            # self.ax.plot(real(gamma), imag(gamma), linewidth=llw[1], **kwargs)
+            # self.ax.plot(real(gamma), -imag(gamma), linewidth=llw[1], **kwargs)
+
+
+
+    def addadmittancegrid(self, **kwargs):
+        self.addimpedancegrid(inverted=True, **kwargs)
+
+
+    def addanglering(self, radius_inner = 1.03, radius_outer = 1.05,
+                     major = arange(0, 361, 10), majorlabels = arange(0, 361, 10), minor = arange(0, 361, 10),
+                     angleoffset = 0, **kwargs):
+        '''
+        Adds a ring with angles
+        :param kwargs:
+        :return:
+        '''
+        if not "color" in kwargs: kwargs['color'] = 'k'
+        if not "lw" in kwargs: kwargs['lw'] = 1
+        if not "alpha" in kwargs: kwargs['alpha'] = 1.0
+        #print(f' Kwargs: {kwargs}')
+
+
+        x = radius_inner * cos(arange(0,2*pi+0.01,0.01))
+        y = radius_inner * sin(arange(0,2*pi+0.01,0.01))
+        self.ax.plot(x,y, **kwargs)
+
+        for i in range(len(major)):
+
+            tic = major[i]
+            lab = str(majorlabels[i])
+            print(tic, lab)
+            ang = (tic + angleoffset) * pi / 180
+            x = cos(ang)
+            y = sin(ang)
+            self.ax.plot((radius_inner * x, radius_outer * x), (radius_inner * y, radius_outer * y), **kwargs)
+            self.ax.text(x * radius_outer, y * radius_outer, lab, ha='center', va='bottom', rotation_mode='anchor',
+                         rotation= -90 + ang * 180.0 / pi,
+                         fontsize= 5 * self.fontscale, color=kwargs['color'], alpha=kwargs['alpha'])
+
+        kwargs['lw'] = 0.5 * kwargs['lw']
+        for tic in minor:
+            ang = tic * pi / 180
+            x = cos(ang)
+            y = sin(ang)
+
+            self.ax.plot((radius_inner * x, (radius_outer-0.01) * x), (radius_inner * y, (radius_outer-0.01) * y),  **kwargs)
+
+        self.ax.axis('equal')
+        plt.tight_layout(pad=.0)
+
+    def addGammaAngleRing(self, resolution=10):
+        """
+        Adds a ring with the angles of the reflection coefficient
+        :param resolution:
+        :return:
+        """
+        major = concatenate((arange(0, 181, resolution), arange(0, -180, -resolution)))
+        minor = arange(0, 361, 2)
+        self.addanglering(radius_inner=1.03, radius_outer=1.05, major=major, majorlabels=major, minor=minor)
+
+    def addLambdaRing(self, resolution=0.01):
+        """
+        Adds a ring with the angles of the reflection coefficient
+        :param resolution:
+        :return:
+        """
+
+        labels = [f"{x:4.2g}$\\lambda$" for x in arange(0, 0.5, resolution)]
+        major = arange(180, -180, -resolution*720)
+        minor = arange(0, 360, resolution*720/5)
+        print(labels)
+        print(major)
+        self.addanglering(radius_inner=1.08, radius_outer=1.10, major=major, majorlabels= labels , minor=minor)
+
+    def addLambdaRing2(self, resolution=0.01):
+        """
+        Adds a ring with the angles of the reflection coefficient
+        towards generator
+        :param resolution:
+        :return:
+        """
+
+        labels = [f"{x:4.2g}$\\lambda$" for x in arange(0, 0.5, resolution)]
+        major = arange(-180, 180, resolution*720)
+        minor = arange(0, 360, resolution*720/5)
+        print(labels)
+        print(major)
+        self.addanglering(radius_inner=1.13, radius_outer=1.15, major=major, majorlabels= labels , minor=minor)
+
+    def addOuterRing(self):
+        self.addanglering(radius_inner=1.18, radius_outer=1.20, major=[], majorlabels=[], minor=[])
 
 
 #######################################################################################
@@ -988,12 +1285,9 @@ def twoport(d, lab = "[S]"):
     x,y = d.here   
     d += TwoPort.right().anchor('Port2') 
     d.move(x-2,y)   
-        
-
 
 class smith(Smith):  # Definition for historical reasons when using small smith class def
     pass
-
 
 def lSectionMatch(Zl,Z0=50):
     '''
@@ -1050,6 +1344,7 @@ def stubLineMatch(Zl,Z0=50):
 ########################################################################################################################
 
 
+
 if __name__ == "__main__":
     # import doctest
     # doctest.testmod()
@@ -1084,22 +1379,25 @@ if __name__ == "__main__":
 
     if demo == 5:
         ## Plot smithchart in real Smith Chart A4
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8,8))
         Z0 = 50
-        mysmith = Smith(ax, 'paper', Z0)
-        Z1 = mysmith.addstart(20 )
-        Z2 = mysmith.addline(Z1, 0.1)
-        Z3 = mysmith.addpara(Z2,-20j)
-        mysmith.addangle(Z2)
-        mysmith.addangle(Z3)
-        Z4 = mysmith.addseries(Z3, -60j)
-        mysmith.addpoint(Z1, '$Z_1$', 'SW')
-        mysmith.addpoint(Z2, '$Z_2$', 'NE')
-        mysmith.addpoint(Z3, '$Z_3$', 'NE')
-        mysmith.addpoint(Z4, '$Z_in$', 'SE')
-        mysmith.addrulermarker(0.7)
-        file = superimposeChart(fig)
-        plt.close(fig)
+        mysmith = Smithpaper(ax, 'paper', Z0)
+
+        if False:
+            Z1 = mysmith.addstart(20 )
+            Z2 = mysmith.addline(Z1, 0.1)
+            Z3 = mysmith.addpara(Z2,-20j)
+            mysmith.addangle(Z2)
+            mysmith.addangle(Z3)
+            Z4 = mysmith.addseries(Z3, -60j)
+            mysmith.addpoint(Z1, '$Z_1$', 'SW')
+            mysmith.addpoint(Z2, '$Z_2$', 'NE')
+            mysmith.addpoint(Z3, '$Z_3$', 'NE')
+            mysmith.addpoint(Z4, '$Z_in$', 'SE')
+            #mysmith.addrulermarker(0.7)
+        plt.tight_layout()
+        plt.savefig("smith.svg")
+        plt.show()
 
     #### Complex Demo with circuit schematic generation
     if demo == 1:
@@ -1125,7 +1423,7 @@ if __name__ == "__main__":
             Z = ele.Zin
             n = ele.id
             Gam = magphasetex((Z - Z0) / (Z + Z0))
-            print('$Z_{0:1} = ({1:4.2f}) \;\Omega \qquad \Gamma_{0:1} = {2:s}$ \n'.format(n, Z, Gam))
+            print('$Z_{0:1} = ({1:4.2f}) \\;\\Omega \\qquad \\Gamma_{0:1} = {2:s}$ \n'.format(n, Z, Gam))
 
         Zin = Z4
         gam = (Zin - Z0) / (Zin + Z0)
