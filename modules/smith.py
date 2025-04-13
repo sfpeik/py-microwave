@@ -767,7 +767,7 @@ class Smith:
 ########################################################################################################################
 class Smithpaper(Smith):
 
-    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 0.4, fineness=1, **kwargs):
+    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 1, fineness=1, **kwargs):
         self.f = 0
         self.ax = ax
         self.Z0 = Z0
@@ -790,8 +790,8 @@ class Smithpaper(Smith):
         self.show_neg_numbers = True
         e.style(e.STYLE_IEC)
         self.alpha = alpha
-        #self.addadmittancegrid(color="blue", alpha = alpha)
-        self.addimpedancegrid(color="black", alpha = alpha)
+        #self.addadmittancegrid(color="#8888FF", alpha = alpha)
+        self.addimpedancegrid(color="#FF8888", alpha = alpha)
         #self.addGammaAngleRing()
         #self.addLambdaRing()
         #self.addLambdaRing2()
@@ -799,7 +799,7 @@ class Smithpaper(Smith):
 
 
 
-    def addimpedancegrid(self, inverted=False, **kwargs):
+    def addimpedancegrid(self, inverted=False, fine = False, **kwargs):
         '''
         :param inverted: plots an inverted chart, aka Admittance Chart
         :param kwargs: plot arguments, e.g. color, lw, ...
@@ -810,27 +810,38 @@ class Smithpaper(Smith):
             labfront = "-"
         else:
             labfront = ""
-        # if not kwargs:
-        #     kwargs = self.kwargs
-        # if 'color' in self.kwargs:
-        #     color = self.kwargs['color']
-        # else:
-        #     self.kwargs['color'] = color
-        # if 'alpha' in self.kwargs: alpha = self.kwargs['alpha']
 
         ## Cirlces ###########
         clist = []
         ## a group of circles consist fo the real part value, start imag, end imag and Fat line yes/no
-        an  = [0, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200]
-        res = [0.01, 0.02, 0.05, 0.1, 0.2, 1, 2, 25, 100, 200]
-        labelmarker = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6, 1.8, 2, 3, 4, 5, 10, 20, 50]
-        maxi = 9
+        an = [0,  0.5, 1, 2, 5, 10, 50, 100, 1000]
+        res = [0.1, 0.25, 1, 25, 100, 200]
+        labelmarker = [0.2, 0.5, 1, 2, 5, 10]
+        maxi = 3
+        extendto = 3
+
+        fine = False
+        if fine:
+            an  = [0,    0.2,  0.5,  1,   2,  5, 10, 20, 50,  100, 200]
+            res = [0.01, 0.02, 0.05, 0.1, 0.2, 1, 2, 25, 100, 200]
+            labelmarker = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6, 1.8, 2, 3, 4, 5, 10, 20, 50]
+            maxi = 9
+            extendto = 3
+
+        ## Gruops od lines with same distance
         for i in range(maxi):
+            ## ind. lines in Group
             for ii in range(i,i+4):
                 if ii >=maxi:break
                 start = an[ii]
-                if ii == i: start = 0
-                cc = (arange(an[i],an[i+1],res[ii]),start, an[ii+1], False)
+                reso = res[ii+i]
+                #if  i+ii == 1 :
+                #    reso = res[ii-1]
+                #if ii == i: start = 0
+                #if an[ii+1] == 0.5:
+                #    start = 0.2
+                #print(start, an[ii+1], end="  ,  ")
+                cc = (arange(an[i],an[i+1],reso),start, an[ii+1], False)
                 clist.append(cc)
         llw = [0.4 * self.linefactor, 0.4 * self.linefactor * self.fatfactor]
 
@@ -841,28 +852,30 @@ class Smithpaper(Smith):
         ### Constant real part circles #################################################################################
         for group in clist:
             cval, cstart, cend, fat = group
-            print(group)
             for zreal in cval:
                 ## Find Center and radius of circles
                 ## see https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
                 radius = 1 / (zreal + 1)
                 center = zreal / (zreal + 1)
-                Zend =  cend * 1j
-                endpoint = (Zend -1)/(Zend+1) - center
-                angle2 = arctan2(imag(endpoint)/radius, real(endpoint)/radius) * 180/pi
-                print(endpoint, angle2)
-                Zstart = cstart * 1j
-                startpoint = (Zstart - 1) / (Zstart + 1) - center
-                angle1 = arctan2(imag(startpoint) / radius, real(startpoint) / radius) * 180 / pi
-                try:
-                    e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1 = angle2,
-                                     theta2 = angle1)
-                    self.ax.add_patch(e1)
-                    e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1=-angle1,
-                                     theta2=-angle2)
-                    self.ax.add_patch(e1)
-                except:
-                    print("ERR")
+
+                Zstart = zreal + cstart * 1j
+                gammastart = (Zstart - 1) / (Zstart + 1)
+                #ax.plot(real(gammastart), imag(gammastart) , "go")
+                angle1 = arctan2(imag(gammastart) / radius, real(gammastart- center) / radius) * 180 / pi
+
+                Zend = zreal + cend * 1j
+                gammaend = (Zend - 1) / (Zend + 1)
+                #ax.plot(real(gammaend), imag(gammaend), "ro")
+                angle2 = arctan2(imag(gammaend) / radius, real(gammaend- center) / radius) * 180 / pi
+                if inverted:
+                    center = -center
+                    angle1, angle2 = angle1 +180, angle2 +180
+                e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1 = angle2,
+                                 theta2 = angle1, **kwargs)
+                e2 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1=-angle1,
+                                 theta2=-angle2, **kwargs)
+                self.ax.add_patch(e1)
+                self.ax.add_patch(e2)
 
 
                 #if inverted:
@@ -872,6 +885,7 @@ class Smithpaper(Smith):
 
 
         ### Labels ##################
+
         for ll in labelmarker:
             zreal = ll
             gamlabel = (zreal - 1.0) / (zreal + 1.0)
@@ -885,17 +899,22 @@ class Smithpaper(Smith):
             self.ax.text(gamlabel, labeloffsets[0], str(ll), rotation_mode='anchor', ha='left', va='bottom',
                           rotation=90 * orient, fontsize=6 * self.fontscale, **kwargs)
             ## Fat Line
-            # cend = 1
-            # if ll > 0.5:  cend = 2
-            # if ll > 2:  cend = 10
-            #
-            # zimag = logspace(log10(1e-5), log10(cend), self.resolution)
-            # z = zreal + 1j * zimag
-            # gamma = (z - 1) / (z + 1)
-            # if inverted:
-            #     gamma = - gamma
-            # self.ax.plot(real(gamma), imag(gamma), linewidth=llw[1], **kwargs)
-            # self.ax.plot(real(gamma), -imag(gamma), linewidth=llw[1], **kwargs)
+            cend = an[extendto]
+            if ll >= 0.5:  cend = an[extendto + 1]
+            if ll > 2:  cend = an[extendto + 2]
+            radius = 1 / (zreal + 1)
+            center = zreal / (zreal + 1)
+            Zend = zreal + cend * 1j
+            gammaend = (Zend - 1) / (Zend + 1)
+            angle2 = arctan2(imag(gammaend) / radius, real(gammaend - center) / radius) * 180 / pi
+            angle1 = 180
+            if inverted:
+                center = -center
+                angle1, angle2 = angle1 +180, angle2 +180
+            e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[1], theta1=angle2,theta2=angle1, **kwargs)
+            e2 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[1], theta1=angle1,theta2=-angle2, **kwargs)
+            self.ax.add_patch(e1)
+            self.ax.add_patch(e2)
 
             ### Rotated Labels ###
             if ll<= 1 and not round(ll*10) % 2:
@@ -922,26 +941,35 @@ class Smithpaper(Smith):
         for group in clist:
             cval, cstart, cend, fat = group
             for zimag in cval:
+                if zimag == 0: continue
                 radius = 1 / zimag
                 center = 1 / zimag
-                Zend = cend * 1j
-                endpoint = (Zend - 1) / (Zend + 1) - center*1j
-                angle2 = arctan2(imag(endpoint) / radius, real(endpoint) / radius) * 180 / pi
-                Zstart = cstart * 1j
-                startpoint = (Zstart - 1) / (Zstart + 1) - center*1j
-                angle1 = arctan2(imag(startpoint) / radius, real(startpoint) / radius) * 180 / pi
-                #angle2 = 270
-                print(endpoint, angle1, angle2)
-                try:
-                    e1 = patches.Arc((1, center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=angle1,
-                                     theta2=angle2)
-                    self.ax.add_patch(e1)
-                except:
-                    print("ERR")
-            break
+                #ax.plot(1, center, "bo")
+                Zstart = cstart + zimag *1j
+                gammastart = (Zstart - 1) / (Zstart + 1)
+                #ax.plot(real(gammastart), imag(gammastart) , "go")
+                angle1 = arctan2(imag(gammastart-center*1j) / radius, real(gammastart-1) / radius) * 180 / pi
+
+                Zend = cend + zimag * 1j
+                gammaend = (Zend - 1) / (Zend + 1)
+                #ax.plot(real(gammaend), imag(gammaend) ,"ro")
+                angle2 = arctan2(imag(gammaend-center*1j) / radius, real(gammaend-1) / radius) * 180 / pi
+                #print(zimag, gammastart, angle1, angle2)
+                centerx = 1
+                if inverted:
+                    center = -center
+                    centerx = -centerx
+                    angle1, angle2 = angle1 + 180, angle2 + 180
+                e1 = patches.Arc((centerx, center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=angle1,
+                                 theta2=angle2, **kwargs)
+                e2 = patches.Arc((centerx, -center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=360-angle2,
+                                 theta2=360-angle1, **kwargs)
+                self.ax.add_patch(e1)
+                self.ax.add_patch(e2)
 
         ### Labels imag part ##################
         for ll in labelmarker:
+            zimag = ll
             gg = (1j * ll - 1) / (1j * ll + 1)
             if inverted: gg = -gg
             rad = 0.994
@@ -952,12 +980,34 @@ class Smithpaper(Smith):
             self.ax.text(x, -y, labfront + str(ll), ha='left', va='bottom', rotation_mode='anchor', rotation=180 - ang,
                               fontsize=6 * self.fontscale,  **kwargs)
 
-            ## Fat Line
-            # cend = 1
-            # if ll > 0.5:  cend = 2
-            # if ll > 2:  cend = 10
-            # zreal = logspace(log10(1e-6), log10(cend), self.resolution)
-            # z = zreal + 1j * ll
+            ## Fat Line imag bends
+            cend = an[extendto]
+            if ll > 1:  cend = an[extendto + 1]
+            if ll > 2:  cend = an[extendto + 2]
+            radius = 1 / zimag
+            center = 1 / zimag
+
+            Zstart = 0 + zimag * 1j
+            gammastart = (Zstart - 1) / (Zstart + 1)
+            #ax.plot(real(gammastart), imag(gammastart) , "go")
+            angle1 = arctan2(imag(gammastart - center * 1j) / radius, real(gammastart - 1) / radius) * 180 / pi
+            Zend = cend + zimag * 1j
+            gammaend = (Zend - 1) / (Zend + 1)
+            #ax.plot(real(gammaend), imag(gammaend) ,"ro")
+            angle2 = arctan2(imag(gammaend - center * 1j) / radius, real(gammaend - 1) / radius) * 180 / pi
+            centerx = 1
+            if inverted:
+                center = -center
+                centerx = -centerx
+                angle1, angle2 = angle1 + 180, angle2 + 180
+            e1 = patches.Arc((centerx, center), 2 * radius, 2 * radius, linewidth=llw[1], theta1=angle1,
+                             theta2=angle2, **kwargs)
+            e2 = patches.Arc((centerx, -center), 2 * radius, 2 * radius, linewidth=llw[1], theta1=360 - angle2,
+                             theta2=360 - angle1, **kwargs)
+            self.ax.add_patch(e1)
+            self.ax.add_patch(e2)
+
+
             # gamma = (z - 1) / (z + 1)
             # if inverted:
             #     gamma = - gamma
@@ -984,15 +1034,12 @@ class Smithpaper(Smith):
         #print(f' Kwargs: {kwargs}')
 
 
-        x = radius_inner * cos(arange(0,2*pi+0.01,0.01))
-        y = radius_inner * sin(arange(0,2*pi+0.01,0.01))
-        self.ax.plot(x,y, **kwargs)
+        e1 = patches.Circle((0,0),radius_inner, fill=False, **kwargs)
+        self.ax.add_patch(e1)
 
         for i in range(len(major)):
-
             tic = major[i]
             lab = str(majorlabels[i])
-            print(tic, lab)
             ang = (tic + angleoffset) * pi / 180
             x = cos(ang)
             y = sin(ang)
@@ -1032,8 +1079,6 @@ class Smithpaper(Smith):
         labels = [f"{x:4.2g}$\\lambda$" for x in arange(0, 0.5, resolution)]
         major = arange(180, -180, -resolution*720)
         minor = arange(0, 360, resolution*720/5)
-        print(labels)
-        print(major)
         self.addanglering(radius_inner=1.08, radius_outer=1.10, major=major, majorlabels= labels , minor=minor)
 
     def addLambdaRing2(self, resolution=0.01):
@@ -1047,8 +1092,6 @@ class Smithpaper(Smith):
         labels = [f"{x:4.2g}$\\lambda$" for x in arange(0, 0.5, resolution)]
         major = arange(-180, 180, resolution*720)
         minor = arange(0, 360, resolution*720/5)
-        print(labels)
-        print(major)
         self.addanglering(radius_inner=1.13, radius_outer=1.15, major=major, majorlabels= labels , minor=minor)
 
     def addOuterRing(self):
@@ -1397,6 +1440,7 @@ if __name__ == "__main__":
             #mysmith.addrulermarker(0.7)
         plt.tight_layout()
         plt.savefig("smith.svg")
+        plt.savefig("smith.png",dpi=300)
         plt.show()
 
     #### Complex Demo with circuit schematic generation
