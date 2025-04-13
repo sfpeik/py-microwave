@@ -195,6 +195,23 @@ class Hybrid(elm.Element):
         self.params['pick'] = (size * 3, 0)
         
         
+class Attenuator(elm.Element):
+    def __init__(self, variable = False, size= 1.0, *d, **kwargs):
+        '''
+
+        Anchors:
+            * in
+            * out
+        '''
+        super().__init__(*d, **kwargs)
+        self.segments.append(Segment([(0, 0 ), (0,0.8), (1.6, 0.8 ), (1.6, -0.8 ), (0.0, -0.8), (0, 0)],lw=2))
+        self.segments.append(Segment([(.8, 0.6), (0.6, 0.5), (1.0, 0.3), (.6, 0.1), (1.0, -0.1), (.6, -0.3), (1, -0.5), (.8, -0.6)], lw=1.5))
+        if variable:
+            self.segments.append(Segment([(0.2, -0.4), (1.4, 0.4)], lw=2, arrow="->",arrowwidth=.2))
+        self.anchors['in'] = (0, 0)
+        self.anchors['out'] = (1.6, 0)
+        self.params['drop'] = (1.6, 0)
+        
  
 if __name__ == "__main__":
     import schemdraw as schem
