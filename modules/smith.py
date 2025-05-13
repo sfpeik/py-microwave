@@ -11,7 +11,7 @@ from itertools import count
 
 import matplotlib.pyplot as plt
 from matplotlib import patches
-from numpy import (real, imag, logspace, linspace, log10, exp, pi, angle, arange, tan,
+from numpy import (real, imag, logspace, linspace, log10, exp, pi, angle, arange, tan, append,
                    cos, arccos, arcsin, arctan2, sin, around, array, nan, sqrt, conj, argmin, concatenate)
 
 import schemdraw as schem
@@ -767,7 +767,7 @@ class Smith:
 ########################################################################################################################
 class Smithpaper(Smith):
 
-    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 1, fineness=1, **kwargs):
+    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 1, fineness=1, showrings=False, **kwargs):
         self.f = 0
         self.ax = ax
         self.Z0 = Z0
@@ -790,13 +790,21 @@ class Smithpaper(Smith):
         self.show_neg_numbers = True
         e.style(e.STYLE_IEC)
         self.alpha = alpha
-        #self.addadmittancegrid(color="#8888FF", alpha = alpha)
-        self.addimpedancegrid(color="#FF8888", alpha = alpha)
-        #self.addGammaAngleRing()
-        #self.addLambdaRing()
-        #self.addLambdaRing2()
-        #self.addOuterRing()
-
+        
+        if typ =="smith": 
+            self.addimpedancegrid(color="#FF8888", alpha = alpha)
+        elif typ =="inverted":
+            self.addadmittancegrid(color="#8888FF", alpha = alpha)
+        elif typ == "both":
+            self.addadmittancegrid(color="#8888FF", alpha = alpha)
+            self.addimpedancegrid(color="#FF8888", alpha = alpha)
+            
+            
+        if showrings:
+            self.addGammaAngleRing()
+            self.addLambdaRing()
+            self.addLambdaRing2()
+            self.addOuterRing()
 
 
     def addimpedancegrid(self, inverted=False, fine = False, **kwargs):
@@ -813,36 +821,41 @@ class Smithpaper(Smith):
 
         ## Cirlces ###########
         clist = []
-        ## a group of circles consist fo the real part value, start imag, end imag and Fat line yes/no
-        an = [0,  0.5, 1, 2, 5, 10, 50, 100, 1000]
-        res = [0.1, 0.25, 1, 25, 100, 200]
+        ## a group of circles consist start imag, end imag, resolution and Fat line yes/no
+        an = [0,   0.2,   0.5,   1,   2,   5,   10,   50,   100,   1000]
+        res = [ 0.1,   0.1,  .25,  .5,  1,    2.5,  25,  25,   50 , 100, 500]
         labelmarker = [0.2, 0.5, 1, 2, 5, 10]
         maxi = 3
         extendto = 3
 
-        fine = False
+        fine = True
         if fine:
-            an  = [0,    0.2,  0.5,  1,   2,  5, 10, 20, 50,  100, 200]
-            res = [0.01, 0.02, 0.05, 0.1, 0.2, 1, 2, 25, 100, 200]
+            an = array([])
+            for ex in range(-1,7):
+                an = append(an,[1*10**ex,2*10**ex,5*10**ex])
+            res = an*0.1
+            res = append(res,[1e9,1e9,1e9,1e9,1e9])
+            an[0] = 0
             labelmarker = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6, 1.8, 2, 3, 4, 5, 10, 20, 50]
-            maxi = 9
-            extendto = 3
-
-        ## Gruops od lines with same distance
+       
+        maxi = len(an)-3
         for i in range(maxi):
-            ## ind. lines in Group
-            for ii in range(i,i+4):
-                if ii >=maxi:break
-                start = an[ii]
-                reso = res[ii+i]
-                #if  i+ii == 1 :
-                #    reso = res[ii-1]
-                #if ii == i: start = 0
-                #if an[ii+1] == 0.5:
-                #    start = 0.2
-                #print(start, an[ii+1], end="  ,  ")
-                cc = (arange(an[i],an[i+1],reso),start, an[ii+1], False)
-                clist.append(cc)
+            for conti in range(0,7,1):
+                start = an[i]     # start of real part square
+                end = an[i+1]     # end of real part square
+                try:
+                    istart = an[ conti]
+                    istop =  an[1 + conti]  # length in imag direction
+                    for jj in range(0,maxi):
+                        if i == jj or conti == jj: idx = jj
+                    if start >= 1 or istart>=1: idx += 1
+                    if start >= 10 or istart>=10: idx += 2
+                    if start >= 100 or istart>=100: idx += 3
+                    steps = res[idx]
+                except IndexError:
+                    continue
+                clist.append((arange(start, end + 1e-9, steps), istart, istop, False))
+
         llw = [0.4 * self.linefactor, 0.4 * self.linefactor * self.fatfactor]
 
         ## Outer Circle
@@ -851,19 +864,19 @@ class Smithpaper(Smith):
 
         ### Constant real part circles #################################################################################
         for group in clist:
-            cval, cstart, cend, fat = group
-            for zreal in cval:
+            #print(f"{str(group[0]):13} {group[1]:5} {group[2]:8} ")
+            crange, istart, istop, fat = group
+            for zreal in crange:
+
                 ## Find Center and radius of circles
                 ## see https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
                 radius = 1 / (zreal + 1)
                 center = zreal / (zreal + 1)
-
-                Zstart = zreal + cstart * 1j
+                Zstart = zreal + istart * 1j
                 gammastart = (Zstart - 1) / (Zstart + 1)
                 #ax.plot(real(gammastart), imag(gammastart) , "go")
                 angle1 = arctan2(imag(gammastart) / radius, real(gammastart- center) / radius) * 180 / pi
-
-                Zend = zreal + cend * 1j
+                Zend = zreal + istop * 1j
                 gammaend = (Zend - 1) / (Zend + 1)
                 #ax.plot(real(gammaend), imag(gammaend), "ro")
                 angle2 = arctan2(imag(gammaend) / radius, real(gammaend- center) / radius) * 180 / pi
@@ -936,21 +949,22 @@ class Smithpaper(Smith):
         self.ax.axis('off')
         self.ax.axis('equal')
 
+
         ## Constant imag Part Bends ####################################################################################
         self.ax.plot([-1,1], [0,0], linewidth=llw[1], **kwargs)
         for group in clist:
-            cval, cstart, cend, fat = group
-            for zimag in cval:
+            #print(f"{str(group[0]):13} {group[1]:5} {group[2]:8} ")
+            crange, istart, istop, fat = group
+            for zimag in crange:
                 if zimag == 0: continue
                 radius = 1 / zimag
                 center = 1 / zimag
                 #ax.plot(1, center, "bo")
-                Zstart = cstart + zimag *1j
+                Zstart = istart + zimag *1j
                 gammastart = (Zstart - 1) / (Zstart + 1)
                 #ax.plot(real(gammastart), imag(gammastart) , "go")
                 angle1 = arctan2(imag(gammastart-center*1j) / radius, real(gammastart-1) / radius) * 180 / pi
-
-                Zend = cend + zimag * 1j
+                Zend = istop + zimag * 1j
                 gammaend = (Zend - 1) / (Zend + 1)
                 #ax.plot(real(gammaend), imag(gammaend) ,"ro")
                 angle2 = arctan2(imag(gammaend-center*1j) / radius, real(gammaend-1) / radius) * 180 / pi
@@ -1399,9 +1413,9 @@ if __name__ == "__main__":
         fig, ax = plt.subplots(figsize=(16,16))
         Z0 = 50
         mysmith = Smith(ax, 'both', fineness= 3)
-        #mysmith.addpolargrid(alpha= 0.3)
-        #mysmith.addanglering(alpha=0.6, color = "g")
-        # mysmith = Smith(ax, 'smith', Z0, color = "g", lw = 1, alpha = 0.5)
+        mysmith.addpolargrid(alpha= 0.3)
+        mysmith.addanglering(alpha=0.6, color = "g")
+        #mysmith = Smith(ax, 'smith', Z0, color = "g", lw = 1, alpha = 0.5)
         plt.show()
 
     if demo == 0:

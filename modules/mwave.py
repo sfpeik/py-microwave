@@ -1332,6 +1332,7 @@ def AmpMaxgain(S, verbose = False):
     B2=1+abs(S22)**2-abs(S11)**2-abs(Delta)**2
     C1=S11-Delta*conj(S22)
     C2=S22-Delta*conj(S11)
+    constants = (B1,B2,C1,C2)
     stablegain=0
     if verbose: print(B1,B2,C1,C2,Delta)
     if verbose: print("Solution 1:")
@@ -1377,6 +1378,34 @@ def AmpMaxgain(S, verbose = False):
         if verbose: print(u"Gt={0:.2f}*{1:.2f}*{2:.2f}={3:.2f}".format(Gs,G0,Gl,Gt))
         if verbose: print(u"GtdB={0:.2f}dB+{1:.2f}dB+{2:.2f}dB={3:.2f}dB".format(GsdB,G0dB,GldB,GtdB) )
         return Gams,Gaml,GtdB
+    
+def AmpMaxgainConstants(S):
+    '''
+    return the B1,B2,C1,C2 constants of a maxgain desgin
+    (for checking manual solutions only)
+    
+    Parameters
+    ----------
+    
+    S : 2x2 Matrix
+        S-Matrix containing linear transistor S data 
+    
+    Returns
+    -------
+     B1,B2,C1,C2,Delta  as floats 
+    
+    '''
+    
+    S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    Delta=S11*S22-S12*S21
+    B1=1+abs(S11)**2-abs(S22)**2-abs(Delta)**2
+    B2=1+abs(S22)**2-abs(S11)**2-abs(Delta)**2
+    C1=S11-Delta*conj(S22)
+    C2=S22-Delta*conj(S11)
+    constants = (B1,B2,C1,C2,Delta)
+    return constants
+    
+    
     
 
 #### Matching Circuits ##############
