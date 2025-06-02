@@ -49,6 +49,24 @@ class Isolator(elm.Element):
         self.anchors['out'] = (1, 0)
         self.params['drop'] = (1, 0)
 
+
+
+class Antenna(elm.Element):
+    ''' Antenna Fork Style '''
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        lead = 0.6
+        h = 0.6
+        w = 0.38
+        self.segments.append(Segment([(0, 0), (0, lead), (-w, lead+h) ]))
+        self.segments.append(Segment([        (0, lead), (w, lead+h)]))
+        self.segments.append(Segment([        (0, lead), (0, lead+h)])) 
+        self.elmparams['drop'] = (0, 0)
+        self.elmparams['theta'] = 0
+        self.anchors['start'] = (0, 0)
+        self.anchors['center'] = (0, 0)
+        self.anchors['end'] = (0, 0)
+
 class Port(elm.Element):
     '''
     RF Port Definition 
@@ -177,13 +195,13 @@ class Hybrid(elm.Element):
         '''
         super().__init__(*d, **kwargs)
         size = 0.5 * size
-        llw = 6
+        llw = 6 * sqrt(size)
         self.segments.append(Segment([(0, 0), (size * 3, 0)], capstyle="butt", lw=6*size))
-        self.segments.append(Segment([(0, -2*size), (size * 3, -2*size)], capstyle="butt", lw=6*size))
-        self.segments.append(Segment([(size * 0.7 , 0 * size), (size * 0.7, -2 * size)], lw=6*size)) 
-        self.segments.append(Segment([(size * 2.3 , 0 * size), (size * 2.3, -2 * size)], lw=6*size)) 
-        self.segments.append(Segment([(size * 0.8 , 0 * size), (size * 2.2, 0 * size)], lw=14*size)) 
-        self.segments.append(Segment([(size * 0.8 , -2 * size), (size * 2.2, -2 * size)], lw=14*size)) 
+        self.segments.append(Segment([(0, -2*size), (size * 3, -2*size)], capstyle="butt", lw=llw))
+        self.segments.append(Segment([(size * 0.7 , 0 * size), (size * 0.7, -2 * size)], lw=llw)) 
+        self.segments.append(Segment([(size * 2.3 , 0 * size), (size * 2.3, -2 * size)], lw=llw)) 
+        self.segments.append(Segment([(size * 0.8 , 0 * size), (size * 2.2, 0 * size)], lw=2*llw)) 
+        self.segments.append(Segment([(size * 0.8 , -2 * size), (size * 2.2, -2 * size)], lw=2*llw)) 
         if showbox:
             self.segments.append(Segment([(0, 0.5 * size), (size * 3, 0.5 * size),(size * 3, -2.5 * size),(size * 0 , -2.5 * size),(0, 0.5 * size)], lw=2))
 
@@ -202,10 +220,13 @@ class Reflection(elm.Element):
         Anchors:
         '''
         super().__init__(*d, **kwargs)
-        size = 0.8 * size
-        radius = 1
-        self.segments.append(Segment([(-0.5*size+dy, dx), (-0.5*size+dy, -0.5*size+dx)], capstyle="butt", lw=2))
-        self.segments.append(SegmentArc((dy,dx), radius*size, radius*size, lw = 2, theta1= 0, theta2=180, arrow = '<-'))
+        size = 0.6 * size
+        radius = 1.0
+        lw = 3
+        dx += -1
+        dy += -0.7
+        self.segments.append(Segment([(-0.5*size+dy, dx), (-0.5*size+dy, -0.5*size+dx)], capstyle="butt", lw=lw))
+        self.segments.append(SegmentArc((dy,dx), radius*size, radius*size, lw = lw, theta1= 0, theta2=180, arrow = '<-'))
         
         
 class Attenuator(elm.Element):
