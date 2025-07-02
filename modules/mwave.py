@@ -1647,7 +1647,7 @@ def singleEndedToMixedMode(S):
     '''
     converts a single ended S-Parameter File to mixed Mode S-Parameter
     S: single Ended 4-Port S-Parameter File
-    retruns: 
+
     Smixed s. lit. 
 
     1 o----|     |---o 2
@@ -1674,6 +1674,9 @@ def singleEndedToMixedMode(S):
     S21,S22,S23,S24 = S[:,1,0], S[:,1,1], S[:,1,2], S[:,1,3]
     S31,S32,S33,S34 = S[:,2,0], S[:,2,1], S[:,2,2], S[:,2,3]
     S41,S42,S43,S44 = S[:,3,0], S[:,3,1], S[:,3,2], S[:,3,3]
+    
+    
+    
     
     SDD11=0.5*(S11-S13-S31+S33)
     SDD22=0.5*(S22-S24-S42+S44)
