@@ -1318,7 +1318,7 @@ def twoport(d, lab = "[S]"):
                   e.IcPin(side='right', anchorname='Port2')],
             edgepadW = 1.0,  # Make it a bit wider
             edgepadH = 1.0,
-            pinspacing=3).label(lab, 'center', fontsize=28)
+            pinspacing=3).label(lab+" ", 'center', fontsize=28)
     x,y = d.here   
     d += TwoPort.right().anchor('Port2') 
     d.move(x-2,y)   
