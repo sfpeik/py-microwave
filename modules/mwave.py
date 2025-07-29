@@ -1084,7 +1084,7 @@ def smoothTriangle(data, degree):
     
     
 ### Plot S-Parameter in Cart Plot
-def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=False, asSmith=False, split = False, smoothing = 1):
+def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, yrange = (-20,0), phase= False, grid=False, asSmith=False, split = False, smoothing = 1):
     '''
     plot the S-Paramter response quickly 
     asSmith: plot the return losses as smith chart
@@ -1140,7 +1140,7 @@ def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, phase= False, grid=
                 Spar = smoothTriangle(Spar,smoothing)
                 if k != j or (not asSmith):
                     ax[j,k].plot(flist/factor,20*log10(abs(Spar)),color="r")
-                    ax[j,k].set_ylim(-15,0)
+                    ax[j,k].set_ylim(*yrange)
                     ax[j,k].grid()
                 else: 
                     sm = smi.smith(ax[j,k],color="gray")
