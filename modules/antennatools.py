@@ -198,12 +198,16 @@ def AF_linear_array(theta, N, d = 0.5, delta_phase= 0 , AmpTaper = None):
     k = 2*pi/lam
     zeta = delta_phase * pi/180
     psi =  zeta + k*d * cos(th+pi/2) # hartnagel page 508
-    Gele = cos(th/2)
-    AF = abs(1/N * sin(N*psi/2) / sin(psi/2)) + 1e-6 # hartnagel page 508
+    #AF = abs(1/N * sin(N*psi/2) / sin(psi/2)) + 1e-6 # hartnagel page 508
+    summed = 0
+    for n in range(N):
+        summed += exp(1j*n*psi) * AmpTaper[n]
+    AF = abs( 1/N * summed )
     return AF
 
     
-def polarPlotdB(theta,GdB,dBmin= -60, dBmax = 0, dBgrid = 10, minorGrid=True, angleSteps = 15, **kwargs):
+def polarPlotdB(theta,GdB,dBmin= -60, dBmax = 0, dBgrid = 10, minorGrid=True, angleSteps = 15, ax = None, **kwargs):
+
     '''
     :param theta: angle in degrees
     :param GdB: Gain or similar in dB values
@@ -216,7 +220,8 @@ def polarPlotdB(theta,GdB,dBmin= -60, dBmax = 0, dBgrid = 10, minorGrid=True, an
     '''
     dBmin = int(dBmin)
     dBmax = int(dBmax)
-    fig, ax = plt.subplots(subplot_kw=dict(projection='polar'))
+    if ax is None:
+        fig, ax = plt.subplots(subplot_kw=dict(projection='polar'))
     thetarad = deg2rad(theta)
     ## The dBmin must be subtracted from all r values, as no neg. r values possible for polar plot
 
@@ -242,8 +247,11 @@ def polarPlotdB(theta,GdB,dBmin= -60, dBmax = 0, dBgrid = 10, minorGrid=True, an
     dBlabels = [xxx + "dB" for xxx in labels]
     ax.set_yticklabels(dBlabels, fontsize='small')  # Change the labels
     ax.grid(True)
-    return fig,ax
-		    
+    try:
+        return fig,ax
+    except:
+        return
+        	    
 
 if __name__ == '__main__':
     theta = arange(0,361,1.0)
