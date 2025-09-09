@@ -196,6 +196,8 @@ def AF_linear_array(theta, N, d = 0.5, delta_phase= 0 , AmpTaper = None):
     th = theta * pi/180
     lam = 1.0
     k = 2*pi/lam
+    if AmpTaper is None:
+        AmpTaper = ones(N)
     zeta = delta_phase * pi/180
     psi =  zeta + k*d * cos(th+pi/2) # hartnagel page 508
     #AF = abs(1/N * sin(N*psi/2) / sin(psi/2)) + 1e-6 # hartnagel page 508
