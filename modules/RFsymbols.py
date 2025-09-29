@@ -3,6 +3,26 @@ import schemdraw.elements as elm
 from numpy import sqrt, cos, sin, pi
 
 
+       
+class Transline(elm.Element2Term):
+    def __init__(self, width = 4/20 ,length = 2,linecolor="black" ,*d, **kwargs):
+        '''
+        A transmission line as black bar 
+        Behaves similar to a resistor twoport
+        
+        '''
+        gap = (math.nan, math.nan)  # Put a gap in a path
+        super().__init__(*d, **kwargs)
+        height = width  # Resistor height
+        length = length    # Full (inner) length of resistor is 1.0 data unit
+        self.segments.append(Segment( [(0, 0), gap, (length, 0)],color="black"))
+        self.segments.append(Segment(
+            [(0, 0), (0, height), (length, height),
+             (length, -height), (0, -height), (0, 0), gap,(length, 0)],color="none"))
+        self.fill("black")
+
+
+
 class Circulator(elm.Element):
     def __init__(self, direction='cw', *d, **kwargs):
         '''
@@ -250,46 +270,51 @@ class Attenuator(elm.Element):
 if __name__ == "__main__":
     import schemdraw as schem
     import schemdraw.dsp as dsp
-    d = schem.Drawing()
-    d += Port()
-    d += elm.Line(l=4)
-    d += elm.Resistor().down()
-    d += elm.Ground()
-    d += Reflection(color="r",dx= -1,dy=-1.5).label(r"$\Gamma_2$",fontsize=22)
-    d.draw()
-    exit(0)
     
-    #d += (rat :=Ratrace().anchor('sum'))
-    #d += Port().label("In1",'right').fill('skyblue').at(rat.in1).down()
-    #d += Port(theta=30).label("In2").fill('skyblue').at(rat.in2)
-    #d += Port(theta=-30).label(r"$\Sigma$").fill('skyblue').at(rat.sum)
-    #d += Port().label(r"$\Delta$",'left').fill('skyblue').at(rat.delta).up()
-    #d.draw()
-    #plt.show()
-    #exit(0)
+    choice = 3
+    
+    d = schem.Drawing()
+    if choice == 1:
+	    d += Port()
+	    d += elm.Line(l=4)
+	    d += elm.Resistor().down()
+	    d += elm.Ground()
+	    d += Reflection(color="r",dx= -1,dy=-1.5).label(r"$\Gamma_2$",fontsize=22)
+	    d.draw()
+    elif choice == 2:    
+        d += (rat :=Ratrace().anchor('sum'))
+        d += Port().label("In1",'right').fill('skyblue').at(rat.in1).down()
+        d += Port(theta=30).label("In2",'left').fill('skyblue').at(rat.in2)
+        d += Port(theta=-30).label(r"$\Sigma$",'left').fill('skyblue').at(rat.sum)
+        d += Port().label(r"$\Delta$",'left').fill('skyblue').at(rat.delta).up()
+        d.draw()
+    elif choice == 3:     
+        d += ( cir1 := Circulator('cw').flip().anchor('p1').fill('peachpuff') )
+        d += Port(direction='right').up().at(cir1.p3).label("Port2").fill('skyblue')
+        d += elm.Line(l=1).at(cir1.p2)
+        d += elm.Coax(l=1,radius= 0.2).label(r"$\lambda/4$")
+        d += (wilk := Splitter(size=1.3).label("Wilkinson\nDivider\n",fontsize=10).fill('khaki'))
+        d += elm.Line(l=1)
+        d += Isolator().fill('lightgray')
+        d += elm.Line(l=1)
+        d += (cou := Coupler(size=1.3).label("Forward\nCoupler\n10 dB\nno Phase Shift", fontsize=10).fill('khaki'))
+        d.push()
+        d += elm.Line(l=1).at(wilk.out2)
+        d += dsp.Filter().fill('lavenderblush')
+        d += elm.Line(l=1).right()
+        d.pop()
+        d += elm.Coax(l=1,radius=0.2).label(r"$\lambda/4$")
+        d += dsp.Amp().label("LNA", fontsize=10).fill('linen')
+        d += elm.Line(l=0.5)
+        d += Port().left().label("Port3", loc='right').fill('skyblue')
+        d += elm.Line(l=1).at(cou.p3)
+        d += Isolator().reverse().fill('lightgray')
+        d += elm.Line(l=2.5)
+        d += Port().left().label("Port4", loc='right').fill('skyblue')
+        d.draw()
+        d.save('example.png',dpi=600)
+       
 
-    d += ( cir1 := Circulator('cw').flip().anchor('p1').fill('peachpuff') )
-    d += Port(direction='right').up().at(cir1.p3).label("Port2").fill('skyblue')
-    d += elm.Line(l=1).at(cir1.p2)
-    d += elm.Coax(l=1,radius= 0.2).label(r"$\lambda/4$")
-    d += (wilk := Splitter(size=1.3).label("Wilkinson\nDivider\n",fontsize=10).fill('Khaki'))
-    d += elm.Line(l=1)
-    d += Isolator().fill('lightgray')
-    d += elm.Line(l=1)
-    d += (cou := Coupler(size=1.3).label("Forward\nCoupler\n10 dB\nno Phase Shift", fontsize=10).fill('Khaki'))
-    d.push()
-    d += elm.Line(l=1).at(wilk.out2)
-    d += dsp.Filter().fill('lavenderblush')
-    d += elm.Line(l=1).right()
-    d.pop()
-    d += elm.Coax(l=1,radius=0.2).label(r"$\lambda/4$")
-    d += dsp.Amp().label("LNA", fontsize=10).fill('linen')
-    d += elm.Line(l=0.5)
-    d += Port().left().label("Port3", loc='right').fill('skyblue')
-    d += elm.Line(l=1).at(cou.p3)
-    d += Isolator().reverse().fill('lightgray')
-    d += elm.Line(l=2.5)
-    d += Port().left().label("Port4", loc='right').fill('skyblue')
-    d.save('example.png',dpi=600)
+        
 
 
