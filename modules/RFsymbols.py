@@ -345,6 +345,23 @@ class TwoportShunt(elm.ElementTwoport):
         self.drop(self.output_component.start+Point((0.8,0)))
 
 
+class TwoportTransistor(elm.ElementTwoport):
+
+    def __init__(self, trans_element=elm.Bjt, trans_label="", **kwargs):
+        self.trans_element = trans_element
+        self.trans_label = trans_label
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.0, width=2.2, **kwargs)
+          
+    def setup(self):
+        super().setup() 
+        self.add(elm.Line(l=0.8).at(self.input_component.start).theta(-75))
+        self.add(elm.Line(l=0.2).right())
+        self.add(self.trans_element(circle=True).right().label(self.trans_label))
+        self.add(elm.Line(l=0.55).left().at(self.output_component.start))
+        self.add(elm.Line(l=2.55).left().at(self.output_component.end))
+        self.drop(self.output_component.start+Point((0.8,0)))
+
+
 class TwoportSeries(elm.ElementTwoport):
 
     def __init__(self, series_element=elm.Resistor, serieslabel="", **kwargs):
@@ -471,6 +488,7 @@ if __name__ == "__main__":
         d += TwoportTee(z1_element=elm.Capacitor, z2_element=elm.Capacitor, z3_element=elm.Inductor,
                        z1_label="$C_1$"        , z2_label="$C_3$"        , z3_label="$L_2$")
         d += TwoportTline()
+        d += TwoportTransistor(boxfill="LemonChiffon")
         d += TwoportTransformer(translabel="1:4") 
         d.move(-0.2,0)
         d += TwoportPort()
