@@ -1,15 +1,12 @@
 from schemdraw.segments import *
 import schemdraw.elements as elm
 from numpy import sqrt, cos, sin, pi
-
-
        
 class Transline(elm.Element2Term):
     def __init__(self, width = 4/20 ,length = 2,linecolor="black" ,*d, **kwargs):
         '''
         A transmission line as black bar 
         Behaves similar to a resistor twoport
-        
         '''
         gap = (math.nan, math.nan)  # Put a gap in a path
         super().__init__(*d, **kwargs)
@@ -20,7 +17,6 @@ class Transline(elm.Element2Term):
             [(0, 0), (0, height), (length, height),
              (length, -height), (0, -height), (0, 0), gap,(length, 0)],color="none"))
         self.fill("black")
-
 
 
 class Circulator(elm.Element):
