@@ -261,13 +261,163 @@ class Attenuator(elm.Element):
         self.anchors['in'] = (0, 0)
         self.anchors['out'] = (1.6, 0)
         self.params['drop'] = (1.6, 0)
-        
  
+################################################################################################################ 
+############# TWOPORTS #########################################################################################
+################################################################################################################
+ 
+ 
+class TwoportTline(elm.ElementTwoport):
+
+    def __init__(self,lengthlabel="\\lambda/4", impedancelabel = "$Z_0$", **kwargs):
+        linelabel="$\\leftarrow\\;"+lengthlabel+"\\; \\rightarrow$\n"+impedancelabel
+        self.linelabel = linelabel
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap,boxpady=0.5, width=3.5, **kwargs)
+
+    def setup(self):
+        super().setup() 
+        self.add(Transline(l=1,length=2.6).at(self.input_component.start).right().label(self.linelabel,loc="bot"))
+        self.add(Transline(l=1,length=2.6).at(self.input_component.end).right())
+        self.drop(self.output_component.start+Point((1,0)))
+         
+class TwoportPi(elm.ElementTwoport):
+    """
+    Pi-Network consisting of three Impedances 
+    """
+
+    def __init__(self, z1_element=elm.ResistorIEC, z2_element=elm.ResistorIEC, z3_element=elm.ResistorIEC, z1_label = "", z2_label = "", z3_label = "", **kwargs):
+        self.z1_element = z1_element
+        self.z2_element = z2_element
+        self.z3_element = z3_element
+        self.z1_label = z1_label
+        self.z2_label = z2_label
+        self.z3_label = z3_label
+        
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.5, width=3.5, **kwargs)
+
+    def setup(self):
+        super().setup() 
+        self.add(elm.Dot().at(self.input_component.start))
+        self.add(self.z3_element(l=2).label(self.z3_label,loc="bot").at(self.input_component.start).right().dot())
+        self.add(elm.Line(l=2.5).at(self.input_component.end).right())
+        self.add(self.z1_element(l=1.5).label(self.z1_label,loc="bot").at(self.input_component.start).down().dot())
+        self.add(self.z2_element(l=1.5).label(self.z2_label).at(self.output_component.start).down().dot())
+        self.drop(self.output_component.start+Point((1.2,0)))
+
+class TwoportTee(elm.ElementTwoport):
+    """
+        Tee-Network consisting of three Impedances 
+    """
+
+    def __init__(self, z1_element=elm.ResistorIEC, z2_element=elm.ResistorIEC, z3_element=elm.ResistorIEC, z1_label = "", z2_label = "", z3_label = "", **kwargs):
+        self.z1_element = z1_element
+        self.z2_element = z2_element
+        self.z3_element = z3_element
+        self.z1_label = z1_label
+        self.z2_label = z2_label
+        self.z3_label = z3_label
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.0, width=3.5, **kwargs)
+
+    def setup(self):
+        super().setup() 
+        self.add(self.z1_element(l=1.25).label(self.z1_label,loc="bot").at(self.input_component.start).right())
+        self.add(elm.Line(l=.25).right().dot())
+        self.add(self.z3_element(l=1.5).label(self.z3_label,loc="bot").down().dot())
+        self.add(self.z2_element(l=1.25).label(self.z2_label,loc="bot").at(self.output_component.start).left())
+        self.add(elm.Line(l=.25))
+        self.add(elm.Line(l=3.5).at(self.input_component.end).right())
+        self.drop(self.output_component.start+Point((0.8,0)))
+
+
+class TwoportShunt(elm.ElementTwoport):
+
+    def __init__(self, shunt_element=elm.Resistor, shuntlabel="", **kwargs):
+        self.shunt_element = shunt_element
+        self.shlabel = shuntlabel
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.0, width=2.2, **kwargs)
+          
+    def setup(self):
+        super().setup() 
+        self.add(elm.Line(l=0.9).at(self.input_component.start).right().dot())
+        self.add(self.shunt_element(l=1.5,label=self.shlabel).down().dot())
+        self.add(elm.Line(l=.75).at(self.output_component.start).left())
+        self.add(elm.Line(l=2.5).at(self.input_component.end).right())
+        self.drop(self.output_component.start+Point((0.8,0)))
+
+
+class TwoportSeries(elm.ElementTwoport):
+
+    def __init__(self, series_element=elm.Resistor, serieslabel="", **kwargs):
+        self.series_element = series_element
+        self.selabel = serieslabel
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.0, width=2.2, **kwargs)
+        
+    def setup(self):
+        super().setup() 
+        #self.add(elm.Line(l=1.75).at(self.input_component.start).right().dot())
+        self.add(self.series_element(l=1.75).label(self.selabel,loc="bot").at(self.input_component.start).right())
+        self.add(elm.Line(l=1.75).at(self.input_component.end).right())
+        self.drop(self.output_component.start+Point((0.8,0)))
+        
+class TwoportBlock(elm.ElementTwoport):
+
+    def __init__(self, series_element=elm.Resistor, blocklabel="$[Z]$", **kwargs):
+        self.series_element = series_element
+        self.blocklabel = blocklabel
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.0, width=2.2, **kwargs)
+    
+    def setup(self):
+        super().setup()
+        self.segments.append(
+                SegmentText(pos=Point((.85, .75)) + self.input_component.end, label=self.blocklabel,
+                            align=('center', 'center'), fontsize=24, rotation_global=False))
+        self.drop(self.output_component.start+Point((0.8,0)))
+
+class TwoportTransformer(elm.ElementTwoport):
+
+    def __init__(self, series_element=elm.Resistor, translabel="$1:n$", **kwargs):
+        self.series_element = series_element
+        self.translabel = translabel
+        super().__init__(input_element=elm.Gap, output_element=elm.Gap, boxpady=0.5,  boxpadx=0.0, width=2.2, **kwargs)
+    
+    def setup(self):
+        super().setup()
+        ll = 0.46
+        self.add(elm.Line(l=ll).at(self.input_component.end).right())
+        self.add(elm.Line(l=0.15).up())
+        self.add(elm.Transformer(t1=3,t2=3,core=False).right().label(self.translabel,fontsize=11))
+        self.add(elm.Line(l=ll).at(self.input_component.start).right())
+        self.add(elm.Line(l=0.15).down())
+        self.add(elm.Line(l=ll).at(self.output_component.start).left())
+        self.add(elm.Line(l=0.15).down())
+        self.add(elm.Line(l=ll).at(self.output_component.end).left())
+        self.add(elm.Line(l=0.15).up())
+        self.drop(self.output_component.start+Point((1,0)))
+
+class TwoportPort(elm.ElementCompound):
+    """
+    Creates two dots as port connections 
+    """
+
+    def __init__(self, portlabel="", **kwargs):
+        self.portlabel = portlabel
+        super().__init__( **kwargs)
+
+    def setup(self):
+        self.add(elm.Dot(open=True))
+        self.add(elm.Gap(l=1.5).down())
+        self.add(elm.Dot(open=True))
+
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+
+
 if __name__ == "__main__":
     import schemdraw as schem
     import schemdraw.dsp as dsp
     
-    choice = 3
+    choice = 5
     
     d = schem.Drawing()
     if choice == 1:
@@ -309,6 +459,22 @@ if __name__ == "__main__":
         d += Port().left().label("Port4", loc='right').fill('skyblue')
         d.draw()
         d.save('example.png',dpi=600)
+    elif choice ==5: 
+        elm.style(elm.STYLE_IEC)
+        d += TwoportPort()
+        d.move(0.6,0)
+        d += TwoportSeries(elm.Inductor,serieslabel="L")
+        d += TwoportShunt(elm.Diode,serieslabel="L",boxls=":",box="r").label("Detector")
+        d += TwoportPi(z1_element=elm.Capacitor, z2_element=elm.Capacitor, z3_element=elm.Inductor,
+                       z1_label="$C_1$"        , z2_label="$C_3$"        , z3_label="$L_2$")
+        d += elm.CurrentTransactor(terminals=True, boxpady=0.5,boxfill="lightgray"); d.move(2.6,0)
+        d += TwoportTee(z1_element=elm.Capacitor, z2_element=elm.Capacitor, z3_element=elm.Inductor,
+                       z1_label="$C_1$"        , z2_label="$C_3$"        , z3_label="$L_2$")
+        d += TwoportTline()
+        d += TwoportTransformer(translabel="1:4") 
+        d.move(-0.2,0)
+        d += TwoportPort()
+        d += d.draw()     
        
 
         
