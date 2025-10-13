@@ -373,6 +373,22 @@ def ABCDline(beta, length,Z0,alpha=0.0):
     x = array([[cosh(gammal), Z0*sinh(gammal)],[ 1./Z0*sinh(gammal), cosh(gammal)]])
     x = transpose(x,(2,0,1))
     return squeeze(x)
+    
+    
+
+### ABCD Matrix for Shunt Element #########################
+def ABCDInputImpedance(ABCD,Zload=1e24):
+    A=ABCD[:,0,0]
+    B=ABCD[:,0,1]
+    C=ABCD[:,1,0]
+    D=ABCD[:,1,1]
+    
+    if Zload > 1e23:
+        Zin = A/C
+    else:
+        Zin = (A*Zload + B) / (C*Zload + D)
+    return Zin
+    
 
 ############################################################
 def cascade(ABCDlist):
