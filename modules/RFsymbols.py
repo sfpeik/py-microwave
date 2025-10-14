@@ -3,7 +3,7 @@ import schemdraw.elements as elm
 from numpy import sqrt, cos, sin, pi
        
 class Transline(elm.Element2Term):
-    def __init__(self, width = 4/20 ,length = 2,linecolor="black" ,*d, **kwargs):
+    def __init__(self, width = 3/20 ,length = 2,linecolor="black" ,*d, **kwargs):
         '''
         A transmission line as black bar 
         Behaves similar to a resistor twoport
@@ -228,7 +228,31 @@ class Hybrid(elm.Element):
         self.params['drop'] = (size * 3, 0)
         self.params['pick'] = (size * 3, 0)
         
+            
+class Attenuator(elm.Element):
+    def __init__(self, variable = False, size= 1.0, *d, **kwargs):
+        '''
 
+        Anchors:
+            * in
+            * out
+        '''
+        super().__init__(*d, **kwargs)
+        self.segments.append(Segment([(0, 0 ), (0,0.8), (1.6, 0.8 ), (1.6, -0.8 ), (0.0, -0.8), (0, 0)],lw=2))
+        self.segments.append(Segment([(.8, 0.6), (0.6, 0.5), (1.0, 0.3), (.6, 0.1), (1.0, -0.1), (.6, -0.3), (1, -0.5), (.8, -0.6)], lw=1.5))
+        if variable:
+            self.segments.append(Segment([(0.2, -0.4), (1.4, 0.4)], lw=2, arrow="->",arrowwidth=.2))
+        self.anchors['in'] = (0, 0)
+        self.anchors['out'] = (1.6, 0)
+        self.params['drop'] = (1.6, 0)
+        
+        
+
+################################################################################################################ 
+############# GENERAL  #########################################################################################
+################################################################################################################
+ 
+ 
 class Wigglyline(elm.Element):
 
     def __init__(self, ofst=(0,0), scale= 1, *d, **kwargs):
@@ -253,26 +277,19 @@ class Reflection(elm.Element):
         size = 0.6 * scale
         radius = 1.0
         lw = 3
-        self.segments.append(Segment([(dx,dy), (0.5*size+dx,dy)], capstyle="butt", lw=lw))
-        self.segments.append(SegmentArc((0.5*size+dx,-radius*size/2+dy), radius*size, radius*size, lw = lw, theta1= -90, theta2=90, arrow = '<-'))
-        
-        
-class Attenuator(elm.Element):
-    def __init__(self, variable = False, size= 1.0, *d, **kwargs):
-        '''
+        self.segments.append(Segment([(dx,dy), (0.5*size+dx,dy)], capstyle="butt"))
+        self.segments.append(SegmentArc((0.5*size+dx,-radius*size/2+dy), radius*size, radius*size, theta1= -90, theta2=90, arrow = '<-'))
+            
 
-        Anchors:
-            * in
-            * out
-        '''
+class ImpArrow(elm.Element):
+
+    def __init__(self, len = 2, ofst=(-0.5,-1), *d, **kwargs):
         super().__init__(*d, **kwargs)
-        self.segments.append(Segment([(0, 0 ), (0,0.8), (1.6, 0.8 ), (1.6, -0.8 ), (0.0, -0.8), (0, 0)],lw=2))
-        self.segments.append(Segment([(.8, 0.6), (0.6, 0.5), (1.0, 0.3), (.6, 0.1), (1.0, -0.1), (.6, -0.3), (1, -0.5), (.8, -0.6)], lw=1.5))
-        if variable:
-            self.segments.append(Segment([(0.2, -0.4), (1.4, 0.4)], lw=2, arrow="->",arrowwidth=.2))
-        self.anchors['in'] = (0, 0)
-        self.anchors['out'] = (1.6, 0)
-        self.params['drop'] = (1.6, 0)
+        x = ofst[0]
+        y = ofst[1]
+        self.segments.append(Segment([[0+x, 0+y], [-1+x, 0+y], [-1+x, -len+y]],arrow="<-") )
+
+        
  
 ################################################################################################################ 
 ############# TWOPORTS #########################################################################################
