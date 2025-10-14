@@ -302,8 +302,8 @@ class TwoportPi(elm.ElementTwoport):
         self.add(elm.Dot().at(self.input_component.start))
         self.add(self.z3_element(l=2).label(self.z3_label,loc="bot").at(self.input_component.start).right().dot())
         self.add(elm.Line(l=2.5).at(self.input_component.end).right())
-        self.add(self.z1_element(l=1.5).label(self.z1_label,loc="bot").at(self.input_component.start).down().dot())
-        self.add(self.z2_element(l=1.5).label(self.z2_label).at(self.output_component.start).down().dot())
+        self.add(self.z1_element(l=1.5).label(self.z1_label,loc="bot",ofst=(.2, 0.1)).at(self.input_component.start).down().dot())
+        self.add(self.z2_element(l=1.5).label(self.z2_label,ofst=(.2, -0.1)).at(self.output_component.start).down().dot())
         self.drop(self.anchors['out_p'])
 
 class TwoportTee(elm.ElementTwoport):
@@ -324,7 +324,7 @@ class TwoportTee(elm.ElementTwoport):
         super().setup() 
         self.add(self.z1_element(l=1.25).label(self.z1_label,loc="bot").at(self.input_component.start).right())
         self.add(elm.Line(l=.25).right().dot())
-        self.add(self.z3_element(l=1.5).label(self.z3_label,loc="bot").down().dot())
+        self.add(self.z3_element(l=1.5).label(self.z3_label,loc="bot",ofst=(.2, 0.1)).down().dot())
         self.add(self.z2_element(l=1.25).label(self.z2_label,loc="bot").at(self.output_component.start).left())
         self.add(elm.Line(l=.25))
         self.add(elm.Line(l=3.5).at(self.input_component.end).right())
