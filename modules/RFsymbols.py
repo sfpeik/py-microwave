@@ -229,20 +229,32 @@ class Hybrid(elm.Element):
         self.params['pick'] = (size * 3, 0)
         
 
-class Reflection(elm.Element):
-    
-    def __init__(self, dx = 0, dy = 0 ,size= 1, *d, **kwargs):
+class Wigglyline(elm.Element):
+
+    def __init__(self, ofst=(0,0), scale= 1, *d, **kwargs):
         '''
         Anchors:
         '''
         super().__init__(*d, **kwargs)
-        size = 0.6 * size
+        size=0.3
+        for x in range(0,6,2):
+            self.segments.append(SegmentBezier([((0+x)*size,0),((0.5+x)*size, size),((1+x)*size,0)], capstyle="butt"))
+            self.segments.append(SegmentBezier([((1+x)*size,0),((1.5+x)*size,-size),((2+x)*size,0)], capstyle="butt"))
+        self.segments.append(Segment([((2+4)*size,0), ((2+4+1)*size,0)], capstyle="butt", arrow = '->'))
+        
+class Reflection(elm.Element):
+    
+    def __init__(self, ofst=(0,0), scale= 1, *d, **kwargs):
+        '''
+        Anchors:
+        '''
+        super().__init__(*d, **kwargs)
+        dx,dy = ofst
+        size = 0.6 * scale
         radius = 1.0
         lw = 3
-        dx += -1
-        dy += -0.7
-        self.segments.append(Segment([(-0.5*size+dy, dx), (-0.5*size+dy, -0.5*size+dx)], capstyle="butt", lw=lw))
-        self.segments.append(SegmentArc((dy,dx), radius*size, radius*size, lw = lw, theta1= 0, theta2=180, arrow = '<-'))
+        self.segments.append(Segment([(dx,dy), (0.5*size+dx,dy)], capstyle="butt", lw=lw))
+        self.segments.append(SegmentArc((0.5*size+dx,-radius*size/2+dy), radius*size, radius*size, lw = lw, theta1= -90, theta2=90, arrow = '<-'))
         
         
 class Attenuator(elm.Element):
