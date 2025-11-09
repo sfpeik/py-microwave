@@ -767,12 +767,15 @@ class Smith:
 ########################################################################################################################
 class Smithpaper(Smith):
 
-    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 1, fineness=1, showrings=False, **kwargs):
+    def __init__(self, ax, typ='smith', Z0=1, fontscale=1, alpha= 1,   color_impedance = "#FF8888",
+                 color_admittance = "#8888FF", fineness=1, showmarker=True, showrings=False, **kwargs):
         self.f = 0
         self.ax = ax
         self.Z0 = Z0
         self.kwargs = kwargs
         self.linefactor = 1
+        self.color_impedance = color_impedance
+        self.color_admittance = color_admittance
         self.elements = []
         self.impedances = []
         self.elementvalues = []
@@ -783,6 +786,7 @@ class Smithpaper(Smith):
         self.isnorm = False
         self.paper = False
         self.showArrows = False
+        self.showmarker = showmarker
         self.linewidth = 1.0
         self.fontscale = fontscale
         self.resolution = 300
@@ -792,12 +796,12 @@ class Smithpaper(Smith):
         self.alpha = alpha
         
         if typ =="smith": 
-            self.addimpedancegrid(color="#FF8888", alpha = alpha)
+            self.addimpedancegrid(color=self.color_impedance, alpha = alpha)
         elif typ =="inverted":
-            self.addadmittancegrid(color="#8888FF", alpha = alpha)
+            self.addadmittancegrid(color=self.color_admittance, alpha = alpha)
         elif typ == "both":
-            self.addadmittancegrid(color="#8888FF", alpha = alpha)
-            self.addimpedancegrid(color="#FF8888", alpha = alpha)
+            self.addadmittancegrid(color=self.color_admittance, alpha = alpha)
+            self.addimpedancegrid(color=self.color_impedance, alpha = alpha)
             
             
         if showrings:
@@ -848,7 +852,6 @@ class Smithpaper(Smith):
             elif seg1 > seg2: reso =  minor_res[seg1]
             elif seg1 < seg2: reso =  minor_res[seg2]
             for zreal in arange(*minor_ranges[seg1], reso):
-
                 ## Find Center and radius of circles/segments
                 ## see https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
                 radius = 1 / (zreal + 1)
@@ -872,9 +875,7 @@ class Smithpaper(Smith):
                 self.ax.add_patch(e2)
 
         ### Labels ##################
-
         for ll in labelmarker:
-        #for ll in []:
             zreal = ll
             gamlabel = (zreal - 1.0) / (zreal + 1.0)
             orient = 1
@@ -883,8 +884,8 @@ class Smithpaper(Smith):
                  gamlabel = -gamlabel
                  orient = -1
                  labeloffsets = [-0.006,0.99,1.013]
-
-            self.ax.text(gamlabel, labeloffsets[0], str(ll), rotation_mode='anchor', ha='left', va='bottom',
+            if self.showmarker:
+                self.ax.text(gamlabel, labeloffsets[0], str(ll), rotation_mode='anchor', ha='left', va='bottom',
                           rotation=90 * orient, fontsize=6 * self.fontscale, **kwargs)
             ## Fat Line
             cend = an[extendto]
@@ -905,7 +906,8 @@ class Smithpaper(Smith):
             self.ax.add_patch(e2)
 
             ### Rotated Labels ###
-            if ll<= 1 and not round(ll*10) % 2:
+            if self.showmarker:
+              if ll<= 1 and not round(ll*10) % 2:
                 gamlabel = (zreal + labeloffsets[1]*1j - 1) / (zreal + labeloffsets[1]*1j + 1)
                 anglabel = 180 + angle(gamlabel - 1 - 1j) * 180 / pi
                 if inverted: gamlabel = -gamlabel
@@ -918,6 +920,7 @@ class Smithpaper(Smith):
                 self.ax.text(real(gamlabel), imag(-gamlabel), str(ll), rotation_mode='anchor', ha='left',
                               va='bottom',
                               rotation=180 - anglabel, fontsize=6 * self.fontscale, **kwargs)
+                
         self.ax.set_xlim(-1.2, 1.2)
         self.ax.set_ylim(-1.2, 1.2)
         self.ax.axis('off')
@@ -969,8 +972,8 @@ class Smithpaper(Smith):
                     self.ax.add_patch(e2)
 
         ### Labels imag part ##################
+    
         for ll in labelmarker:
-        #for ll in []:
             if ll == 0: continue
             zimag = ll
             gg = (1j * ll - 1) / (1j * ll + 1)
@@ -978,9 +981,10 @@ class Smithpaper(Smith):
             rad = 0.994
             x,y = rad * real(gg), rad * imag(gg)
             ang = angle(gg) * 180.0 / pi
-            self.ax.text(x, y, str(ll), ha='right', va='bottom', rotation_mode='anchor', rotation=ang,
+            if self.showmarker:
+                self.ax.text(x, y, str(ll), ha='right', va='bottom', rotation_mode='anchor', rotation=ang,
                               fontsize=6 * self.fontscale,  **kwargs)
-            self.ax.text(x, -y, labfront + str(ll), ha='left', va='bottom', rotation_mode='anchor', rotation=180 - ang,
+                self.ax.text(x, -y, labfront + str(ll), ha='left', va='bottom', rotation_mode='anchor', rotation=180 - ang,
                               fontsize=6 * self.fontscale,  **kwargs)
 
             ## Fat Line imag bends
@@ -1379,6 +1383,9 @@ def stubLineMatch(Zl,Z0=50):
     return len1, len2
 
 ########################################################################################################################
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
 
 
 
@@ -1386,16 +1393,17 @@ if __name__ == "__main__":
     # import doctest
     # doctest.testmod()
 
-    demo = 5
+    demo = -1
 
     if demo == -1:
         ## Plot Empty smithchart
         fig, ax = plt.subplots(figsize=(16,16))
         Z0 = 50
-        mysmith = Smith(ax, 'both', fineness= 3)
-        mysmith.addpolargrid(alpha= 0.3)
-        mysmith.addanglering(alpha=0.6, color = "g")
+        mysmith = Smithpaper(ax, 'smith', fineness= 3, color_impedance="black", showmarker = False)
+        #mysmith.addpolargrid(alpha= 0.3)
+        #mysmith.addanglering(alpha=0.6, color = "g")
         #mysmith = Smith(ax, 'smith', Z0, color = "g", lw = 1, alpha = 0.5)
+        plt.savefig("smith.svg")
         plt.show()
 
     if demo == 0:
