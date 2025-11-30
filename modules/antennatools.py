@@ -148,7 +148,7 @@ def dipole_input_impedance(kl,a_to_l=0.0001):
          + 0.5 * cos(kl) * ( -Si(2*kl) + 2*Si(kl))
          + 0.5 * sin(kl) * ( Ci(2*kl)-2*Ci(kl) + Ci(2*kl*(a_to_l)**2)) 
         )
-    return R, X
+    return R +1j* X
 
 def dipole_radiation_resistance(kl,a_to_l=0.0001):
     '''
@@ -157,7 +157,9 @@ def dipole_radiation_resistance(kl,a_to_l=0.0001):
     kl: length in lambdas * 2pi    
     a_to_l: radius to diameter ratio of rod
     '''
-    Rin, Xin = dipole_input_impedance(kl,a_to_l)
+    
+    Zin = dipole_input_impedance(kl,a_to_l)
+    Rin, Xin = real(Zin), imag(Zin)
     Rr = Rin * (sin(kl/2))**2
     return Rr
     
