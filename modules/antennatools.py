@@ -150,6 +150,7 @@ def dipole_input_impedance(kl,a_to_l=0.0001):
         )
     return R +1j* X
 
+
 def dipole_radiation_resistance(kl,a_to_l=0.0001):
     '''
     calculates the radiation resistance from input impedance of a wire antenna
