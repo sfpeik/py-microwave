@@ -3,20 +3,13 @@ import schemdraw.elements as elm
 from numpy import sqrt, cos, sin, pi
        
 class Transline(elm.Element2Term):
-    def __init__(self, width = 3/20 ,length = 2,linecolor="black" ,*d, **kwargs):
+    def __init__(self, l, linecolor="black" ,*d, **kwargs):
         '''
         A transmission line as black bar 
         Behaves similar to a resistor twoport
         '''
-        gap = (math.nan, math.nan)  # Put a gap in a path
         super().__init__(*d, **kwargs)
-        height = width  # Resistor height
-        length = length    # Full (inner) length of resistor is 1.0 data unit
-        self.segments.append(Segment( [(0, 0), gap, (length, 0)],color="black"))
-        self.segments.append(Segment(
-            [(0, 0), (0, height), (length, height),
-             (length, -height), (0, -height), (0, 0), gap,(length, 0)],color="none"))
-        self.fill("black")
+        self.segments.append(Segment( [(0, 0),(l, 0)],color="black",capstyle="square"))
 
 
 class Circulator(elm.Element):
