@@ -3,13 +3,13 @@ import schemdraw.elements as elm
 from numpy import sqrt, cos, sin, pi
        
 class Transline(elm.Element2Term):
-    def __init__(self, l, linecolor="black" ,*d, **kwargs):
+    def __init__(self, l, lw=10, linecolor="black" ,*d, **kwargs):
         '''
         A transmission line as black bar 
         Behaves similar to a resistor twoport
         '''
         super().__init__(*d, **kwargs)
-        self.segments.append(Segment( [(0, 0),(l, 0)],color="black",capstyle="square"))
+        self.segments.append(Segment( [(0, 0),(l, 0)],lw=lw, color="black",capstyle="square"))
 
 
 class Circulator(elm.Element):
@@ -248,7 +248,7 @@ class Attenuator(elm.Element):
  
 class Wigglyline(elm.Element):
 
-    def __init__(self, ofst=(0,0), scale= 1, *d, **kwargs):
+    def __init__(self, ofst=(0,0), *d, **kwargs):
         '''
         Anchors:
         '''
@@ -257,7 +257,7 @@ class Wigglyline(elm.Element):
         for x in range(0,6,2):
             self.segments.append(SegmentBezier([((0+x)*size,0),((0.5+x)*size, size),((1+x)*size,0)], capstyle="butt"))
             self.segments.append(SegmentBezier([((1+x)*size,0),((1.5+x)*size,-size),((2+x)*size,0)], capstyle="butt"))
-        self.segments.append(Segment([((2+4)*size,0), ((2+4+1)*size,0)], capstyle="butt", arrow = '->'))
+        self.segments.append(Segment([((2+4)*size,0), ((2+4)*size+0.5,0)], capstyle="butt", arrow = '->'))
         
 class Reflection(elm.Element):
     
