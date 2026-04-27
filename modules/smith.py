@@ -828,13 +828,27 @@ class Smithpaper(Smith):
         ## a group of circles consist start imag, end imag, resolution and Fat line yes/no
         an = [0,     0.2,   0.5,   1,    2,    5,   10,   20,   50]
         res = [ 0.01,  0.02,  .05,   .1,   0.2,   1,    2,   10  ]
+        
+        
+        #an =  [0,    0.5,   1,     5,   20 ]
+        #res = [ 0.05,  0.1,  .1,   .1,   0.2,   1,    2,   10  ]
+        #res = array(res) * 2
+        extendto = 3
+
+
         minor_ranges = [ [an[i], an[i+1] ] for i in range(len(an)-1) ]
         minor_res    = res
-        extendto = 3
+        
+        
         labelmarker = (list(around(arange(0.1,1,0.1),1)))
         labelmarker += (list(around(arange(1, 2, 0.2), 1)))
         labelmarker += range(2,6)
         labelmarker += (10,20,50)
+        
+        #labelmarker = (list(around(arange(0.1,.51,0.1),1)))
+        #labelmarker += (0.7,1,1.5,2,3,4,5,7,10,20,50)
+        
+        
         llw = [0.4 * self.linefactor, 0.4 * self.linefactor * self.fatfactor]
         ## Outer Circle
         e1 = patches.Circle((0, 0), 1,linewidth=llw[1], fill=False)
@@ -845,36 +859,42 @@ class Smithpaper(Smith):
         ################################################################################################################
         print("------------------")
         maxbox = len(minor_ranges)
-        for seg1 in range(maxbox):
-          for seg2 in range(maxbox):
-            istart,istop  = minor_ranges[seg2]
-            if seg1 == seg2: reso =  minor_res[seg2]
-            elif seg1 > seg2: reso =  minor_res[seg1]
-            elif seg1 < seg2: reso =  minor_res[seg2]
-            for zreal in arange(*minor_ranges[seg1], reso):
-                ## Find Center and radius of circles/segments
-                ## see https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
-                radius = 1 / (zreal + 1)
-                center = zreal / (zreal + 1)
-                Zstart = zreal + istart * 1j
-                gammastart = (Zstart - 1) / (Zstart + 1)
-                #ax.plot(real(gammastart), imag(gammastart) , "go")
-                angle1 = arctan2(imag(gammastart) / radius, real(gammastart- center) / radius) * 180 / pi
-                Zend = zreal + istop * 1j
-                gammaend = (Zend - 1) / (Zend + 1)
-                #ax.plot(real(gammaend), imag(gammaend), "ro")
-                angle2 = arctan2(imag(gammaend) / radius, real(gammaend- center) / radius) * 180 / pi
-                if inverted:
-                    center = -center
-                    angle1, angle2 = angle1 +180, angle2 +180
-                e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1 = angle2,
-                                 theta2 = angle1, **kwargs)
-                e2 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1=-angle1,
-                                 theta2=-angle2, **kwargs)
-                self.ax.add_patch(e1)
-                self.ax.add_patch(e2)
+        
+        ## Draw minor grid lines ####################################################################################################
+        minorgrid = True
+        if minorgrid: 
+            for seg1 in range(maxbox):
+              for seg2 in range(maxbox):
+                istart,istop  = minor_ranges[seg2]
+                if seg1 == seg2: reso =  minor_res[seg2]
+                elif seg1 > seg2: reso =  minor_res[seg1]
+                elif seg1 < seg2: reso =  minor_res[seg2]
+                for zreal in arange(*minor_ranges[seg1], reso):
+                    ## Find Center and radius of circles/segments
+                    ## see https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+                    radius = 1 / (zreal + 1)
+                    center = zreal / (zreal + 1)
+                    Zstart = zreal + istart * 1j
+                    gammastart = (Zstart - 1) / (Zstart + 1)
+                    #ax.plot(real(gammastart), imag(gammastart) , "go")
+                    angle1 = arctan2(imag(gammastart) / radius, real(gammastart- center) / radius) * 180 / pi
+                    Zend = zreal + istop * 1j
+                    gammaend = (Zend - 1) / (Zend + 1)
+                    #ax.plot(real(gammaend), imag(gammaend), "ro")
+                    angle2 = arctan2(imag(gammaend) / radius, real(gammaend- center) / radius) * 180 / pi
+                    if inverted:
+                        center = -center
+                        angle1, angle2 = angle1 +180, angle2 +180
+                    ## Circle sector for upper half
+                    e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1 = angle2,
+                                     theta2 = angle1, **kwargs)
+                    ## Circle sector for lower half
+                    e2 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[0], theta1= -angle1,
+                                     theta2=-angle2, **kwargs)
+                    self.ax.add_patch(e1)
+                    self.ax.add_patch(e2)
 
-        ### Labels ##################
+        ### Labels and major grid lines ##########################################################################################
         for ll in labelmarker:
             zreal = ll
             gamlabel = (zreal - 1.0) / (zreal + 1.0)
@@ -887,7 +907,7 @@ class Smithpaper(Smith):
             if self.showmarker:
                 self.ax.text(gamlabel, labeloffsets[0], str(ll), rotation_mode='anchor', ha='left', va='bottom',
                           rotation=90 * orient, fontsize=6 * self.fontscale, **kwargs)
-            ## Fat Line
+            ## add Fat Line ##################################################
             cend = an[extendto]
             if ll >= 0.5:  cend = an[extendto + 1]
             if ll > 2:  cend = an[extendto + 2]
@@ -900,7 +920,9 @@ class Smithpaper(Smith):
             if inverted:
                 center = -center
                 angle1, angle2 = angle1 +180, angle2 +180
+            ## Circle sector for upper half    
             e1 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[1], theta1=angle2,theta2=angle1, **kwargs)
+            ## Circle sector for lower half
             e2 = patches.Arc((center, 0), 2 * radius, 2 * radius, linewidth=llw[1], theta1=angle1,theta2=-angle2, **kwargs)
             self.ax.add_patch(e1)
             self.ax.add_patch(e2)
@@ -934,42 +956,44 @@ class Smithpaper(Smith):
         self.ax.plot([-1,1], [0,0], linewidth=llw[1], **kwargs)
         #kwargs = {'color': "g"}
         print("------------------")
-        for seg1 in range(maxbox):
-            for seg2 in range(maxbox):
-                istart, istop = minor_ranges[seg2]
-                if seg1 == seg2:
-                    reso = minor_res[seg2]
-                elif seg1 > seg2:
-                    reso = minor_res[seg1]
-                elif seg1 < seg2:
-                    reso = minor_res[seg2]
-                myrange = minor_ranges[seg1]
-                if (seg1,seg2) == (2,4):  myrange = [0.6,1] # unsolved yet
-                if (seg1, seg2) == (1, 5):  myrange = [1, 1]  # unsolved yet
-                if (seg1, seg2) == (2, 5):  myrange = [1, 1]  # unsolved yet
-                if (seg1, seg2) == (1, 6):  myrange = [1, 1]  # unsolved yet
-                for zimag in arange(*myrange, reso):
-                    if zimag == 0: continue
-                    radius = 1 / zimag
-                    center = 1 / zimag
-                    #ax.plot(1, center, "bo")
-                    Zstart = istart + zimag *1j
-                    gammastart = (Zstart - 1) / (Zstart + 1)
-                    angle1 = arctan2(imag(gammastart-center*1j) / radius, real(gammastart-1) / radius) * 180 / pi
-                    Zend = istop + zimag * 1j
-                    gammaend = (Zend - 1) / (Zend + 1)
-                    angle2 = arctan2(imag(gammaend-center*1j) / radius, real(gammaend-1) / radius) * 180 / pi
-                    centerx = 1
-                    if inverted:
-                        center = -center
-                        centerx = -centerx
-                        angle1, angle2 = angle1 + 180, angle2 + 180
-                    e1 = patches.Arc((centerx, center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=angle1,
-                                     theta2=angle2, **kwargs)
-                    e2 = patches.Arc((centerx, -center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=360-angle2,
-                                     theta2=360-angle1, **kwargs)
-                    self.ax.add_patch(e1)
-                    self.ax.add_patch(e2)
+        
+        if minorgrid: 
+            for seg1 in range(maxbox):
+                for seg2 in range(maxbox):
+                    istart, istop = minor_ranges[seg2]
+                    if seg1 == seg2:
+                        reso = minor_res[seg2]
+                    elif seg1 > seg2:
+                        reso = minor_res[seg1]
+                    elif seg1 < seg2:
+                        reso = minor_res[seg2]
+                    myrange = minor_ranges[seg1]
+                    if (seg1,seg2) == (2,4):  myrange = [0.6,1] # unsolved yet
+                    if (seg1, seg2) == (1, 5):  myrange = [1, 1]  # unsolved yet
+                    if (seg1, seg2) == (2, 5):  myrange = [1, 1]  # unsolved yet
+                    if (seg1, seg2) == (1, 6):  myrange = [1, 1]  # unsolved yet
+                    for zimag in arange(*myrange, reso):
+                        if zimag == 0: continue
+                        radius = 1 / zimag
+                        center = 1 / zimag
+                        #ax.plot(1, center, "bo")
+                        Zstart = istart + zimag *1j
+                        gammastart = (Zstart - 1) / (Zstart + 1)
+                        angle1 = arctan2(imag(gammastart-center*1j) / radius, real(gammastart-1) / radius) * 180 / pi
+                        Zend = istop + zimag * 1j
+                        gammaend = (Zend - 1) / (Zend + 1)
+                        angle2 = arctan2(imag(gammaend-center*1j) / radius, real(gammaend-1) / radius) * 180 / pi
+                        centerx = 1
+                        if inverted:
+                            center = -center
+                            centerx = -centerx
+                            angle1, angle2 = angle1 + 180, angle2 + 180
+                        e1 = patches.Arc((centerx, center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=angle1,
+                                         theta2=angle2, **kwargs)
+                        e2 = patches.Arc((centerx, -center), 2 * radius, 2 * radius, linewidth=llw[0], theta1=360-angle2,
+                                         theta2=360-angle1, **kwargs)
+                        self.ax.add_patch(e1)
+                        self.ax.add_patch(e2)
 
         ### Labels imag part ##################
     
