@@ -798,22 +798,33 @@ def load_touchstone(filename, annotations=False):
     Slist=[];flist=[]
     rad=pi/180.0
     #print("Loading ",n_ports,"-Port")
+    n_line = 0
     with open(filename) as fi:
       i = 0
       f = []
       S = []
       line = "!!!!!!!!"
+      factor = 1.0    
       while len(line)>0:
         line = fi.readline()
         if len(line)<3: continue
         #print(line.strip())
+        if "%" in line[0:5]:
+            #print("Value Order: ", line)
+            valueform = line.lstrip("!%F ").rstrip()
+            #print("Value form: ", valueform)
+            if "n21" in valueform.lower(): # Port Parameter Format
+                parorder = []
+                for i in range(0,len(valueform),5):
+                    x = valueform[i:i+5]
+                    parindex = (int(x[1]),int(x[2]),x[3])
+                    parorder.append(parindex)
         if line[0]=='!': 
             anno.append(line)
-            if line.find('Fmin')>0:
+            if "BEGIN NDATA" in line.upper():
                 noise=True
                 #print("----- Here Noise Data start ------>")
             continue
-        factor = 1.0    
         if line[0]=='#':
             #print("Format is ",line)
             if 'HZ' in line.upper(): factor=1e0
@@ -831,17 +842,20 @@ def load_touchstone(filename, annotations=False):
                 raise RuntimeError("Data not in MA or RI Format")
                 return
             continue
+        
+                
         if len(line) <10: continue ## empty line
         if not(noise): ##### Spara Info
+            n_line += 1
             p=line.split()
             while len(p)-1 < 2*n_ports**2:
                 #print("need more Lines", len(p)-1,2*n_ports**2)
                 line = fi.readline()
                 p.extend(line.split())
             p=[float(x) for x in p]
-            #print("f=",p[0],"S11=",p[1], ".....")
+            #print("f=",p[0]*factor,"S11=",p[1], ".....", "factor=", factor)
             flist.append(float(p[0])*factor)
-            # Combine Real Imag ###
+            # Combine Real Imag ###             
             if sform == 'RI':
                 # Combine Real Imag into complex number ###   
                 _s = array([ p[2*i+1] + 1j*p[2*i+2] for i in range(n_ports**2)])
@@ -851,7 +865,13 @@ def load_touchstone(filename, annotations=False):
             elif sform =='MA':
                 # Combine dB Phase into complex number ### 
                 _s = array([ p[2*i+1] *  exp(1j*pi/180*p[2*i+2]) for i in range(n_ports**2)])
+            ### Resort the paramter indices order according to format above
             _S = _s.reshape(n_ports,n_ports)
+            _S = zeros([n_ports,n_ports],dtype=complex)
+            for i in range(n_ports**2):
+                _S[parorder[i*2][0]-1,parorder[i*2][1]-1] = _s[i]
+                #if n_line <3: print(i, parorder[i*2], _s[i])
+            ### Add to list     
             Slist.append(_S)
             #print S
         if (noise): ##### Noise Info
@@ -1224,7 +1244,7 @@ def AmpStabilityCircle(S,plotit=False):
         mysmith.addcircle(Cl,Rl)
         mysmith.addcircle(Cs,Rs,'r')
         #plt.savefig('stabcircles.pdf')
-        return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax
+        return Cs,Rs,Cl,Rl,mu1, mu2, fig, ax, mysmith
     return Cs,Rs,Cl,Rl,mu1, mu2
 
 
