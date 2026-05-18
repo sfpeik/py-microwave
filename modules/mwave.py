@@ -774,7 +774,6 @@ def load_touchstone(filename, annotations=False):
     Note
     -----
     
-    currently works with 2x2 matrices only
     '''
     
     #print("Load Touchstone file ",filename)
@@ -805,26 +804,36 @@ def load_touchstone(filename, annotations=False):
       S = []
       line = "!!!!!!!!"
       factor = 1.0    
+      ## Predefine paramter order
+      parorder = []
+      for i in range(n_ports):
+          for j in range(n_ports):
+               parindex = (i,j,'x')
+               parorder.append(parindex)
+               parindex = (i,j,'y')
+               parorder.append(parindex)
       while len(line)>0:
         line = fi.readline()
         if len(line)<3: continue
         #print(line.strip())
+        ### Check for Paramter Order Line 
         if "%" in line[0:5]:
             #print("Value Order: ", line)
             valueform = line.lstrip("!%F ").rstrip()
             #print("Value form: ", valueform)
             if "n21" in valueform.lower(): # Port Parameter Format
-                parorder = []
                 for i in range(0,len(valueform),5):
                     x = valueform[i:i+5]
                     parindex = (int(x[1]),int(x[2]),x[3])
                     parorder.append(parindex)
+        # Save Comments in extra anno array 
         if line[0]=='!': 
             anno.append(line)
             if "BEGIN NDATA" in line.upper():
                 noise=True
                 #print("----- Here Noise Data start ------>")
             continue
+        # Format of Paramter Definition Line    
         if line[0]=='#':
             #print("Format is ",line)
             if 'HZ' in line.upper(): factor=1e0
@@ -845,6 +854,7 @@ def load_touchstone(filename, annotations=False):
         
                 
         if len(line) <10: continue ## empty line
+        ## Loaad normal S-Parameter Line 
         if not(noise): ##### Spara Info
             n_line += 1
             p=line.split()
