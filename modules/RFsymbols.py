@@ -131,7 +131,7 @@ class Splitter(elm.Element):
             self.segments.append(Segment([(0, 0.75 * size), (size * 1.5, 0.75 * size),
                                           (size * 1.5, -0.75 * size),(0, -0.75 * size),
                                           (0, 0.75 * size)], lw=2))
-        self.anchors['in'] = (0,0)
+        self.anchors['in1'] = (0,0)
         self.anchors['out1'] = (size * 1.5, size/2)
         self.anchors['out2'] = (size * 1.5, -size/2)
         self.params['drop'] = (size * 1.5, size/2)
