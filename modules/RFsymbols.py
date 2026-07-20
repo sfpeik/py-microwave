@@ -241,6 +241,87 @@ class Attenuator(elm.Element):
         self.anchors['out'] = (1.6, 0)
         self.params['drop'] = (1.6, 0)
         
+#############################################################################################################        
+##### Microstrip ############################################################################################  
+#############################################################################################################
+
+class MSline(elm.Element):
+    def __init__(self, w, l, scale = 4,showgeometry=True, label=None, fontsize=10, col = "orange", **kwargs):
+        super().__init__(**kwargs)
+        ws = w/scale
+        ls = l/scale
+        moff = 1.2/scale
+        self.segments.append(Segment([(0, -ws/2), (0, ws/2), (ls,ws/2), (ls,-ws/2), (0, -ws/2) ],color=col, fill= col))
+        if label: 
+            showgeometry = False
+            #self.segments.append(SegmentText((l/2,w/2+0.2),label,align=("center","bottom"),fontsize=fontsize))
+        if showgeometry:
+            self.segments.append(Segment([(0,ws/2+moff),(ls,ws/2+moff)], arrow = '<->'))
+            self.segments.append(SegmentText((ls/2,ws/2+moff*1.1),str(l)+" mm",rotation_global=False,align=("center","bottom"),fontsize=fontsize))
+            self.segments.append(Segment([(ls/3,-moff),(ls/3,ws/2)], arrow = '<->'))
+            self.segments.append(Segment([(ls/3,0),(ls/3,-ws/2-0.5)]))
+            self.segments.append(SegmentText((ls/3+0.1,-ws/2-0.2),str(w)+" mm",rotation_global=False,align=("left","top"),fontsize=fontsize))
+        self.anchors['p1'] = (0, 0)
+        self.anchors['p2'] = (ls, 0)
+        self.params['drop'] = (ls,0)
+        
+class MSvia(elm.Element):
+    def __init__(self, w, scale = 4, col = "orange", **kwargs):
+        super().__init__(**kwargs)
+        
+        ws = w/scale
+        self.segments.append(Segment([(0, -ws/2), (0, ws/2), (ws,ws/2), (ws,-ws/2), (0, -ws/2) ],color=col, fill= col))
+        self.segments.append(SegmentCircle((ws/2, 0), ws/4 ,color="black", fill= "black"))
+        self.anchors['p1'] = (0, 0)
+        self.params['drop'] = (ws/2,0)        
+
+class MSbend(elm.Element):
+    def __init__(self, w1, w2, mitred = True, col = "orange", **kwargs):
+        super().__init__(**kwargs)
+        cut = w1*2/3
+        if not mitred:
+            cut = 0
+        self.segments.append(Segment([(0, -w1/2), (0, w1/2), (w2-cut,w1/2), (w2,w1/2-cut), (w2, -w1/2), (0, -w1/2) ],color=col, fill= col))
+        self.anchors['p1'] = (0, 0)
+        self.anchors['p2'] = (w2/2, -w1/2)
+        self.params['drop'] = (w2/2,-w1/2)
+
+
+class SMD(elm.Element):
+    def __init__(self, scale = 4, **kwargs):
+        super().__init__(**kwargs)
+        col = "darkgray"
+        w = 1.2/scale
+        l = 2/scale
+        
+        self.segments.append(Segment([(0, -w/2), (0, w/2), (l,w/2), (l,-w/2), (0, -w/2) ],color="black", fill= "black"))
+        self.segments.append(Segment([(0, -w/2), (0, w/2), (l/4,w/2), (l/4,-w/2), (0, -w/2) ],color=col, fill= col))
+        self.segments.append(Segment([(3*l/4, -w/2), (3*l/4, w/2), (l,w/2), (l,-w/2), (3*l/4, -w/2) ],color=col, fill= col))
+        self.anchors['p1'] = (0, 0)
+        self.anchors['p2'] = (l, 0)
+        self.params['drop'] = (l,0)        
+        
+
+class SMD_sot343(elm.Element):
+    def __init__(self, scale = 4, chiplabel="",  **kwargs):
+        super().__init__(**kwargs)
+        col = "darkgray"
+        w = 4/scale
+        l = 3/scale
+        le = 0.7/scale
+        x = 0.5*le
+        fontsize= 44/scale
+        self.segments.append(Segment([(0, 0), (0, le/2), (-le,le/2), (-le,-le/2), (0, -le/2), (0,0) ],color=col, fill= col))
+        self.segments.append(Segment([(0, -w/2+x), (0, -w/2+x+le/2), (-le,-w/2+x+le/2), (-le,-w/2-x-le/2), (0, -w/2-x-le/2), (0,-w/2+x) ],color=col, fill= col))
+        self.segments.append(Segment([(l, 0), (l, le/2), (l+le,le/2), (l+le,-le/2), (l, -le/2), (l,0) ],color=col, fill= col))
+        self.segments.append(Segment([(l, -w/2), (l, -w/2+le/2), (l+le,-w/2+le/2), (l+le,-w/2-le/2), (l, -w/2-le/2), (l,-w/2) ],color=col, fill= col))
+        self.segments.append(Segment([(0, 0), (0, w/4), (l,w/4), (l,-w*3/4), (0, -w*3/4), (0,0) ],color="black", fill= "black"))
+        self.segments.append(SegmentText((l/2,-w/4),str(chiplabel),rotation_global=True,align=("center","center"),fontsize=fontsize,color="white"))
+        self.anchors['p1'] = (0, 0)
+        self.anchors['p2'] = (0, -w/2)
+        self.anchors['p3'] = (l, 0)
+        self.anchors['p4'] = (l, -w/2)
+        self.params['drop'] = (l,-w/2)        
         
 
 ################################################################################################################ 
