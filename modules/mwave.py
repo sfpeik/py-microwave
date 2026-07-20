@@ -629,7 +629,7 @@ def latexMatrix(a,rnd=None):
     """Returns a LaTeX bmatrix
 
     :a: numpy array
-    :rnd:  rounding digitrs, int
+    :rnd:  rounding digits, int
     :returns: LaTeX bmatrix as a string
     """
     set_printoptions(suppress=True)
@@ -637,9 +637,11 @@ def latexMatrix(a,rnd=None):
         a = around(a,rnd)
     if len(a.shape) > 2:
         raise ValueError('bmatrix can at most display two dimensions')
+    print(str(a))    
     lines = str(a).replace('[', '').replace(']', '').replace('j','j,').replace('+0.j','').replace('. ','').replace(' 0 ','').replace(' ','').splitlines()
+    print(lines)
     rv = [r'\begin{bmatrix}']
-    rv += ['  ' + ' & '.join(l.rstrip(',').split(',')) + r'\\' for l in lines]
+    rv += [' ' + r' & '.join(l.rstrip(',').split(',')) + r'\\' for l in lines]
     rv +=  [r'\end{bmatrix}']
 
     rv =  '\n'.join(rv)
