@@ -246,12 +246,12 @@ class Attenuator(elm.Element):
 #############################################################################################################
 
 class MSline(elm.Element):
-    def __init__(self, w, l, scale = 4,showgeometry=True, label=None, fontsize=10, col = "orange", **kwargs):
+    def __init__(self, w, l, scale = 4,showgeometry=False, label=None, fontsize=10, col = "orange", **kwargs):
         super().__init__(**kwargs)
         ws = w/scale
         ls = l/scale
         moff = 1.2/scale
-        self.segments.append(Segment([(0, -ws/2), (0, ws/2), (ls,ws/2), (ls,-ws/2), (0, -ws/2) ],color=col, fill= col))
+        self.segments.append(Segment([(0,0), (0, ws/2), (ls,ws/2), (ls,-ws/2), (0, -ws/2), (0,0) ], ls=" ", fill= col))
         if label: 
             showgeometry = False
             #self.segments.append(SegmentText((l/2,w/2+0.2),label,align=("center","bottom"),fontsize=fontsize))
@@ -263,43 +263,119 @@ class MSline(elm.Element):
             self.segments.append(SegmentText((ls/3+0.1,-ws/2-0.2),str(w)+" mm",rotation_global=False,align=("left","top"),fontsize=fontsize))
         self.anchors['p1'] = (0, 0)
         self.anchors['p2'] = (ls, 0)
+        self.anchors['center'] = (ls/2,0)
+        self.anchors['W'] = (0, 0)
+        self.anchors['E'] = (ls, 0)
+        self.anchors['N'] = (ls/2, ws/2)
+        self.anchors['S'] = (ls/2, -ws/2)
         self.params['drop'] = (ls,0)
+      
         
 class MSvia(elm.Element):
-    def __init__(self, w, scale = 4, col = "orange", **kwargs):
+
+    _element_defaults = {
+        'theta': 0,
+        'drop': (0, 0)
+    }
+    
+    def __init__(self, w=2, scale = 4, col = "orange", **kwargs):
         super().__init__(**kwargs)
         
         ws = w/scale
-        self.segments.append(Segment([(0, -ws/2), (0, ws/2), (ws,ws/2), (ws,-ws/2), (0, -ws/2) ],color=col, fill= col))
-        self.segments.append(SegmentCircle((ws/2, 0), ws/4 ,color="black", fill= "black"))
+        self.segments.append(Segment([(0, -ws/2), (0, ws/2), (ws,ws/2), (ws,-ws/2), (0, -ws/2) ],ls=" ", color="", fill= col))
+        self.segments.append(SegmentCircle((ws/2, 0), ws/4 ,color="black", ls="", fill= "black"))
+        self.anchors['center'] = (ws/2, 0)
+        self.params['drop'] = (ws,0)    
+        self.anchors['W'] = (0, 0)
+        self.anchors['E'] = (ws, 0)
+        self.anchors['N'] = (ws/2, ws/2)
+        self.anchors['S'] = (ws/2, -ws/2)
+        
+class MStaper(elm.Element):
+    def __init__(self, w1, w2, l, scale = 4, label=None, col = "orange", **kwargs):
+        super().__init__(**kwargs)
+        ws1 = w1/scale
+        ws2 = w2/scale
+        ls = l/scale
+        self.segments.append(Segment([(0,0), (0, ws1/2), (ls,ws2/2), (ls,-ws2/2), (0, -ws1/2), (0,0) ], ls=" ", fill= col))
         self.anchors['p1'] = (0, 0)
-        self.params['drop'] = (ws/2,0)        
+        self.anchors['p2'] = (ls, 0)
+        self.params['drop'] = (ls,0)
+              
 
 class MSbend(elm.Element):
-    def __init__(self, w1, w2, mitred = True, col = "orange", **kwargs):
+    def __init__(self, w, w2 = None, direction = "right", mitred = True, fourtyfive = False ,  scale = 4, col = "orange", **kwargs):
         super().__init__(**kwargs)
+        w1 = w/scale
+        w2 = w/scale
+        
         cut = w1*2/3
         if not mitred:
             cut = 0
-        self.segments.append(Segment([(0, -w1/2), (0, w1/2), (w2-cut,w1/2), (w2,w1/2-cut), (w2, -w1/2), (0, -w1/2) ],color=col, fill= col))
-        self.anchors['p1'] = (0, 0)
-        self.anchors['p2'] = (w2/2, -w1/2)
-        self.params['drop'] = (w2/2,-w1/2)
-
+        if not fourtyfive: 
+          if direction == "left":
+            self.segments.append(Segment([(0, -w1/2), (0, w1/2), (w2,w1/2), (w2,-w1/2+cut), (w2-cut, -w1/2), (0, -w1/2) ],ls=" ", color=col, fill= col))
+            self.anchors['p1'] = (0, 0)
+            self.anchors['p2'] = (w2/2, w1/2)
+            self.params['drop'] = (w2/2,w1/2)
+          elif direction == "right":
+            self.segments.append(Segment([(0, -w1/2), (0, w1/2), (w2-cut,w1/2), (w2,w1/2-cut), (w2, -w1/2), (0, -w1/2) ],ls=" ", color=col, fill= col))
+            self.anchors['p1'] = (0, 0)
+            self.anchors['p2'] = (w2/2, -w1/2)
+            self.params['drop'] = (w2/2,-w1/2)
+          else:
+            raise ValueError("Direction must be left or right")
+        else: # 45 degree Bend ###################################################
+          if direction == "left":
+            self.segments.append(Segment([(0,0), (0, w1/2), (w2/sqrt(2), w1/2-w2/sqrt(2)), (0, -w1/2), (0,0)],ls=" ", color=col, fill= col))
+            self.anchors['p1'] = (0, 0)
+            self.anchors['p2'] =  (w2/sqrt(2)/2, w1/2 - w2/sqrt(2)/2)
+            self.params['drop'] = (w2/sqrt(2)/2, w1/2 - w2/sqrt(2)/2)
+          elif direction == "right":
+            self.segments.append(Segment([(0,0), (0, -w1/2), (w2/sqrt(2), -w1/2+w2/sqrt(2)), (0, w1/2), (0,0)],ls=" ", color=col, fill= col))
+            self.anchors['p1'] = (0, 0)
+            self.anchors['p2'] =  (w2/sqrt(2)/2, -w1/2 + w2/sqrt(2)/2)
+            self.params['drop'] = (w2/sqrt(2)/2, -w1/2 + w2/sqrt(2)/2)
+            
+          else:
+            raise ValueError("Direction must be left or right")
+             
 
 class SMD(elm.Element):
-    def __init__(self, scale = 4, **kwargs):
+    def __init__(self, scale = 4, col = "darkgray", padcol = "orange", size="0805", **kwargs):
         super().__init__(**kwargs)
-        col = "darkgray"
-        w = 1.2/scale
-        l = 2/scale
         
+        
+        if size == "0805":
+            w = 1.22/scale
+            l = 2/scale
+        elif size == "0402":
+            w = 0.5/scale
+            l = 1.0/scale
+        elif size == "0603":
+            w = 0.8/scale
+            l = 1.6/scale
+        elif size == "1206":
+            w = 1.6/scale
+            l = 3.2/scale
+        elif size == "1210":
+            w = 2.5/scale
+            l = 3.2/scale    
+        else:
+            raise ValueError("Unknown SMD Size")
+            
         self.segments.append(Segment([(0, -w/2), (0, w/2), (l,w/2), (l,-w/2), (0, -w/2) ],color="black", fill= "black"))
-        self.segments.append(Segment([(0, -w/2), (0, w/2), (l/4,w/2), (l/4,-w/2), (0, -w/2) ],color=col, fill= col))
-        self.segments.append(Segment([(3*l/4, -w/2), (3*l/4, w/2), (l,w/2), (l,-w/2), (3*l/4, -w/2) ],color=col, fill= col))
+        self.segments.append(Segment([(0, -w/2), (0, w/2), (l/4,w/2), (l/4,-w/2), (0, -w/2) ],color=col,ls=" ", fill= col))
+        self.segments.append(Segment([(3*l/4, -w/2), (3*l/4, w/2), (l,w/2), (l,-w/2), (3*l/4, -w/2) ],color=col, ls=" ", fill= col))
+        ### Pad ###
+        xx = 0.3/scale
+        self.segments.append(Segment([(-xx, -w/2-xx), (-xx, w/2+xx), (l/4,w/2+xx), (l/4,-w/2-xx), (-xx, -w/2-xx) ], color=padcol, fill= padcol,zorder = 0))
+        self.segments.append(Segment([(3*l/4, -w/2-xx), (3*l/4, w/2+xx), (l+xx,w/2+xx), (l+xx,-w/2-xx), (3*l/4, -w/2-xx) ], color=padcol, fill= padcol,zorder = 0))
+        
         self.anchors['p1'] = (0, 0)
         self.anchors['p2'] = (l, 0)
-        self.params['drop'] = (l,0)        
+        self.params['drop'] = (l,0)   
+        self.params['zorder'] = 10     
         
 
 class SMD_sot343(elm.Element):
