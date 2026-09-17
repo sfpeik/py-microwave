@@ -634,12 +634,10 @@ def latexMatrix(a,rnd=None):
     """
     set_printoptions(suppress=True)
     if rnd is not None:
-        a = around(a,rnd)
+        a = around(a,rnd) + 0j
     if len(a.shape) > 2:
-        raise ValueError('bmatrix can at most display two dimensions')
-    print(str(a))    
+        raise ValueError('bmatrix can at most display two dimensions')   
     lines = str(a).replace('[', '').replace(']', '').replace('j','j,').replace('+0.j','').replace('. ','').replace(' 0 ','').replace(' ','').splitlines()
-    print(lines)
     rv = [r'\begin{bmatrix}']
     rv += [' ' + r' & '.join(l.rstrip(',').split(',')) + r'\\' for l in lines]
     rv +=  [r'\end{bmatrix}']
@@ -1213,6 +1211,16 @@ def plotspar(flist,Slist=array([0]),funit="MHz",frange=None, yrange = (-20,0), p
     plt.tight_layout()
     return fig,ax
     
+
+def delta(S): 
+    '''
+    Calculate the determinant of S
+    '''
+    if shape(S) == (2, 2):
+        S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
+    else: 
+        S11=S[:,0,0];S12=S[:,0,1];S21=S[:,1,0];S22=S[:,1,1]
+    return S11*S22-S12*S21
 
 def mufactor(S):
     '''
