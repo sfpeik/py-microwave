@@ -246,7 +246,11 @@ class Attenuator(elm.Element):
 #############################################################################################################
 
 class MSline(elm.Element):
-    def __init__(self, w, l, scale = 4,showgeometry=False, label=None, fontsize=10, col = "orange", **kwargs):
+    '''
+    draws a microstrip line 
+    1 unit is 1 mm
+    '''
+    def __init__(self, w, l, scale = 1,showgeometry=False, label=None, fontsize=10, col = "orange", **kwargs):
         super().__init__(**kwargs)
         ws = w/scale
         ls = l/scale
@@ -272,18 +276,25 @@ class MSline(elm.Element):
       
         
 class MSvia(elm.Element):
+    '''
+    Microstrip via showing a circle in the centre
+    w: with and height of pad in mm
+    
+    '''
 
     _element_defaults = {
         'theta': 0,
         'drop': (0, 0)
     }
     
-    def __init__(self, w=2, scale = 4, col = "orange", **kwargs):
+    def __init__(self, w=2, scale = 1, radius= None, col = "orange", **kwargs):
         super().__init__(**kwargs)
         
         ws = w/scale
+        if not radius:
+            radius = ws/4
         self.segments.append(Segment([(0, -ws/2), (0, ws/2), (ws,ws/2), (ws,-ws/2), (0, -ws/2) ],ls=" ", color="", fill= col))
-        self.segments.append(SegmentCircle((ws/2, 0), ws/4 ,color="black", ls="", fill= "black"))
+        self.segments.append(SegmentCircle((ws/2, 0), radius ,color="black", ls="", fill= "black"))
         self.anchors['center'] = (ws/2, 0)
         self.params['drop'] = (ws,0)    
         self.anchors['W'] = (0, 0)
@@ -292,7 +303,7 @@ class MSvia(elm.Element):
         self.anchors['S'] = (ws/2, -ws/2)
         
 class MStaper(elm.Element):
-    def __init__(self, w1, w2, l, scale = 4, label=None, col = "orange", **kwargs):
+    def __init__(self, w1, w2, l, scale = 1, label=None, col = "orange", **kwargs):
         super().__init__(**kwargs)
         ws1 = w1/scale
         ws2 = w2/scale
@@ -304,7 +315,7 @@ class MStaper(elm.Element):
               
 
 class MSbend(elm.Element):
-    def __init__(self, w, w2 = None, direction = "right", mitred = True, fourtyfive = False ,  scale = 4, col = "orange", **kwargs):
+    def __init__(self, w, w2 = None, direction = "right", mitred = True, fourtyfive = False ,  scale = 1, col = "orange", **kwargs):
         super().__init__(**kwargs)
         w1 = w/scale
         w2 = w/scale
@@ -342,12 +353,12 @@ class MSbend(elm.Element):
              
 
 class SMD(elm.Element):
-    def __init__(self, scale = 4, col = "darkgray", padcol = "orange", size="0805", **kwargs):
+    def __init__(self, scale = 1, col = "darkgray", padcol = "orange", size="0805", **kwargs):
         super().__init__(**kwargs)
         
         
         if size == "0805":
-            w = 1.22/scale
+            w = 1.25/scale
             l = 2/scale
         elif size == "0402":
             w = 0.5/scale
@@ -364,7 +375,7 @@ class SMD(elm.Element):
         else:
             raise ValueError("Unknown SMD Size")
             
-        self.segments.append(Segment([(0, -w/2), (0, w/2), (l,w/2), (l,-w/2), (0, -w/2) ],color="black", fill= "black"))
+        self.segments.append(Segment([(0, -w/2), (0, w/2), (l,w/2), (l,-w/2), (0, -w/2) ],color="black",ls=" ", fill= "black"))
         self.segments.append(Segment([(0, -w/2), (0, w/2), (l/4,w/2), (l/4,-w/2), (0, -w/2) ],color=col,ls=" ", fill= col))
         self.segments.append(Segment([(3*l/4, -w/2), (3*l/4, w/2), (l,w/2), (l,-w/2), (3*l/4, -w/2) ],color=col, ls=" ", fill= col))
         ### Pad ###
@@ -379,18 +390,18 @@ class SMD(elm.Element):
         
 
 class SMD_sot343(elm.Element):
-    def __init__(self, scale = 4, chiplabel="",  **kwargs):
+    def __init__(self, scale = 1, chiplabel="",  **kwargs):
         super().__init__(**kwargs)
         col = "darkgray"
-        w = 4/scale
-        l = 3/scale
-        le = 0.7/scale
+        w = 2/scale
+        l = 1.25/scale
+        le = 0.4/scale
         x = 0.5*le
-        fontsize= 44/scale
-        self.segments.append(Segment([(0, 0), (0, le/2), (-le,le/2), (-le,-le/2), (0, -le/2), (0,0) ],color=col, fill= col))
-        self.segments.append(Segment([(0, -w/2+x), (0, -w/2+x+le/2), (-le,-w/2+x+le/2), (-le,-w/2-x-le/2), (0, -w/2-x-le/2), (0,-w/2+x) ],color=col, fill= col))
-        self.segments.append(Segment([(l, 0), (l, le/2), (l+le,le/2), (l+le,-le/2), (l, -le/2), (l,0) ],color=col, fill= col))
-        self.segments.append(Segment([(l, -w/2), (l, -w/2+le/2), (l+le,-w/2+le/2), (l+le,-w/2-le/2), (l, -w/2-le/2), (l,-w/2) ],color=col, fill= col))
+        fontsize= 4/scale
+        self.segments.append(Segment([(0, 0), (0, le/2), (-le*2,le/2), (-le*2,-le/2), (0, -le/2), (0,0) ],color=col, fill= col))
+        self.segments.append(Segment([(0, -w/2+x), (0, -w/2+x+le/2), (-le*2,-w/2+x+le/2), (-le*2,-w/2-x-le/2), (0, -w/2-x-le/2), (0,-w/2+x) ],color=col, fill= col))
+        self.segments.append(Segment([(l, 0), (l, le/2), (l+le*2,le/2), (l+le*2,-le/2), (l, -le/2), (l,0) ],color=col, fill= col))
+        self.segments.append(Segment([(l, -w/2), (l, -w/2+le/2), (l+le*2,-w/2+le/2), (l+le*2,-w/2-le/2), (l, -w/2-le/2), (l,-w/2) ],color=col, fill= col))
         self.segments.append(Segment([(0, 0), (0, w/4), (l,w/4), (l,-w*3/4), (0, -w*3/4), (0,0) ],color="black", fill= "black"))
         self.segments.append(SegmentText((l/2,-w/4),str(chiplabel),rotation_global=True,align=("center","center"),fontsize=fontsize,color="white"))
         self.anchors['p1'] = (0, 0)
