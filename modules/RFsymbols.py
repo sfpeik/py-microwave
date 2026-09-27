@@ -313,7 +313,20 @@ class MStaper(elm.Element):
         self.anchors['p2'] = (ls, 0)
         self.params['drop'] = (ls,0)
               
-
+class MStee(elm.Element):
+    def __init__(self, w1, w2=None, w3=None, scale = 1, label=None, col = "orange", **kwargs):
+        super().__init__(**kwargs)
+        if not w2: w2 = w1
+        if not w3: w3 = w1
+        ws1 = w1/scale
+        ws2 = w2/scale
+        ws3 = w3/scale
+        self.segments.append(Segment([(0,0), (0, ws1/2), (ws3,ws2/2), (ws3,-ws2/2), (0, -ws1/2), (0,0) ], ls=" ", fill= col))
+        self.anchors['p1'] = (0, 0)
+        self.anchors['p3'] = (w1/2,w3/2)
+        self.anchors['p2'] = (w3, 0)
+        self.params['drop'] = (w3,0)
+                      
 class MSbend(elm.Element):
     def __init__(self, w, w2 = None, direction = "right", mitred = True, fourtyfive = False ,  scale = 1, col = "orange", **kwargs):
         super().__init__(**kwargs)

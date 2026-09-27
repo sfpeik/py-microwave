@@ -1270,6 +1270,9 @@ def AmpStabilityCircle(S,plotit=False):
 
 ##### determine Noise Circle and Noise Number N
 def AmpNoiseCircle(S,FmindB,Gamopt,rn,FsetdB,plotit): 
+    '''
+    Rn is given in Ohms!
+    '''
     S11=S[0,0];S12=S[0,1];S21=S[1,0];S22=S[1,1]
     Delta=S11*S22-S12*S21
     F=10**(FsetdB/10)
