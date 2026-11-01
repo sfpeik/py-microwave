@@ -435,16 +435,21 @@ class SMD_sot343(elm.Element):
  
 class Wigglyline(elm.Element):
 
-    def __init__(self, ofst=(0,0), scale= 1, *d, **kwargs):
+    def __init__(self, periods=3, ofst=(0,0), scale= 1, *d, **kwargs):
         '''
         Anchors:
         '''
         super().__init__(*d, **kwargs)
         size=0.3
-        for x in range(0,6,2):
-            self.segments.append(SegmentBezier([((0+x)*size,0),((0.5+x)*size, size),((1+x)*size,0)], capstyle="butt"))
-            self.segments.append(SegmentBezier([((1+x)*size,0),((1.5+x)*size,-size),((2+x)*size,0)], capstyle="butt"))
-        self.segments.append(Segment([((2+4)*size,0), ((2+4+1)*size,0)], capstyle="butt", arrow = '->'))
+        end = periods*2
+        ox,oy = ofst
+        for x in range(0,end,2):
+            self.segments.append(SegmentBezier([((0+x)*size+ox,0+oy),((0.5+x)*size+ox, size+oy),((1+x)*size+ox,0+oy)], capstyle="butt"))
+            self.segments.append(SegmentBezier([((1+x)*size+ox,0+oy),((1.5+x)*size+ox,-size+oy),((2+x)*size+ox,0+oy)], capstyle="butt"))
+        self.segments.append(Segment([((2+x)*size+ox,0+oy), ((2+x+1)*size+ox,0+oy)], capstyle="butt", arrow = '->'))
+        self.anchors['start'] = (0, 0)
+        self.anchors['end'] = ((end+1)*size+ox,0+oy)
+        self.params['drop'] = ((end+1)*size+ox,0+oy)    
         
 class Reflection(elm.Element):
     
