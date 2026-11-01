@@ -366,7 +366,7 @@ class MSbend(elm.Element):
              
 
 class SMD(elm.Element):
-    def __init__(self, scale = 1, col = "darkgray", padcol = "orange", size="0805", **kwargs):
+    def __init__(self, scale = 1, col = "#444444", padcol = "orange", size="0805", **kwargs):
         super().__init__(**kwargs)
         
         
@@ -387,14 +387,18 @@ class SMD(elm.Element):
             l = 3.2/scale    
         else:
             raise ValueError("Unknown SMD Size")
-            
-        self.segments.append(Segment([(0, -w/2), (0, w/2), (l,w/2), (l,-w/2), (0, -w/2) ],color="black",ls=" ", fill= "black"))
-        self.segments.append(Segment([(0, -w/2), (0, w/2), (l/4,w/2), (l/4,-w/2), (0, -w/2) ],color=col,ls=" ", fill= col))
-        self.segments.append(Segment([(3*l/4, -w/2), (3*l/4, w/2), (l,w/2), (l,-w/2), (3*l/4, -w/2) ],color=col, ls=" ", fill= col))
-        ### Pad ###
-        xx = 0.3/scale
-        self.segments.append(Segment([(-xx, -w/2-xx), (-xx, w/2+xx), (l/4,w/2+xx), (l/4,-w/2-xx), (-xx, -w/2-xx) ], color=padcol, fill= padcol,zorder = 0))
-        self.segments.append(Segment([(3*l/4, -w/2-xx), (3*l/4, w/2+xx), (l+xx,w/2+xx), (l+xx,-w/2-xx), (3*l/4, -w/2-xx) ], color=padcol, fill= padcol,zorder = 0))
+        
+
+        ### Pad ###########################
+        xx = 0.35/scale
+        self.segments.append(Segment([(-xx, -w/2-xx), (-xx, w/2+xx), (l/4,w/2+xx), (l/4,-w/2-xx), (-xx, -w/2-xx) ], ls=" ", fill= padcol ))
+        self.segments.append(Segment([(3*l/4, -w/2-xx), (3*l/4, w/2+xx), (l+xx,w/2+xx), (l+xx,-w/2-xx), (3*l/4, -w/2-xx), (3*l/4, -w/2-xx) ], ls=" ", fill= padcol))
+        
+        ### part
+        self.segments.append(Segment([(0, -w/2), (0, w/2), (l,w/2), (l,-w/2), (0, -w/2) ],color="black",ls=" ", fill= col))
+        ### leads
+        self.segments.append(Segment([(0, -w/2), (0, w/2), (l/4,w/2), (l/4,-w/2), (0, -w/2) ],color=col,ls=" ", fill= "darkgray"))
+        self.segments.append(Segment([(3*l/4, -w/2), (3*l/4, w/2), (l,w/2), (l,-w/2), (3*l/4, -w/2) ],color=col, ls=" ", fill= "darkgray"))
         
         self.anchors['p1'] = (0, 0)
         self.anchors['p2'] = (l, 0)
